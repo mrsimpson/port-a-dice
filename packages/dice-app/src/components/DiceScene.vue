@@ -28,11 +28,8 @@ const diceStore = useDiceStore();
 const { dice } = storeToRefs(diceStore);
 
 const handleDiceClick = (diceId: string) => {
-  console.log('[DiceScene] Dice clicked:', diceId.substring(0, 8));
   diceStore.cycleDiceParking(diceId);
 };
-
-console.log('[DiceScene] Component mounted, tracking dice...');
 </script>
 
 <style scoped>

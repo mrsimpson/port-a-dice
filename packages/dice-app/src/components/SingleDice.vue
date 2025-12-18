@@ -92,29 +92,15 @@ const rollTransform = computed(() => {
 
 const startRoll = () => {
   const newValue = props.dice.value;
-  console.log(
-    '[SingleDice] startRoll() called for dice:',
-    props.dice.id.substring(0, 8),
-    'new value:',
-    newValue
-  );
   isRolling.value = true;
-  console.log('[SingleDice] Set isRolling = true, applying animation');
 
   const randomX = Math.random() * 720 + 1080;
   const randomY = Math.random() * 720 + 1080;
   const randomZ = Math.random() * 360;
 
   rollRotation.value = { x: randomX, y: randomY, z: randomZ };
-  console.log('[SingleDice] Set rollRotation:', { x: randomX, y: randomY, z: randomZ });
 
   setTimeout(() => {
-    console.log(
-      '[SingleDice] Animation complete (1000ms), updating currentValue from',
-      currentValue.value,
-      'to',
-      newValue
-    );
     currentValue.value = newValue;
     isRolling.value = false;
   }, 1000);
@@ -127,10 +113,6 @@ const handleClick = () => {
 watch(
   () => props.dice.value,
   (newValue, oldValue) => {
-    const diceId = props.dice.id.substring(0, 8);
-    console.log(
-      `[SingleDice] Die ${diceId}: Value changed from ${oldValue} to ${newValue}, isRolling: ${diceStore.isRolling}`
-    );
     if (newValue !== oldValue) {
       startRoll();
     }
@@ -142,12 +124,8 @@ watch(
 watch(
   () => diceStore.isRolling,
   (newIsRolling) => {
-    const diceId = props.dice.id.substring(0, 8);
     // Only animate if this die is UNPARKED (areaId === null)
     if (newIsRolling && !isRolling.value && props.dice.areaId === null) {
-      console.log(
-        `[SingleDice] Die ${diceId}: Triggered by isRolling=true (value=${props.dice.value}, areaId=${props.dice.areaId})`
-      );
       startRoll();
     }
   }
@@ -163,8 +141,6 @@ watch(
 );
 
 onMounted(() => {
-  const diceId = props.dice.id.substring(0, 8);
-  console.log(`[SingleDice] Mounted: Die ${diceId}, initial value: ${props.dice.value}`);
   currentValue.value = props.dice.value;
 });
 </script>
