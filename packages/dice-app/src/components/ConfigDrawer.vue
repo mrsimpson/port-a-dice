@@ -66,23 +66,29 @@
                   :title="color"
                 />
                 <div class="custom-color-btn-wrapper">
+                  <label class="custom-color-label-compact">Custom</label>
                   <input
                     v-model="customColor"
                     type="color"
                     class="custom-color-btn-compact"
                     :class="{ active: useCustomColor }"
-                    :aria-label="customColor"
+                    :aria-label="`Custom color: ${customColor}`"
                     @focus="handleCustomColorFocus"
                     @input="handleCustomColorFocus"
-                    :title="customColor"
+                    :title="`Custom color: ${customColor}`"
                   />
                 </div>
               </div>
             </div>
 
             <div class="action-section">
-              <button class="btn btn-add" :disabled="uiStore.isRolling" @click="handleAddDice">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <button
+                class="btn btn-add-compact"
+                :disabled="uiStore.isRolling"
+                @click="handleAddDice"
+                title="Add a die with selected color"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -90,7 +96,6 @@
                     d="M12 4v16m8-8H4"
                   />
                 </svg>
-                Add Dice
               </button>
             </div>
 
@@ -655,17 +660,31 @@ const handleOverlayClick = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  gap: 0.375rem;
+  padding: 0.25rem 0.375rem;
   background: #374151;
   border-radius: 0.375rem;
   border: 2px solid #4b5563;
   flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.custom-color-btn-wrapper:hover {
+  border-color: #60a5fa;
+}
+
+.custom-color-label-compact {
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .custom-color-btn-compact {
-  width: 100%;
-  height: 100%;
+  width: 1.5rem;
+  height: 1.5rem;
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;
@@ -684,8 +703,9 @@ const handleOverlayClick = () => {
 
 .action-section {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .danger-section {
@@ -726,6 +746,20 @@ const handleOverlayClick = () => {
 }
 
 .btn-add:not(:disabled):hover {
+  background: #059669;
+}
+
+.btn-add-compact {
+  align-self: flex-start;
+  padding: 0.5rem;
+  background: #10b981;
+  color: white;
+  min-width: auto;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.btn-add-compact:not(:disabled):hover {
   background: #059669;
 }
 
