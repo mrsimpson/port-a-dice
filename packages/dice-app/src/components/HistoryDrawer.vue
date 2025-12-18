@@ -95,6 +95,7 @@ const handleClearHistory = () => {
 
 .drawer {
   width: 100%;
+  max-height: 80dvh;
   max-height: 80vh;
   background: #1f2937;
   border-top-left-radius: 1rem;
