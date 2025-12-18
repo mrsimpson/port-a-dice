@@ -52,32 +52,30 @@
           <div v-if="activeTab === 'dice'" class="tab-content">
             <div class="color-picker">
               <label class="section-label">Select Dice Color</label>
-              <div class="color-grid">
+              <div class="color-grid-compact">
                 <button
                   v-for="color in presetColors"
                   :key="color"
                   :style="{ backgroundColor: DICE_COLORS[color] }"
                   :class="[
-                    'color-btn',
+                    'color-btn-compact',
                     { active: !useCustomColor && selectedPresetColor === color },
                   ]"
                   :aria-label="`Select ${color} dice`"
                   @click="handlePresetColorClick(color)"
+                  :title="color"
                 />
-              </div>
-
-              <div class="custom-color-section">
-                <label class="custom-color-label">Or pick a custom color:</label>
-                <div class="custom-color-input-wrapper">
+                <div class="custom-color-btn-wrapper">
                   <input
                     v-model="customColor"
                     type="color"
-                    class="custom-color-input"
+                    class="custom-color-btn-compact"
                     :class="{ active: useCustomColor }"
+                    :aria-label="customColor"
                     @focus="handleCustomColorFocus"
                     @input="handleCustomColorFocus"
+                    :title="customColor"
                   />
-                  <span class="custom-color-value">{{ customColor }}</span>
                 </div>
               </div>
             </div>
@@ -98,27 +96,22 @@
 
             <div v-if="dice.length > 0" class="dice-list-section">
               <label class="section-label">Current Dice ({{ dice.length }})</label>
-              <div class="dice-list">
-                <div v-for="die in dice" :key="die.id" class="dice-item">
-                  <div class="dice-info">
+              <div class="dice-grid">
+                <div v-for="die in dice" :key="die.id" class="dice-grid-item">
+                  <div class="dice-grid-display">
                     <div
-                      class="dice-color-indicator"
+                      class="dice-color-indicator-grid"
                       :style="{ backgroundColor: getColorDisplay(die.color) }"
                     ></div>
-                    <div class="dice-details">
-                      <span class="dice-label">{{ die.color }} ({{ die.value }})</span>
-                      <span v-if="die.areaId" class="dice-area">{{
-                        getAreaLabel(die.areaId)
-                      }}</span>
-                      <span v-else class="dice-area dice-unparked">Unparked</span>
-                    </div>
+                    <div class="dice-grid-label">{{ die.color }} ({{ die.value }})</div>
                   </div>
                   <button
-                    class="btn-delete"
-                    title="Delete this die"
+                    class="btn-delete-grid"
+                    :title="`Delete ${die.color} die`"
                     @click="handleRemoveDice(die.id)"
+                    aria-label="Delete die"
                   >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -357,11 +350,6 @@ const selectedColor = computed<DiceColor>(() => {
 
 const getColorDisplay = (color: DiceColor): string => {
   return DICE_COLORS[color as PresetDiceColor] || color;
-};
-
-const getAreaLabel = (areaId: string): string => {
-  const area = areasStore.getAreaById(areaId);
-  return area ? area.label : 'Unknown';
 };
 
 const formatDate = (timestamp: number): string => {
@@ -629,83 +617,69 @@ const handleOverlayClick = () => {
   flex-direction: column;
 }
 
-.color-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(3rem, 1fr));
-  gap: 0.75rem;
+/* Compact Color Grid */
+.color-grid-compact {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
-.color-btn {
-  width: 100%;
-  aspect-ratio: 1;
-  border: 3px solid transparent;
-  border-radius: 0.5rem;
+.color-btn-compact {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid transparent;
+  border-radius: 0.375rem;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
 }
 
-.color-btn:hover {
-  transform: scale(1.05);
+.color-btn-compact:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-.color-btn:active {
+.color-btn-compact:active {
   transform: scale(0.95);
 }
 
-.color-btn.active {
+.color-btn-compact.active {
   border-color: #60a5fa;
-  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.5);
 }
 
-.custom-color-section {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #374151;
-}
-
-.custom-color-label {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #9ca3af;
-  margin-bottom: 0.5rem;
-}
-
-.custom-color-input-wrapper {
+.custom-color-btn-wrapper {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
   background: #374151;
-  border-radius: 0.5rem;
+  border-radius: 0.375rem;
+  border: 2px solid #4b5563;
+  flex-shrink: 0;
 }
 
-.custom-color-input {
-  width: 3rem;
-  height: 3rem;
-  border: 3px solid transparent;
-  border-radius: 0.5rem;
+.custom-color-btn-compact {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 0.25rem;
   cursor: pointer;
   transition: all 0.2s;
+  padding: 0;
   background: transparent;
 }
 
-.custom-color-input:hover {
-  transform: scale(1.05);
+.custom-color-btn-compact:hover {
+  filter: brightness(1.1);
 }
 
-.custom-color-input.active {
-  border-color: #60a5fa;
-  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
-}
-
-.custom-color-value {
-  font-family: monospace;
-  font-size: 0.875rem;
-  color: #d1d5db;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.custom-color-btn-compact.active {
+  box-shadow: inset 0 0 0 2px #60a5fa;
 }
 
 .action-section {
@@ -798,108 +772,106 @@ const handleOverlayClick = () => {
   flex-direction: column;
 }
 
-.dice-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  max-height: 200px;
-  overflow-y: auto;
+.dice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.75rem;
 }
 
-.dice-item {
+@media (max-width: 640px) {
+  .dice-grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  }
+}
+
+.dice-grid-item {
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 0.5rem;
   padding: 0.75rem;
   background: #374151;
   border-radius: 0.5rem;
   transition: all 0.2s;
+  min-height: 100px;
 }
 
-.dice-item:hover {
+.dice-grid-item:hover {
   background: #4b5563;
 }
 
-.dice-info {
+.dice-grid-display {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.375rem;
   flex: 1;
-  min-width: 0;
+  justify-content: center;
 }
 
-.dice-color-indicator {
-  width: 1.5rem;
-  height: 1.5rem;
+.dice-color-indicator-grid {
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
   border: 2px solid #1f2937;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  flex-shrink: 0;
 }
 
-.dice-details {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-  min-width: 0;
-}
-
-.dice-label {
-  font-size: 0.875rem;
+.dice-grid-label {
+  font-size: 0.75rem;
   font-weight: 600;
   color: #f3f4f6;
+  text-align: center;
   text-transform: capitalize;
+  word-break: break-word;
 }
 
-.dice-area {
-  font-size: 0.75rem;
-  color: #9ca3af;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.dice-unparked {
-  color: #60a5fa;
-  font-style: italic;
-}
-
-.btn-delete {
+.btn-delete-grid {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  background: transparent;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: rgba(0, 0, 0, 0.5);
   border: none;
-  color: #9ca3af;
+  color: #f3f4f6;
   cursor: pointer;
-  border-radius: 0.375rem;
+  border-radius: 0.25rem;
   transition: all 0.2s;
-  flex-shrink: 0;
+  opacity: 0;
 }
 
-.btn-delete:hover {
+.dice-grid-item:hover .btn-delete-grid {
+  opacity: 1;
+}
+
+.btn-delete-grid:hover {
   background: #ef4444;
   color: white;
 }
 
-.btn-delete:active {
-  transform: scale(0.95);
+.btn-delete-grid:active {
+  transform: scale(0.9);
 }
 
 .dice-count {
   text-align: center;
-  padding: 1rem;
+  padding: 0.75rem;
   background: #111827;
   border-radius: 0.5rem;
   color: #9ca3af;
   font-size: 0.875rem;
+  margin-top: 1rem;
 }
 
 .dice-count strong {
   color: #f3f4f6;
-  font-size: 1.125rem;
+  font-size: 1rem;
 }
 
 /* Areas Tab */
