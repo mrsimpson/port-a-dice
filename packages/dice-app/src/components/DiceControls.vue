@@ -77,7 +77,7 @@ const handleRollAll = () => {
 <style scoped>
 .dice-controls {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.75rem;
   padding: 1rem;
   background: rgba(31, 41, 55, 0.95);

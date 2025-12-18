@@ -63,7 +63,7 @@ const handleRollAll = () => {
   bottom: 2rem;
   right: 2rem;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 1rem;
   z-index: 10;
 }
@@ -126,20 +126,5 @@ const handleRollAll = () => {
 
 .btn-roll-all:not(:disabled):hover {
   background: #059669;
-}
-
-@media (min-width: 768px) {
-  .floating-actions {
-    flex-direction: row;
-    bottom: 2rem;
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
-  }
-
-  .btn {
-    height: 3.5rem;
-    padding: 0 1.5rem;
-  }
 }
 </style>
