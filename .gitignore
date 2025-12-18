@@ -1,8 +1,5 @@
 # Dependencies
 node_modules/
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
 
 # Vite
 dist/
@@ -56,3 +53,6 @@ temp/
 .crowd
 .turbo/cache
 .turbo/cookies
+
+# Development workflow state
+.vibe/conversations/

@@ -1,0 +1,10 @@
+# Build outputs
+dist
+.turbo
+coverage
+
+# Dependencies
+node_modules
+
+# Development workflow state
+.vibe

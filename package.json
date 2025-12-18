@@ -1,8 +1,8 @@
 {
-  "name": "dice-roller-monorepo",
+  "name": "port-a-dice",
   "version": "1.0.0",
   "private": true,
-  "description": "Mobile-first 3D dice rolling app monorepo",
+  "description": "A simple local first app for rolling dice virtually",
   "workspaces": [
     "packages/*"
   ],
