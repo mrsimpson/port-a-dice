@@ -60,14 +60,6 @@ Fix responsiveness bug where mobile keyboard/address bar reduces viewport height
 - [x] Added CSS fallback for older browsers (vh declaration after dvh)
 - [x] Vue type checker passed - no syntax errors
 - [x] Build confirms CSS changes are valid
-
-## Fix
-### Tasks
-- [ ] *To be added when this phase becomes active*
-
-### Completed
-*None yet*
-
 ## Verify
 ### Tasks
 - [x] Run existing unit tests (all 34 tests pass)
