@@ -53,13 +53,13 @@ export interface UIState {
 }
 
 export const DICE_COLORS: Record<PresetDiceColor, string> = {
+  white: '#f3f4f6',
   red: '#ef4444',
   blue: '#3b82f6',
   green: '#22c55e',
   yellow: '#eab308',
   purple: '#a855f7',
   orange: '#f97316',
-  white: '#f3f4f6',
   black: '#1f2937',
 };
 

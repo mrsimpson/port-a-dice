@@ -6,8 +6,7 @@ export const useUIStore = defineStore('ui', {
     rollTrigger: 0,
     showHistory: false,
     showResetConfirm: false,
-    showDiceConfig: false,
-    showParkingAreas: false,
+    showConfig: false,
   }),
 
   actions: {
@@ -40,28 +39,16 @@ export const useUIStore = defineStore('ui', {
       this.showResetConfirm = false;
     },
 
-    toggleDiceConfig() {
-      this.showDiceConfig = !this.showDiceConfig;
+    toggleConfig() {
+      this.showConfig = !this.showConfig;
     },
 
-    openDiceConfig() {
-      this.showDiceConfig = true;
+    openConfig() {
+      this.showConfig = true;
     },
 
-    closeDiceConfig() {
-      this.showDiceConfig = false;
-    },
-
-    toggleParkingAreas() {
-      this.showParkingAreas = !this.showParkingAreas;
-    },
-
-    openParkingAreas() {
-      this.showParkingAreas = true;
-    },
-
-    closeParkingAreas() {
-      this.showParkingAreas = false;
+    closeConfig() {
+      this.showConfig = false;
     },
   },
 });

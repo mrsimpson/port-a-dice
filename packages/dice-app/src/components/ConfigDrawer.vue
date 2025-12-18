@@ -1,10 +1,10 @@
 <template>
   <Teleport to="body">
-    <div v-if="uiStore.showDiceConfig" class="drawer-overlay" @click="handleOverlayClick">
+    <div v-if="uiStore.showConfig" class="drawer-overlay" @click="handleOverlayClick">
       <div class="drawer" @click.stop>
         <div class="drawer-header">
           <h2 class="drawer-title">Game Configuration</h2>
-          <button @click="uiStore.closeDiceConfig" class="btn-close" aria-label="Close">
+          <button @click="uiStore.closeConfig" class="btn-close" aria-label="Close">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -279,7 +279,7 @@
                     Load
                   </button>
                   <button
-                    class="btn btn-delete-config-small"
+                    class="btn btn-delete-config"
                     @click="handleDeleteConfiguration(config.id)"
                     title="Delete configuration"
                   >
@@ -330,7 +330,7 @@ const { dice } = storeToRefs(diceStore);
 const activeTab = ref<'dice' | 'areas' | 'save' | 'load'>('dice');
 
 // Dice color state
-const selectedPresetColor = ref<PresetDiceColor | null>('red');
+const selectedPresetColor = ref<PresetDiceColor | null>('white');
 const customColor = ref<string>('#ff5733');
 const useCustomColor = ref<boolean>(false);
 
@@ -488,7 +488,7 @@ const loadConfigurations = async () => {
 };
 
 const handleOverlayClick = () => {
-  uiStore.closeDiceConfig();
+  uiStore.closeConfig();
 };
 </script>
 
@@ -517,7 +517,7 @@ const handleOverlayClick = () => {
 
 .drawer {
   width: 100%;
-  max-height: 85vh;
+  height: 95vh;
   background: #1f2937;
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
@@ -752,6 +752,7 @@ const handleOverlayClick = () => {
 }
 
 .btn-add {
+  padding: 10px;
   background: #10b981;
   color: white;
 }
@@ -787,16 +788,13 @@ const handleOverlayClick = () => {
   background: #dc2626;
 }
 
-.btn-delete-config-small {
+.btn-delete-config {
   background: transparent;
   border: 1px solid #ef4444;
   color: #ef4444;
-  padding: 0.5rem;
-  width: 2.5rem;
-  height: 2.5rem;
 }
 
-.btn-delete-config-small:hover {
+.btn-delete-config:hover {
   background: #ef4444;
   color: white;
 }
