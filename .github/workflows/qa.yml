@@ -1,0 +1,38 @@
+name: QA
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    name: Quality Assurance
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Setup @antfu/ni
+        run: npm i -g @antfu/ni
+
+      - name: Install dependencies
+        run: nci
+
+      - name: Type check
+        run: nr typecheck
+
+      - name: Lint
+        run: nr lint
+
+      - name: Test
+        run: nr test:run
+
+      - name: Build
+        run: nr build
