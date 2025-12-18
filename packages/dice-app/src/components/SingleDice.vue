@@ -1,6 +1,9 @@
 <template>
   <div class="dice-container">
-    <div :class="['dice-wrapper', { rolling: isRolling }]" @click="handleClick">
+    <div
+      :class="['dice-wrapper', { rolling: isRolling, parked: !!parkingAreaLabel }]"
+      @click="handleClick"
+    >
       <div class="dice-scene">
         <div
           ref="diceRef"
@@ -42,9 +45,9 @@
           </div>
         </div>
       </div>
-    </div>
-    <div v-if="parkingAreaLabel" class="parking-panel">
-      {{ parkingAreaLabel }}
+      <div v-if="parkingAreaLabel" class="parking-panel">
+        {{ parkingAreaLabel }}
+      </div>
     </div>
   </div>
 </template>
@@ -151,6 +154,8 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
+  position: relative;
+  padding-bottom: 20px;
 }
 
 .dice-wrapper {
@@ -164,21 +169,36 @@ onMounted(() => {
   position: relative;
   padding: 10px;
   will-change: transform;
+  overflow: visible;
+}
+
+.dice-wrapper.parked {
+  background: #3b82f6;
+  border-radius: 0.375rem;
 }
 
 .parking-panel {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
   background: #3b82f6;
   color: white;
-  padding: 0.375rem 0.75rem;
-  border-radius: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0 0 0.375rem 0.375rem;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.dice-wrapper:hover {
+.dice-wrapper:not(.parked):hover {
   background: rgba(55, 65, 81, 0.7);
   transform: scale(1.05);
 }
@@ -330,6 +350,10 @@ onMounted(() => {
     height: 140px;
   }
 
+  .parking-panel {
+    width: 140px;
+  }
+
   .dice {
     width: 100px;
     height: 100px;
@@ -369,6 +393,10 @@ onMounted(() => {
   .dice-wrapper {
     width: 160px;
     height: 160px;
+  }
+
+  .parking-panel {
+    width: 160px;
   }
 
   .dice {
