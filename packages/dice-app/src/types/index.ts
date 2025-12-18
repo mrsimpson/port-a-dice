@@ -65,7 +65,7 @@ export const DICE_COLORS: Record<PresetDiceColor, string> = {
 
 export const DEFAULT_AREAS: Omit<ParkingArea, 'id'>[] = [{ label: 'picked', order: 0 }];
 
-export interface DiceConfiguration {
+export interface GameConfiguration {
   id: string;
   name: string;
   description?: string;
@@ -77,9 +77,9 @@ export interface DiceConfiguration {
 }
 
 export interface IConfigStore {
-  save(config: DiceConfiguration): Promise<void>;
-  load(id: string): Promise<DiceConfiguration>;
-  list(): Promise<DiceConfiguration[]>;
+  save(config: GameConfiguration): Promise<void>;
+  load(id: string): Promise<GameConfiguration>;
+  list(): Promise<GameConfiguration[]>;
   delete(id: string): Promise<void>;
   exists(id: string): Promise<boolean>;
 }

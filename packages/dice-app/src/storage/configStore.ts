@@ -1,10 +1,10 @@
-import type { DiceConfiguration, IConfigStore } from '@/types';
+import type { GameConfiguration, IConfigStore } from '@/types';
 
 const STORAGE_PREFIX = 'config_';
 const CONFIG_INDEX_KEY = 'config_index';
 
 export class LocalStorageConfigStore implements IConfigStore {
-  async save(config: DiceConfiguration): Promise<void> {
+  async save(config: GameConfiguration): Promise<void> {
     const key = `${STORAGE_PREFIX}${config.id}`;
     localStorage.setItem(key, JSON.stringify(config));
 
@@ -16,7 +16,7 @@ export class LocalStorageConfigStore implements IConfigStore {
     }
   }
 
-  async load(id: string): Promise<DiceConfiguration> {
+  async load(id: string): Promise<GameConfiguration> {
     const key = `${STORAGE_PREFIX}${id}`;
     const data = localStorage.getItem(key);
 
@@ -24,12 +24,12 @@ export class LocalStorageConfigStore implements IConfigStore {
       throw new Error(`Configuration "${id}" not found`);
     }
 
-    return JSON.parse(data) as DiceConfiguration;
+    return JSON.parse(data) as GameConfiguration;
   }
 
-  async list(): Promise<DiceConfiguration[]> {
+  async list(): Promise<GameConfiguration[]> {
     const index = this.getIndex();
-    const configs: DiceConfiguration[] = [];
+    const configs: GameConfiguration[] = [];
 
     for (const id of index) {
       try {

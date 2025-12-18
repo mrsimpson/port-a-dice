@@ -5,32 +5,67 @@ _Workflow: [epcc](https://mrsimpson.github.io/responsible-vibe-mcp/workflows/epc
 
 ## Goal
 
-Implement dice configuration storage with local browser persistence and architecture prepared for future cloud synchronization. Users should be able to save current dice configurations with a name and load them later.
+Enhance configuration storage to include parking areas/places, making it a complete "game configuration" rather than just "dice configuration". Users should be able to save and load their entire game setup including custom parking areas.
 
-## Explore
+## Explore (Enhancement Round 2)
 
 ### Tasks
 
-- [x] Analyze current project structure and stores
-- [x] Understand existing data persistence patterns
-- [x] Review types and interfaces
-- [x] Identify interfaces for future sync capability
+- [x] Review current DiceConfiguration implementation
+- [x] Understand parking areas structure and persistence
+- [x] Verify parking areas already saved in configurations
+- [x] Identify needed updates for naming/messaging
 
 ### Completed
 
-- [x] Created development plan file
-- [x] Reviewed dice store implementation
-- [x] Reviewed existing types and persistence patterns
-- [x] Understood current localStorage usage with Pinia persist plugin
+- [x] Confirmed parking areas (areas field) already included in DiceConfiguration
+- [x] Verified areas already captured during save operation
+- [x] Identified UI/naming updates needed
+- [x] Plan refinement for complete game configuration concept
 
-## Plan
+## Plan (Enhancement Round 2)
 
 ### Phase Entrance Criteria
 
-- [x] Current project structure understood
-- [x] Existing persistence patterns analyzed
-- [x] Type definitions reviewed
-- [x] Architecture pattern identified (Pinia stores with localStorage)
+- [x] Current configuration implementation reviewed
+- [x] Parking areas storage verified (already included)
+- [x] Naming/messaging needs identified
+- [x] Scope of changes understood (minimal - mostly naming)
+
+### Enhancement Scope
+
+The parking areas are **already being saved** in the current implementation! The `DiceConfiguration` already has an `areas: ParkingArea[]` field that captures parking areas when saving.
+
+**Changes needed**:
+
+1. **Rename conceptually**: Change terminology from "dice configuration" to "game configuration"
+   - Type name: Keep `DiceConfiguration` (internal) but rename in UI messaging
+   - Store name: Can stay `configManager` (internal naming)
+   - UI labels: Update to reflect "game configuration" concept
+2. **UI/UX Updates**:
+   - Update modal title to reflect game configuration
+   - Update labels: "Save Game Configuration" instead of "Save Configuration"
+   - Update descriptions to emphasize that parking areas are included
+   - Update load descriptions to show both dice and areas being restored
+
+3. **Documentation**:
+   - Update type documentation comments
+   - Update component descriptions
+   - Clarify that game configuration includes both dice and areas
+
+### Implementation Tasks
+
+- [ ] Rename `DiceConfiguration` type to `GameConfiguration`
+- [ ] Update all references in configManager store
+- [ ] Update storage layer references
+- [ ] Update DiceConfigModal UI labels and messaging
+- [ ] Update form placeholders and descriptions
+- [ ] Test save/load functionality
+- [ ] Verify no debug output remains
+
+### Completed
+
+_None yet_
 
 ### Implementation Strategy
 
@@ -195,6 +230,7 @@ interface IConfigStore {
 - [x] Code Cleanup: No commented-out code blocks
 - [x] Build Verification: Vite build succeeds
 - [x] Test Verification: All 34 existing tests pass
+- [x] Git Commit: Feature committed with descriptive message
 - [x] Final Validation: Code is production-ready
 
 ### Completed
@@ -202,7 +238,33 @@ interface IConfigStore {
 - [x] All development artifacts cleaned up
 - [x] Production build tested and verified
 - [x] All existing tests pass (no regressions)
-- [x] Ready for deployment
+- [x] Feature branch committed with full feature implementation
+- [x] Ready for merge/deployment
+
+### Git Commit Information
+
+**Commit Hash**: 571f22a
+**Branch**: config-manager
+**Message**: feat: implement dice configuration storage with save/load/delete
+
+**Changes**:
+
+- 8 files changed
+- 1035 insertions
+- 148 deletions
+
+**Files Created**:
+
+- `.vibe/development-plan-config-manager.md`
+- `packages/dice-app/src/storage/configStore.ts`
+- `packages/dice-app/src/stores/configManager.ts`
+
+**Files Modified**:
+
+- `packages/dice-app/src/types/index.ts`
+- `packages/dice-app/src/components/DiceConfigModal.vue`
+- `packages/dice-app/src/components/DiceControls.vue`
+- `packages/dice-app/src/stores/dice.ts`
 
 ## Key Decisions
 
@@ -304,6 +366,48 @@ When implementing cloud sync:
 - ✅ Production build succeeds (Vite)
 - ✅ No regressions detected
 - ✅ Code quality maintained
+
+---
+
+## Enhancement: Game Configuration Renaming
+
+### Code Phase (Round 2)
+
+#### Implementation Summary
+
+Renamed concept from "Dice Configuration" to "Game Configuration" to better reflect that both dice AND parking areas are saved and restored.
+
+**Files Modified**:
+
+- `packages/dice-app/src/types/index.ts`: Renamed `DiceConfiguration` → `GameConfiguration`
+- `packages/dice-app/src/storage/configStore.ts`: Updated all type references
+- `packages/dice-app/src/stores/configManager.ts`: Updated all type references and error messages
+- `packages/dice-app/src/components/DiceConfigModal.vue`: Updated UI labels and descriptions
+
+#### UI/UX Improvements
+
+1. **Modal Title**: "Dice Configuration" → "Game Configuration"
+2. **Save Tab**:
+   - Label: "Configuration Name" → "Game Name"
+   - Placeholder: "Enter configuration name" → "Enter game configuration name"
+   - Added info box: "💾 Saves your current dice, parking areas, and all settings."
+3. **Save Button**: "Save Configuration" → "Save Game"
+4. **Load Tab**: Updated messaging to reflect "games" instead of "configurations"
+5. **Reset Button**: "Delete Current Configuration" → "Reset Game"
+
+#### Technical Changes
+
+- All `DiceConfiguration` type references renamed to `GameConfiguration`
+- Error messages updated: "configuration" → "game configuration"
+- Store state type updated to use `GameConfiguration[]`
+- Info box styling added for better visual hierarchy
+
+#### Build Results
+
+- ✅ Build succeeds (108.46 kB JS, 39.67 kB gzip)
+- ✅ TypeScript compilation clean
+- ✅ No breaking changes
+- ✅ Backward compatible with existing saved configurations
 
 ---
 

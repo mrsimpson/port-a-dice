@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { DiceConfiguration, IConfigStore } from '@/types';
+import type { GameConfiguration, IConfigStore } from '@/types';
 import { LocalStorageConfigStore } from '@/storage/configStore';
 import { useDiceStore } from './dice';
 import { useAreasStore } from './areas';
@@ -7,7 +7,7 @@ import { useAreasStore } from './areas';
 export const useConfigManagerStore = defineStore('configManager', {
   state: () => ({
     storage: new LocalStorageConfigStore() as IConfigStore,
-    configurations: [] as DiceConfiguration[],
+    configurations: [] as GameConfiguration[],
     currentConfigId: null as string | null,
     loading: false,
     error: null as string | null,
@@ -29,7 +29,7 @@ export const useConfigManagerStore = defineStore('configManager', {
       const id = `config_${Date.now()}`;
       const now = Date.now();
 
-      const config: DiceConfiguration = {
+      const config: GameConfiguration = {
         id,
         name,
         description,
@@ -45,7 +45,7 @@ export const useConfigManagerStore = defineStore('configManager', {
         this.configurations.push(config);
         this.currentConfigId = id;
       } catch (err) {
-        this.error = `Failed to save configuration: ${err instanceof Error ? err.message : 'Unknown error'}`;
+        this.error = `Failed to save game configuration: ${err instanceof Error ? err.message : 'Unknown error'}`;
         throw err;
       }
     },
@@ -64,7 +64,7 @@ export const useConfigManagerStore = defineStore('configManager', {
 
         this.currentConfigId = id;
       } catch (err) {
-        this.error = `Failed to load configuration: ${err instanceof Error ? err.message : 'Unknown error'}`;
+        this.error = `Failed to load game configuration: ${err instanceof Error ? err.message : 'Unknown error'}`;
         throw err;
       }
     },
@@ -80,7 +80,7 @@ export const useConfigManagerStore = defineStore('configManager', {
           this.currentConfigId = null;
         }
       } catch (err) {
-        this.error = `Failed to delete configuration: ${err instanceof Error ? err.message : 'Unknown error'}`;
+        this.error = `Failed to delete game configuration: ${err instanceof Error ? err.message : 'Unknown error'}`;
         throw err;
       }
     },
@@ -100,7 +100,7 @@ export const useConfigManagerStore = defineStore('configManager', {
       try {
         this.configurations = await this.storage.list();
       } catch (err) {
-        this.error = `Failed to load configurations: ${err instanceof Error ? err.message : 'Unknown error'}`;
+        this.error = `Failed to load game configurations: ${err instanceof Error ? err.message : 'Unknown error'}`;
         throw err;
       }
     },

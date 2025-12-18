@@ -4,7 +4,7 @@
       <div v-if="uiStore.showDiceConfig" class="modal-overlay" @click="handleOverlayClick">
         <div class="modal-content" @click.stop>
           <div class="modal-header">
-            <h2 class="modal-title">Dice Configuration</h2>
+            <h2 class="modal-title">Game Configuration</h2>
             <button @click="uiStore.closeDiceConfig" class="btn-close" aria-label="Close">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -136,7 +136,7 @@
                   @click="handleDeleteCurrentConfiguration"
                   :disabled="dice.length === 0"
                 >
-                  Delete Current Configuration
+                  Reset Game
                 </button>
               </div>
             </div>
@@ -145,13 +145,13 @@
             <div v-if="activeTab === 'save'" class="tab-content">
               <div class="save-form">
                 <div class="form-group">
-                  <label for="config-name" class="form-label">Configuration Name *</label>
+                  <label for="config-name" class="form-label">Game Name *</label>
                   <input
                     id="config-name"
                     v-model="saveName"
                     type="text"
                     class="form-input"
-                    placeholder="Enter configuration name"
+                    placeholder="Enter game configuration name"
                     @keyup.enter="handleSaveConfiguration"
                   />
                 </div>
@@ -162,9 +162,15 @@
                     id="config-description"
                     v-model="saveDescription"
                     class="form-textarea"
-                    placeholder="Enter optional description"
+                    placeholder="e.g., For tournament on Friday"
                     rows="3"
                   ></textarea>
+                </div>
+
+                <div class="info-box">
+                  <p class="info-text">
+                    💾 Saves your current dice, parking areas, and all settings.
+                  </p>
                 </div>
 
                 <div v-if="configManagerStore.error" class="error-message">
@@ -177,7 +183,7 @@
                     @click="handleSaveConfiguration"
                     :disabled="!saveName.trim() || dice.length === 0"
                   >
-                    Save Configuration
+                    Save Game
                   </button>
                 </div>
 
@@ -188,11 +194,11 @@
             <!-- LOAD TAB -->
             <div v-if="activeTab === 'load'" class="tab-content">
               <div v-if="configManagerStore.loading" class="loading-state">
-                Loading configurations...
+                Loading saved games...
               </div>
 
               <div v-else-if="configManagerStore.configurations.length === 0" class="empty-state">
-                <p>No saved configurations yet.</p>
+                <p>No saved games yet. Create one in the Save tab!</p>
               </div>
 
               <div v-else class="configurations-list">
@@ -849,6 +855,20 @@ const handleOverlayClick = () => {
   color: #9ca3af;
   font-size: 0.875rem;
   margin: 0;
+}
+
+.info-box {
+  padding: 0.875rem;
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+.info-box .info-text {
+  margin: 0;
+  color: #d1d5db;
+  font-size: 0.875rem;
 }
 
 /* Load Tab */
