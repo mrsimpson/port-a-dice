@@ -369,45 +369,77 @@ When implementing cloud sync:
 
 ---
 
-## Enhancement: Game Configuration Renaming
+## Enhancement: Move Parking Areas into Game Configuration Modal
 
-### Code Phase (Round 2)
+### Code Phase (Round 3)
+
+#### Objectives (COMPLETED)
+
+1. ✅ **Integrate Parking Areas** into the Game Configuration modal as a new tab
+2. ✅ **Change Modal Style** to slide from bottom (like history drawer) for better space
+3. ✅ **Fix Z-Index Bug** - Hide roll action buttons when any modal is open
+4. ✅ **Remove Debug Output** from FloatingActions component
 
 #### Implementation Summary
 
-Renamed concept from "Dice Configuration" to "Game Configuration" to better reflect that both dice AND parking areas are saved and restored.
-
 **Files Modified**:
 
-- `packages/dice-app/src/types/index.ts`: Renamed `DiceConfiguration` → `GameConfiguration`
-- `packages/dice-app/src/storage/configStore.ts`: Updated all type references
-- `packages/dice-app/src/stores/configManager.ts`: Updated all type references and error messages
-- `packages/dice-app/src/components/DiceConfigModal.vue`: Updated UI labels and descriptions
+- `src/components/DiceConfigModal.vue` - Complete rewrite with drawer-style and parking areas tab
+- `src/components/FloatingActions.vue` - Fixed z-index and removed debug console.log
 
-#### UI/UX Improvements
+**Key Changes**:
 
-1. **Modal Title**: "Dice Configuration" → "Game Configuration"
-2. **Save Tab**:
-   - Label: "Configuration Name" → "Game Name"
-   - Placeholder: "Enter configuration name" → "Enter game configuration name"
-   - Added info box: "💾 Saves your current dice, parking areas, and all settings."
-3. **Save Button**: "Save Configuration" → "Save Game"
-4. **Load Tab**: Updated messaging to reflect "games" instead of "configurations"
-5. **Reset Button**: "Delete Current Configuration" → "Reset Game"
+1. **Modal Style Transformation**
+   - Changed from centered modal to bottom-slide drawer
+   - Uses same animation as HistoryDrawer (slideUp animation)
+   - max-height: 85vh for better space utilization
+   - Border-radius on top corners only
 
-#### Technical Changes
+2. **New Parking Areas Tab**
+   - Added full "Areas" tab with all parking area management
+   - Integrated ParkingAreaItem component
+   - Add new area form with validation
+   - Shows area count with dice
+   - Edit area labels inline
 
-- All `DiceConfiguration` type references renamed to `GameConfiguration`
-- Error messages updated: "configuration" → "game configuration"
-- Store state type updated to use `GameConfiguration[]`
-- Info box styling added for better visual hierarchy
+3. **Tab Navigation**
+   - 4 tabs: Dice, Areas, Save, Load
+   - Active tab indicator with underline
+   - Sticky tab navigation with scroll on mobile
+
+4. **Z-Index Fix**
+   - FloatingActions: z-index 100 → 10 (now behind modals)
+   - DiceConfigModal/Drawer: z-index 1000 (on top)
+   - This ensures buttons are hidden when modals are open
+   - Fixes the bug seen in history modal
+
+5. **Debug Output Removed**
+   - Removed 5 console.log statements from FloatingActions
+   - Cleaner production code
+
+#### Architecture
+
+```
+Z-Index Stack (Fixed):
+- DiceConfigModal: z-index 1000 (TOP)
+- HistoryDrawer: z-index 50
+- FloatingActions: z-index 10 (BOTTOM - hidden behind modals)
+```
 
 #### Build Results
 
-- ✅ Build succeeds (108.46 kB JS, 39.67 kB gzip)
-- ✅ TypeScript compilation clean
-- ✅ No breaking changes
-- ✅ Backward compatible with existing saved configurations
+- ✅ Build succeeds (109.62 kB JS, 39.82 kB gzip)
+- ✅ TypeScript clean
+- ✅ No regressions
+- ✅ Backward compatible
+
+### Completed
+
+- [x] DiceConfigModal converted to drawer-style
+- [x] Parking areas fully integrated into modal
+- [x] FloatingActions z-index fixed (buttons hide behind modals)
+- [x] All debug output removed
+- [x] Build verification passed
 
 ---
 

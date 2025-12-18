@@ -48,20 +48,14 @@ const uiStore = useUIStore();
 const { dice } = storeToRefs(diceStore);
 
 const handleRoll = () => {
-  console.log('[FloatingActions] handleRoll clicked');
-  console.log('[FloatingActions] Calling diceStore.rollAllDice()...');
   diceStore.rollAllDice();
-  console.log('[FloatingActions] handleRoll completed');
 };
 
 const handleRollAll = () => {
-  console.log('[FloatingActions] handleRollAll clicked');
-  console.log('[FloatingActions] Calling diceStore.rollAllDiceForced()...');
   diceStore.rollAllDiceForced();
   diceStore.dice.forEach((dice) => {
     dice.areaId = null;
   });
-  console.log('[FloatingActions] handleRollAll completed');
 };
 </script>
 
@@ -73,7 +67,7 @@ const handleRollAll = () => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  z-index: 100;
+  z-index: 10;
 }
 
 .btn {
