@@ -29,9 +29,6 @@
       >
         {{ rollAllButtonText }}
       </button>
-      <button class="btn btn-reset" @click="handleReset" :disabled="dice.length === 0">
-        Reset
-      </button>
     </div>
   </div>
 </template>
@@ -39,12 +36,10 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useDiceStore } from '@/stores/dice';
-import { useUIStore } from '@/stores/ui';
 import { storeToRefs } from 'pinia';
 import { DICE_COLORS, type DiceColor, type PresetDiceColor } from '@/types';
 
 const diceStore = useDiceStore();
-const uiStore = useUIStore();
 
 const { dice, isRolling } = storeToRefs(diceStore);
 const selectedColor = ref<DiceColor>('red');
@@ -71,34 +66,11 @@ const handleAddDice = () => {
 };
 
 const handleRoll = () => {
-  console.log('[DiceControls] ============================================');
-  console.log('[DiceControls] handleRoll CLICKED!!!');
-  console.log('[DiceControls] ============================================');
-  console.log('[DiceControls] Before roll - diceStore.isRolling:', diceStore.isRolling);
-  console.log('[DiceControls] Dice count:', diceStore.dice.length);
-  console.log('[DiceControls] Calling diceStore.rollAllDice()...');
   diceStore.rollAllDice();
-  console.log('[DiceControls] After rollAllDice() call returned');
-  console.log(
-    '[DiceControls] After rollAllDice() call - diceStore.isRolling:',
-    diceStore.isRolling
-  );
-  console.log('[DiceControls] ============================================');
 };
 
 const handleRollAll = () => {
-  console.log('[DiceControls] handleRollAll clicked');
-  console.log('[DiceControls] Before roll all - diceStore.isRolling:', diceStore.isRolling);
-  console.log('[DiceControls] Dice count:', diceStore.dice.length);
   diceStore.rollAllDiceForced();
-  console.log(
-    '[DiceControls] After rollAllDiceForced() call - diceStore.isRolling:',
-    diceStore.isRolling
-  );
-};
-
-const handleReset = () => {
-  uiStore.openResetConfirm();
 };
 </script>
 
@@ -195,15 +167,6 @@ const handleReset = () => {
 
 .btn-roll-all:not(:disabled):hover {
   background: #7c3aed;
-}
-
-.btn-reset {
-  background: #ef4444;
-  color: white;
-}
-
-.btn-reset:not(:disabled):hover {
-  background: #dc2626;
 }
 
 @media (min-width: 768px) {
