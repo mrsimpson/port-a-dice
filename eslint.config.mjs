@@ -46,7 +46,7 @@ export default [
       vue: vuePlugin,
     },
     rules: {
-      ...vuePlugin.configs['vue3-recommended'].rules,
+      ...vuePlugin.configs['flat/recommended'].rules,
     },
   },
   {

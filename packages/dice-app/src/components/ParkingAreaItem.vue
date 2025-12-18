@@ -1,6 +1,6 @@
 <template>
   <div class="area-item">
-    <div class="area-content" @click="!isEditing && handleAssignClick()">
+    <div class="area-content">
       <div v-if="!isEditing" class="area-info">
         <div class="area-label" @click.stop="startEditing">{{ area.label }}</div>
         <div class="area-count">{{ diceCount }} dice</div>
@@ -44,7 +44,6 @@ interface Props {
 
 const props = defineProps<Props>();
 const emit = defineEmits<{
-  assign: [areaId: string];
   delete: [areaId: string];
 }>();
 
@@ -57,10 +56,6 @@ const editedLabel = ref('');
 const editInput = ref<HTMLInputElement | null>(null);
 
 const diceCount = computed(() => diceStore.diceInArea(props.area.id).length);
-
-const handleAssignClick = () => {
-  emit('assign', props.area.id);
-};
 
 const startEditing = async () => {
   isEditing.value = true;

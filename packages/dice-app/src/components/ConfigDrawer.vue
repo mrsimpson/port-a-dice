@@ -165,7 +165,6 @@
                 v-for="area in areasStore.sortedAreas"
                 :key="area.id"
                 :area="area"
-                @assign="handleAssignArea"
                 @delete="handleDeleteArea"
               />
             </div>
