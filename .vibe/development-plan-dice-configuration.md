@@ -130,20 +130,26 @@ Improve dice configuration UI/UX by reducing space consumption and improving lay
 
 ## Summary of Changes
 
-**Commit**: `d7baa4c` - refactor: optimize dice configuration UI with compact color picker and grid layout
+**Commits**:
+
+- `f61016c` - refactor: improve UX of add button and custom color indicator
+- `d7baa4c` - refactor: optimize dice configuration UI with compact color picker and grid layout
 
 ### What Was Improved
 
-1. **Color picker**: 33% smaller (3rem → 2rem), horizontal layout, custom color inline
-2. **Dice list**: Grid layout (3-4 columns), removed area info, 40% space savings
-3. **Layout stability**: Fixed button shifting with proper flex constraints
-4. **User experience**: Cleaner, focused configuration interface
+1. **Color picker**: 33% smaller (3rem → 2rem), horizontal layout, custom color inline with "Custom" label
+2. **Add button**: Compact icon-only button (2.5rem square) instead of full-width text button
+3. **Dice list**: Grid layout (3-4 columns), removed area info, 40% space savings
+4. **Layout stability**: Fixed button shifting with proper flex constraints
+5. **User experience**: Cleaner, focused configuration interface with clear custom color identification
 
 ### Impact
 
 - Better use of screen real estate
 - Faster configuration workflow
 - Clearer focus on dice setup (not area assignment)
+- Intuitive "Custom" label identifies the custom color picker
+- Compact add button reduces layout height
 - Responsive design maintains usability on all screen sizes
 
 ### Quality Metrics

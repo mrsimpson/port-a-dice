@@ -51,7 +51,7 @@
           <!-- DICE TAB -->
           <div v-if="activeTab === 'dice'" class="tab-content">
             <div class="color-picker">
-              <label class="section-label">Select Dice Color</label>
+              <label class="section-label">Add a new die</label>
               <div class="color-grid-compact">
                 <button
                   v-for="color in presetColors"
@@ -78,25 +78,24 @@
                     :title="`Custom color: ${customColor}`"
                   />
                 </div>
-              </div>
-            </div>
 
-            <div class="action-section">
-              <button
-                class="btn btn-add-compact"
-                :disabled="uiStore.isRolling"
-                @click="handleAddDice"
-                title="Add a die with selected color"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-              </button>
+                <button
+                  class="btn btn-add-compact"
+                  :disabled="uiStore.isRolling"
+                  @click="handleAddDice"
+                  title="Add a die with selected color"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  Add
+                </button>
+              </div>
             </div>
 
             <div v-if="dice.length > 0" class="dice-list-section">
@@ -108,7 +107,7 @@
                       class="dice-color-indicator-grid"
                       :style="{ backgroundColor: getColorDisplay(die.color) }"
                     ></div>
-                    <div class="dice-grid-label">{{ die.color }} ({{ die.value }})</div>
+                    <div class="dice-grid-label">{{ die.color }}</div>
                   </div>
                   <button
                     class="btn-delete-grid"
@@ -127,10 +126,6 @@
                   </button>
                 </div>
               </div>
-            </div>
-
-            <div class="dice-count">
-              Total Dice: <strong>{{ dice.length }}</strong>
             </div>
 
             <div class="action-section danger-section">
@@ -213,10 +208,6 @@
                   placeholder="e.g., For tournament on Friday"
                   rows="3"
                 ></textarea>
-              </div>
-
-              <div class="info-box">
-                <p class="info-text">💾 Saves your dice, parking areas, and all settings.</p>
               </div>
 
               <div v-if="configManagerStore.error" class="error-message">
@@ -339,15 +330,7 @@ const saveDescription = ref<string>('');
 const newAreaName = ref<string>('');
 const newAreaInput = ref<HTMLInputElement | null>(null);
 
-const presetColors: PresetDiceColor[] = [
-  'red',
-  'blue',
-  'green',
-  'yellow',
-  'orange',
-  'white',
-  'black',
-];
+const presetColors: PresetDiceColor[] = ['white', 'red', 'blue', 'green', 'yellow', 'orange'];
 
 const selectedColor = computed<DiceColor>(() => {
   return useCustomColor.value ? customColor.value : selectedPresetColor.value || 'red';
@@ -739,24 +722,12 @@ const handleOverlayClick = () => {
   transform: scale(0.98);
 }
 
-.btn-add {
-  padding: 10px;
-  background: #10b981;
-  color: white;
-}
-
-.btn-add:not(:disabled):hover {
-  background: #059669;
-}
-
 .btn-add-compact {
   align-self: flex-start;
-  padding: 0.5rem;
   background: #10b981;
   color: white;
+  padding: 8px;
   min-width: auto;
-  width: 2.5rem;
-  height: 2.5rem;
 }
 
 .btn-add-compact:not(:disabled):hover {
@@ -893,21 +864,6 @@ const handleOverlayClick = () => {
   transform: scale(0.9);
 }
 
-.dice-count {
-  text-align: center;
-  padding: 0.75rem;
-  background: #111827;
-  border-radius: 0.5rem;
-  color: #9ca3af;
-  font-size: 0.875rem;
-  margin-top: 1rem;
-}
-
-.dice-count strong {
-  color: #f3f4f6;
-  font-size: 1rem;
-}
-
 /* Areas Tab */
 .empty-state {
   display: flex;
@@ -1007,26 +963,6 @@ const handleOverlayClick = () => {
 .form-actions {
   display: flex;
   gap: 0.75rem;
-}
-
-.info-box {
-  padding: 0.875rem;
-  background: #111827;
-  border: 1px solid #374151;
-  border-radius: 0.5rem;
-  margin: 1rem 0;
-}
-
-.info-box .info-text {
-  margin: 0;
-  color: #d1d5db;
-  font-size: 0.875rem;
-}
-
-.info-text {
-  color: #9ca3af;
-  font-size: 0.875rem;
-  margin: 0;
 }
 
 /* Load Tab */
