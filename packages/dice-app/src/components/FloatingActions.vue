@@ -2,9 +2,9 @@
   <div class="floating-actions">
     <button
       class="btn btn-roll"
-      @click="handleRoll"
       :disabled="dice.length === 0 || diceStore.isRolling"
       aria-label="Roll unparked dice"
+      @click="handleRoll"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -19,9 +19,9 @@
     </button>
     <button
       class="btn btn-roll-all"
-      @click="handleRollAll"
       :disabled="dice.length === 0 || diceStore.isRolling"
       aria-label="Roll all dice including parked"
+      @click="handleRollAll"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -39,11 +39,9 @@
 
 <script setup lang="ts">
 import { useDiceStore } from '@/stores/dice';
-import { useUIStore } from '@/stores/ui';
 import { storeToRefs } from 'pinia';
 
 const diceStore = useDiceStore();
-const uiStore = useUIStore();
 
 const { dice } = storeToRefs(diceStore);
 

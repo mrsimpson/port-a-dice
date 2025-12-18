@@ -23,7 +23,11 @@ export function sortAreasByOrder(areas: ParkingArea[]): ParkingArea[] {
   return [...areas].sort((a, b) => a.order - b.order);
 }
 
-export function reorderAreas(areas: ParkingArea[], fromIndex: number, toIndex: number): ParkingArea[] {
+export function reorderAreas(
+  areas: ParkingArea[],
+  fromIndex: number,
+  toIndex: number
+): ParkingArea[] {
   const result = [...areas];
   const [removed] = result.splice(fromIndex, 1);
   result.splice(toIndex, 0, removed);
@@ -34,7 +38,10 @@ export function reorderAreas(areas: ParkingArea[], fromIndex: number, toIndex: n
   }));
 }
 
-export function getNextAreaInCycle(currentAreaId: string | null, areas: ParkingArea[]): string | null {
+export function getNextAreaInCycle(
+  currentAreaId: string | null,
+  areas: ParkingArea[]
+): string | null {
   if (areas.length === 0) {
     return null;
   }

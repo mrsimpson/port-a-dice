@@ -7,16 +7,14 @@
         </div>
 
         <div class="modal-content">
-          <p class="message">Are you sure you want to reset all dice? This action cannot be undone.</p>
+          <p class="message">
+            Are you sure you want to reset all dice? This action cannot be undone.
+          </p>
         </div>
 
         <div class="modal-footer">
-          <button @click="handleCancel" class="btn btn-cancel">
-            Cancel
-          </button>
-          <button @click="handleConfirm" class="btn btn-confirm">
-            Reset
-          </button>
+          <button class="btn btn-cancel" @click="handleCancel">Cancel</button>
+          <button class="btn btn-confirm" @click="handleConfirm">Reset</button>
         </div>
       </div>
     </div>

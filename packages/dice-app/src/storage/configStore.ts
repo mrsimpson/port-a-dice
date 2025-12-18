@@ -35,7 +35,7 @@ export class LocalStorageConfigStore implements IConfigStore {
       try {
         const config = await this.load(id);
         configs.push(config);
-      } catch (error) {
+      } catch {
         // Skip invalid configs
       }
     }

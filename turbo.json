@@ -1,0 +1,44 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "tsconfig.tsbuildinfo"],
+      "cache": true
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "outputs": []
+    },
+    "lint:fix": {
+      "outputs": [],
+      "cache": false
+    },
+    "typecheck": {
+      "outputs": ["tsconfig.tsbuildinfo"],
+      "cache": true
+    },
+    "test": {
+      "outputs": ["coverage/**"],
+      "cache": true,
+      "dependsOn": ["^build"]
+    },
+    "test:coverage": {
+      "outputs": ["coverage/**"],
+      "cache": false,
+      "dependsOn": ["^build"]
+    }
+  },
+  "globalDependencies": [
+    ".eslintrc*",
+    ".lintstagedrc.js",
+    ".prettierrc*",
+    "eslint.config.mjs",
+    "oxlint.json",
+    "tsconfig*.json",
+    "vitest.config.ts"
+  ]
+}

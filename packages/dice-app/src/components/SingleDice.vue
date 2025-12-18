@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, nextTick } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import type { Dice } from '@/types';
 import { useDiceStore } from '@/stores/dice';
 import { useAreasStore } from '@/stores/areas';

@@ -4,7 +4,7 @@
       <div class="drawer" @click.stop>
         <div class="drawer-header">
           <h2 class="drawer-title">Game Configuration</h2>
-          <button @click="uiStore.closeConfig" class="btn-close" aria-label="Close">
+          <button class="btn-close" aria-label="Close" @click="uiStore.closeConfig">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -61,8 +61,8 @@
                     'color-btn',
                     { active: !useCustomColor && selectedPresetColor === color },
                   ]"
-                  @click="handlePresetColorClick(color)"
                   :aria-label="`Select ${color} dice`"
+                  @click="handlePresetColorClick(color)"
                 />
               </div>
 
@@ -70,12 +70,12 @@
                 <label class="custom-color-label">Or pick a custom color:</label>
                 <div class="custom-color-input-wrapper">
                   <input
-                    type="color"
                     v-model="customColor"
-                    @focus="handleCustomColorFocus"
-                    @input="handleCustomColorFocus"
+                    type="color"
                     class="custom-color-input"
                     :class="{ active: useCustomColor }"
+                    @focus="handleCustomColorFocus"
+                    @input="handleCustomColorFocus"
                   />
                   <span class="custom-color-value">{{ customColor }}</span>
                 </div>
@@ -83,7 +83,7 @@
             </div>
 
             <div class="action-section">
-              <button class="btn btn-add" @click="handleAddDice" :disabled="uiStore.isRolling">
+              <button class="btn btn-add" :disabled="uiStore.isRolling" @click="handleAddDice">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
@@ -114,9 +114,9 @@
                     </div>
                   </div>
                   <button
-                    @click="handleRemoveDice(die.id)"
                     class="btn-delete"
                     title="Delete this die"
+                    @click="handleRemoveDice(die.id)"
                   >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -138,8 +138,8 @@
             <div class="action-section danger-section">
               <button
                 class="btn btn-reset-game"
-                @click="handleDeleteCurrentConfiguration"
                 :disabled="dice.length === 0"
+                @click="handleDeleteCurrentConfiguration"
               >
                 Reset Game
               </button>
@@ -179,7 +179,7 @@
                 class="area-name-input"
                 @keyup.enter="handleAddArea"
               />
-              <button @click="handleAddArea" class="btn-add" :disabled="!newAreaName.trim()">
+              <button class="btn-add" :disabled="!newAreaName.trim()" @click="handleAddArea">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
@@ -229,8 +229,8 @@
               <div class="form-actions">
                 <button
                   class="btn btn-save"
-                  @click="handleSaveConfiguration"
                   :disabled="!saveName.trim() || dice.length === 0"
+                  @click="handleSaveConfiguration"
                 >
                   Save Game
                 </button>
@@ -280,8 +280,8 @@
                   </button>
                   <button
                     class="btn btn-delete-config"
-                    @click="handleDeleteConfiguration(config.id)"
                     title="Delete configuration"
+                    @click="handleDeleteConfiguration(config.id)"
                   >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -415,16 +415,11 @@ const handleAddArea = () => {
   newAreaInput.value?.focus();
 };
 
-const handleAssignArea = (areaId: string) => {
-  // Individual dice parking is handled by clicking on dice directly
-};
-
 const handleDeleteArea = (areaId: string) => {
-  const diceInArea = diceStore.diceInArea(areaId);
-  diceInArea.forEach((dice) => {
-    diceStore.assignDiceToAreaById(dice.id, null);
+  diceStore.dice.forEach((dice) => {
+    if (dice.areaId === areaId) dice.areaId = null;
   });
-  areasStore.removeArea(areaId);
+  areas;
   toastStore.show('Area deleted');
 };
 
@@ -446,7 +441,7 @@ const handleSaveConfiguration = async () => {
     saveName.value = '';
     saveDescription.value = '';
     activeTab.value = 'dice';
-  } catch (error) {
+  } catch {
     toastStore.show('Failed to save game');
   }
 };
@@ -456,7 +451,7 @@ const handleLoadConfiguration = async (configId: string) => {
     await configManagerStore.loadConfiguration(configId);
     toastStore.show('Game loaded');
     activeTab.value = 'dice';
-  } catch (error) {
+  } catch {
     toastStore.show('Failed to load game');
   }
 };
@@ -466,7 +461,7 @@ const handleDeleteConfiguration = async (configId: string) => {
     try {
       await configManagerStore.deleteConfiguration(configId);
       toastStore.show('Game deleted');
-    } catch (error) {
+    } catch {
       toastStore.show('Failed to delete game');
     }
   }
@@ -482,7 +477,7 @@ const handleDeleteCurrentConfiguration = () => {
 const loadConfigurations = async () => {
   try {
     await configManagerStore.loadConfigurations();
-  } catch (error) {
+  } catch {
     toastStore.show('Failed to load saved games');
   }
 };

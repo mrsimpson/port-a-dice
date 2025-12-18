@@ -4,9 +4,14 @@
       <div class="drawer" @click.stop>
         <div class="drawer-header">
           <h2 class="drawer-title">Roll History</h2>
-          <button @click="uiStore.closeHistory" class="btn-close">
+          <button class="btn-close" @click="uiStore.closeHistory">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -17,11 +22,7 @@
           </div>
 
           <div v-else class="history-list">
-            <div
-              v-for="entry in historyStore.sortedEntries"
-              :key="entry.id"
-              class="history-item"
-            >
+            <div v-for="entry in historyStore.sortedEntries" :key="entry.id" class="history-item">
               <div class="history-time">
                 {{ formatTime(entry.timestamp) }}
               </div>
@@ -40,9 +41,7 @@
         </div>
 
         <div v-if="historyStore.entryCount > 0" class="drawer-footer">
-          <button @click="handleClearHistory" class="btn btn-clear">
-            Clear History
-          </button>
+          <button class="btn btn-clear" @click="handleClearHistory">Clear History</button>
         </div>
       </div>
     </div>

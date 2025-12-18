@@ -31,7 +31,9 @@ const toastStore = useToastStore();
   color: #f3f4f6;
   padding: 0.875rem 1.5rem;
   border-radius: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.5),
+    0 4px 6px -2px rgba(0, 0, 0, 0.3);
   font-size: 0.875rem;
   font-weight: 500;
   max-width: 90vw;

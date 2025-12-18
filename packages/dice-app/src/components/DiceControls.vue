@@ -6,26 +6,26 @@
         :key="color"
         :style="{ backgroundColor: DICE_COLORS[color] }"
         :class="['color-btn', { active: selectedColor === color }]"
-        @click="selectedColor = color"
         :aria-label="`Select ${color} dice`"
+        @click="selectedColor = color"
       />
     </div>
 
     <div class="action-buttons">
-      <button class="btn btn-add" @click="handleAddDice" :disabled="diceStore.isRolling">
+      <button class="btn btn-add" :disabled="diceStore.isRolling" @click="handleAddDice">
         Add Dice
       </button>
       <button
         class="btn btn-roll"
-        @click="handleRoll"
         :disabled="dice.length === 0 || unparkedCount === 0 || diceStore.isRolling"
+        @click="handleRoll"
       >
         {{ rollButtonText }}
       </button>
       <button
         class="btn btn-roll-all"
-        @click="handleRollAll"
         :disabled="dice.length === 0 || diceStore.isRolling"
+        @click="handleRollAll"
       >
         {{ rollAllButtonText }}
       </button>
@@ -41,7 +41,7 @@ import { DICE_COLORS, type DiceColor, type PresetDiceColor } from '@/types';
 
 const diceStore = useDiceStore();
 
-const { dice, isRolling } = storeToRefs(diceStore);
+const { dice } = storeToRefs(diceStore);
 const selectedColor = ref<DiceColor>('red');
 
 const colors: PresetDiceColor[] = ['red', 'blue', 'green', 'yellow', 'orange', 'white', 'black'];

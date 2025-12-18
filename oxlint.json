@@ -1,0 +1,12 @@
+{
+  "env": {
+    "node": true,
+    "browser": true,
+    "es2021": true
+  },
+  "settings": {
+    "next": {
+      "rootDir": ["packages/*/"]
+    }
+  }
+}

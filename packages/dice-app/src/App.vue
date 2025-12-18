@@ -3,7 +3,7 @@
     <header class="header">
       <h1 class="title">Port-A-Dice</h1>
       <div class="header-actions">
-        <button @click="uiStore.toggleConfig" class="btn-icon" aria-label="Dice Configuration">
+        <button class="btn-icon" aria-label="Dice Configuration" @click="uiStore.toggleConfig">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
@@ -13,7 +13,7 @@
             />
           </svg>
         </button>
-        <button @click="uiStore.toggleHistory" class="btn-icon" aria-label="History">
+        <button class="btn-icon" aria-label="History" @click="uiStore.toggleHistory">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
