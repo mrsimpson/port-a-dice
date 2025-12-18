@@ -52,49 +52,52 @@
           <div v-if="activeTab === 'dice'" class="tab-content">
             <div class="color-picker">
               <label class="section-label">Add a new die</label>
-              <div class="color-grid-compact">
-                <button
-                  v-for="color in presetColors"
-                  :key="color"
-                  :style="{ backgroundColor: DICE_COLORS[color] }"
-                  :class="[
-                    'color-btn-compact',
-                    { active: !useCustomColor && selectedPresetColor === color },
-                  ]"
-                  :aria-label="`Select ${color} dice`"
-                  @click="handlePresetColorClick(color)"
-                  :title="color"
-                />
-                <div class="custom-color-btn-wrapper">
-                  <label class="custom-color-label-compact">Custom</label>
-                  <input
-                    v-model="customColor"
-                    type="color"
-                    class="custom-color-btn-compact"
-                    :class="{ active: useCustomColor }"
-                    :aria-label="`Custom color: ${customColor}`"
-                    @focus="handleCustomColorFocus"
-                    @input="handleCustomColorFocus"
-                    :title="`Custom color: ${customColor}`"
+              <div style="display: flex; justify-content: space-between">
+                <div class="color-grid-compact">
+                  <button
+                    v-for="color in presetColors"
+                    :key="color"
+                    :style="{ backgroundColor: DICE_COLORS[color] }"
+                    :class="[
+                      'color-btn-compact',
+                      { active: !useCustomColor && selectedPresetColor === color },
+                    ]"
+                    :aria-label="`Select ${color} dice`"
+                    @click="handlePresetColorClick(color)"
+                    :title="color"
                   />
+                  <div class="custom-color-btn-wrapper">
+                    <label class="custom-color-label-compact">Custom</label>
+                    <input
+                      v-model="customColor"
+                      type="color"
+                      class="custom-color-btn-compact"
+                      :class="{ active: useCustomColor }"
+                      :aria-label="`Custom color: ${customColor}`"
+                      @focus="handleCustomColorFocus"
+                      @input="handleCustomColorFocus"
+                      :title="`Custom color: ${customColor}`"
+                    />
+                  </div>
                 </div>
 
-                <button
-                  class="btn btn-add-compact"
-                  :disabled="uiStore.isRolling"
-                  @click="handleAddDice"
-                  title="Add a die with selected color"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                  Add
-                </button>
+                <div class="add-die-btn-wrapper">
+                  <button
+                    class="btn btn-add-compact"
+                    :disabled="uiStore.isRolling"
+                    @click="handleAddDice"
+                    title="Add a die with selected color"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -728,7 +731,8 @@ const handleOverlayClick = () => {
   background: #10b981;
   color: white;
   padding: 8px;
-  min-width: auto;
+  min-width: 48px;
+  height: 100%;
 }
 
 .btn-add-compact:not(:disabled):hover {
