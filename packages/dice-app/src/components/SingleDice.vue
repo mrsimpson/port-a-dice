@@ -181,12 +181,13 @@ onMounted(() => {
   width: 120px;
   height: 120px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: none;
   border: 3px solid transparent;
   border-radius: 0.75rem;
   background: rgba(31, 41, 55, 0.5);
   position: relative;
   padding: 10px;
+  will-change: transform;
 }
 
 .parking-panel {
