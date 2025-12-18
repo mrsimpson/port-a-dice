@@ -41,6 +41,8 @@ const handleDiceClick = (diceId: string) => {
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  /* Reserve space for floating buttons on mobile */
+  padding-bottom: 7rem;
 }
 
 .empty-state {
@@ -85,6 +87,11 @@ const handleDiceClick = (diceId: string) => {
 }
 
 @media (min-width: 768px) {
+  /* On desktop, floating buttons are centered, so no extra bottom padding needed */
+  .dice-scene {
+    padding-bottom: 1rem;
+  }
+
   .dice-grid {
     gap: 2rem;
   }
