@@ -21,7 +21,7 @@
       "outputs": ["tsconfig.tsbuildinfo"],
       "cache": true
     },
-    "test": {
+    "test:run": {
       "outputs": ["coverage/**"],
       "cache": true,
       "dependsOn": ["^build"]

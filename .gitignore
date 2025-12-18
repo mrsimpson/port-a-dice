@@ -55,3 +55,4 @@ temp/
 *.tmp
 .crowd
 .turbo/cache
+.turbo/cookies
