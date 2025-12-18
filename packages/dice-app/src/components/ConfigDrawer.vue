@@ -419,7 +419,7 @@ const handleDeleteArea = (areaId: string) => {
   diceStore.dice.forEach((dice) => {
     if (dice.areaId === areaId) dice.areaId = null;
   });
-  areas;
+  areasStore.removeArea(areaId);
   toastStore.show('Area deleted');
 };
 
