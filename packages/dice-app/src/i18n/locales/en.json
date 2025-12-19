@@ -4,6 +4,10 @@
     "dice-config": "Dice Configuration",
     "history": "History"
   },
+  "languages": {
+    "english": "English",
+    "german": "Deutsch"
+  },
   "buttons": {
     "roll": "Roll",
     "roll-all": "Roll All",
@@ -58,6 +62,8 @@
     "no-history": "No roll history yet",
     "no-saved-games": "No saved games yet. Create one in the Save tab!",
     "loading": "Loading saved games...",
+    "no-dice-yet": "No dice yet",
+    "open-dice-config": "Open Dice Configuration to add dice",
     "area-added": "Area added",
     "area-deleted": "Area deleted",
     "area-renamed": "Area renamed",
