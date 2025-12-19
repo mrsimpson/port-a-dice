@@ -22,6 +22,7 @@ export interface ParkingArea {
   id: string;
   label: string;
   order: number;
+  color?: string;
 }
 
 export interface RollHistoryEntry {
@@ -63,7 +64,9 @@ export const DICE_COLORS: Record<PresetDiceColor, string> = {
   black: '#1f2937',
 };
 
-export const DEFAULT_AREAS: Omit<ParkingArea, 'id'>[] = [{ label: 'picked', order: 0 }];
+export const DEFAULT_AREAS: Omit<ParkingArea, 'id'>[] = [
+  { label: 'picked', order: 0, color: '#3b82f6' },
+];
 
 export interface GameConfiguration {
   id: string;

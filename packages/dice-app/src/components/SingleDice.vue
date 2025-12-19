@@ -2,6 +2,7 @@
   <div class="dice-container">
     <div
       :class="['dice-wrapper', { rolling: isRolling, parked: !!parkingAreaLabel }]"
+      :style="{ '--parking-color': parkingAreaColor } as any"
       @click="handleClick"
     >
       <div class="dice-scene">
@@ -45,7 +46,11 @@
           </div>
         </div>
       </div>
-      <div v-if="parkingAreaLabel" class="parking-panel">
+      <div
+        v-if="parkingAreaLabel"
+        class="parking-panel"
+        :style="{ backgroundColor: parkingAreaColor }"
+      >
         {{ parkingAreaLabel }}
       </div>
     </div>
@@ -82,6 +87,12 @@ const parkingAreaLabel = computed(() => {
   if (!props.dice.areaId) return null;
   const area = areasStore.getAreaById(props.dice.areaId);
   return area?.label || null;
+});
+
+const parkingAreaColor = computed(() => {
+  if (!props.dice.areaId) return '#3b82f6';
+  const area = areasStore.getAreaById(props.dice.areaId);
+  return area?.color || '#3b82f6';
 });
 
 const rollTransform = computed(() => {
@@ -173,7 +184,7 @@ onMounted(() => {
 }
 
 .dice-wrapper.parked {
-  background: #3b82f6;
+  background: var(--parking-color, #3b82f6);
   border-radius: 0.375rem;
 }
 
