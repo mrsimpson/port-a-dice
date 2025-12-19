@@ -490,8 +490,8 @@ const handleOverlayClick = () => {
 
 .drawer {
   width: 100%;
-  height: 95dvh;
-  height: 95vh;
+  max-height: 95dvh;
+  max-height: 95vh;
   background: #1f2937;
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
