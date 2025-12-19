@@ -31,6 +31,22 @@ const getBrowserLanguage = (): SupportedLanguage | null => {
 };
 
 /**
+ * Check if browser language was auto-detected (not using saved preference)
+ */
+export const isBrowserLanguageDetected = (): boolean => {
+  if (typeof window === 'undefined') return false;
+
+  // If there's a saved preference, it wasn't auto-detected
+  const storedLocale = window.localStorage.getItem('locale');
+  if (storedLocale && SUPPORTED_LANGUAGES.includes(storedLocale as SupportedLanguage)) {
+    return false;
+  }
+
+  // Browser language was detected if available
+  return getBrowserLanguage() !== null;
+};
+
+/**
  * Determine the locale to use:
  * 1. Check localStorage for saved preference
  * 2. Check browser language preference
