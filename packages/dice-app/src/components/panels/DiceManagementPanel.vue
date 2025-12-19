@@ -28,7 +28,8 @@
               class="dice-color-indicator-grid"
               :style="{ backgroundColor: getColorDisplay(die.color) }"
             ></div>
-            <div class="dice-grid-label">{{ die.color }}</div>
+            <div class="dice-grid-label">{{ die.type.toUpperCase() }}</div>
+            <div class="dice-grid-color">{{ die.color }}</div>
           </div>
           <button
             class="btn-delete-grid"
@@ -59,7 +60,13 @@ import { useI18n } from 'vue-i18n';
 import { useDiceStore } from '@/stores/dice';
 import { useToastStore } from '@/stores/toast';
 import { storeToRefs } from 'pinia';
-import { DICE_COLORS, type DiceColor, type PresetDiceColor } from '@/types';
+import {
+  DICE_COLORS,
+  DICE_TYPE_INFO,
+  type DiceColor,
+  type PresetDiceColor,
+  type DiceType,
+} from '@/types';
 import BaseColorPicker from '@/components/base/BaseColorPicker.vue';
 import BaseButton from '@/components/base/BaseButton.vue';
 import BaseEmptyState from '@/components/base/BaseEmptyState.vue';
@@ -71,6 +78,12 @@ const toastStore = useToastStore();
 
 const { dice } = storeToRefs(diceStore);
 const selectedColor = ref<DiceColor>('white');
+const selectedType = ref<DiceType>('d6');
+
+const diceTypeOptions = Object.keys(DICE_TYPE_INFO).map((type) => ({
+  value: type,
+  label: DICE_TYPE_INFO[type as DiceType].label,
+}));
 
 const getColorDisplay = (color: DiceColor): string => {
   return DICE_COLORS[color as PresetDiceColor] || color;
@@ -88,21 +101,73 @@ const handleRemoveDice = (id: string) => {
 </script>
 
 <style scoped>
-.color-picker-section {
+.dice-config-section {
   display: flex;
-  gap: 0.75rem;
-  align-items: flex-end;
+  flex-direction: column;
 }
 
-.color-picker-section :deep(.base-color-picker) {
-  flex: 1;
+.add-dice-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
 
-.add-button {
+.color-picker-compact :deep(.base-color-picker) {
+  margin-bottom: 0;
+}
+
+.color-picker-compact :deep(.color-picker-label) {
+  display: none;
+}
+
+.color-picker-compact :deep(.color-options) {
+  margin: 0;
+}
+
+.dice-type-select {
+  width: 4rem;
   height: 2.5rem;
-  padding: 0;
-  width: 2.5rem;
-  flex-shrink: 0;
+  background: #374151;
+  border: 1px solid #4b5563;
+  color: #d1d5db;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.25rem center;
+  background-size: 1rem;
+  padding-right: 1.5rem;
+}
+
+.dice-type-select:hover {
+  background: #4b5563;
+  border-color: #60a5fa;
+}
+
+.dice-type-select:focus {
+  outline: none;
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+}
+
+.add-button-compact {
+  height: 2.5rem;
+  padding: 0 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  white-space: nowrap;
+}
+
+.add-button-compact span {
+  font-weight: 600;
+  font-size: 0.875rem;
 }
 
 .section-label {
@@ -169,6 +234,13 @@ const handleRemoveDice = (id: string) => {
 
 .dice-grid-label {
   font-size: 0.75rem;
+  color: #d1d5db;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.dice-grid-color {
+  font-size: 0.625rem;
   color: #9ca3af;
   text-transform: capitalize;
 }

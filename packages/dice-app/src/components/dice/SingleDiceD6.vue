@@ -12,37 +12,37 @@
           :style="rollTransform"
         >
           <div class="dice-face face-1" :style="{ backgroundColor: diceColor }">
-            <span class="dot"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
           </div>
           <div class="dice-face face-2" :style="{ backgroundColor: diceColor }">
-            <span class="dot"></span>
-            <span class="dot"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
           </div>
           <div class="dice-face face-3" :style="{ backgroundColor: diceColor }">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
           </div>
           <div class="dice-face face-4" :style="{ backgroundColor: diceColor }">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
           </div>
           <div class="dice-face face-5" :style="{ backgroundColor: diceColor }">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
           </div>
           <div class="dice-face face-6" :style="{ backgroundColor: diceColor }">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
+            <span class="dot" :style="{ backgroundColor: dotColor }"></span>
           </div>
         </div>
       </div>
@@ -81,6 +81,16 @@ const rollRotation = ref({ x: 0, y: 0, z: 0 });
 
 const diceColor = computed(() => {
   return DICE_COLORS[props.dice.color as PresetDiceColor] || props.dice.color;
+});
+
+const dotColor = computed(() => {
+  const color = diceColor.value;
+  const hex = color.replace('#', '');
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness > 128 ? '#1f2937' : '#ffffff';
 });
 
 const parkingAreaLabel = computed(() => {
@@ -328,7 +338,6 @@ onMounted(() => {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #1f2937;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 

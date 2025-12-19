@@ -1,25 +1,56 @@
-import type { Dice, DiceColor } from '@/types';
+import type { Dice, DiceColor, DiceType } from '@/types';
+import { DICE_TYPE_INFO } from '@/types';
 
-export function rollD6(): number {
+export function rollDice(sides: number): number {
   const array = new Uint32Array(1);
   crypto.getRandomValues(array);
-  return (array[0] % 6) + 1;
+  return (array[0] % sides) + 1;
 }
 
-export function createDice(color: DiceColor, areaId: string | null = null): Dice {
+export function rollD4(): number {
+  return rollDice(4);
+}
+
+export function rollD6(): number {
+  return rollDice(6);
+}
+
+export function rollD8(): number {
+  return rollDice(8);
+}
+
+export function rollD10(): number {
+  return rollDice(10);
+}
+
+export function rollD12(): number {
+  return rollDice(12);
+}
+
+export function rollD20(): number {
+  return rollDice(20);
+}
+
+export function createDice(
+  color: DiceColor,
+  areaId: string | null = null,
+  type: DiceType = 'd6'
+): Dice {
+  const sides = DICE_TYPE_INFO[type].sides;
   return {
     id: crypto.randomUUID(),
-    type: 'd6',
+    type,
     color,
-    value: rollD6(),
+    value: rollDice(sides),
     areaId,
   };
 }
 
-export function rollDice(dice: Dice): Dice {
+export function rollDiceByType(dice: Dice): Dice {
+  const sides = DICE_TYPE_INFO[dice.type].sides;
   return {
     ...dice,
-    value: rollD6(),
+    value: rollDice(sides),
   };
 }
 

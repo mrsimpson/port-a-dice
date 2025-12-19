@@ -1,8 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import {
-  rollD6,
-  createDice,
   rollDice,
+  rollD4,
+  rollD6,
+  rollD8,
+  rollD10,
+  rollD12,
+  rollD20,
+  createDice,
+  rollDiceByType,
   assignDiceToArea,
   isDiceInArea,
   getDiceByArea,
@@ -10,6 +16,41 @@ import {
 } from './dice';
 
 describe('dice utils', () => {
+  describe('rollDice', () => {
+    it('should return a number within the specified range', () => {
+      for (let sides = 4; sides <= 20; sides += 2) {
+        for (let i = 0; i < 50; i++) {
+          const result = rollDice(sides);
+          expect(result).toBeGreaterThanOrEqual(1);
+          expect(result).toBeLessThanOrEqual(sides);
+          expect(Number.isInteger(result)).toBe(true);
+        }
+      }
+    });
+  });
+
+  describe('rollD4', () => {
+    it('should return a number between 1 and 4', () => {
+      for (let i = 0; i < 100; i++) {
+        const result = rollD4();
+        expect(result).toBeGreaterThanOrEqual(1);
+        expect(result).toBeLessThanOrEqual(4);
+        expect(Number.isInteger(result)).toBe(true);
+      }
+    });
+
+    it('should produce all values 1-4 over many rolls', () => {
+      const results = new Set<number>();
+      for (let i = 0; i < 1000; i++) {
+        results.add(rollD4());
+      }
+      expect(results.size).toBe(4);
+      for (let i = 1; i <= 4; i++) {
+        expect(results.has(i)).toBe(true);
+      }
+    });
+  });
+
   describe('rollD6', () => {
     it('should return a number between 1 and 6', () => {
       for (let i = 0; i < 100; i++) {
@@ -35,6 +76,50 @@ describe('dice utils', () => {
     });
   });
 
+  describe('rollD8', () => {
+    it('should return a number between 1 and 8', () => {
+      for (let i = 0; i < 100; i++) {
+        const result = rollD8();
+        expect(result).toBeGreaterThanOrEqual(1);
+        expect(result).toBeLessThanOrEqual(8);
+        expect(Number.isInteger(result)).toBe(true);
+      }
+    });
+  });
+
+  describe('rollD10', () => {
+    it('should return a number between 1 and 10', () => {
+      for (let i = 0; i < 100; i++) {
+        const result = rollD10();
+        expect(result).toBeGreaterThanOrEqual(1);
+        expect(result).toBeLessThanOrEqual(10);
+        expect(Number.isInteger(result)).toBe(true);
+      }
+    });
+  });
+
+  describe('rollD12', () => {
+    it('should return a number between 1 and 12', () => {
+      for (let i = 0; i < 100; i++) {
+        const result = rollD12();
+        expect(result).toBeGreaterThanOrEqual(1);
+        expect(result).toBeLessThanOrEqual(12);
+        expect(Number.isInteger(result)).toBe(true);
+      }
+    });
+  });
+
+  describe('rollD20', () => {
+    it('should return a number between 1 and 20', () => {
+      for (let i = 0; i < 100; i++) {
+        const result = rollD20();
+        expect(result).toBeGreaterThanOrEqual(1);
+        expect(result).toBeLessThanOrEqual(20);
+        expect(Number.isInteger(result)).toBe(true);
+      }
+    });
+  });
+
   describe('createDice', () => {
     it('should create a dice with correct properties', () => {
       const dice = createDice('red');
@@ -49,6 +134,13 @@ describe('dice utils', () => {
     it('should create dice with area assignment', () => {
       const dice = createDice('blue', 'area-1');
       expect(dice.areaId).toBe('area-1');
+    });
+
+    it('should create dice with specified type', () => {
+      const dice = createDice('red', null, 'd20');
+      expect(dice.type).toBe('d20');
+      expect(dice.value).toBeGreaterThanOrEqual(1);
+      expect(dice.value).toBeLessThanOrEqual(20);
     });
 
     it('should create unique IDs for each dice', () => {
@@ -74,10 +166,10 @@ describe('dice utils', () => {
     });
   });
 
-  describe('rollDice', () => {
+  describe('rollDiceByType', () => {
     it('should keep the same dice properties except value', () => {
-      const originalDice = createDice('green', 'area-1');
-      const rolledDice = rollDice(originalDice);
+      const originalDice = createDice('green', 'area-1', 'd8');
+      const rolledDice = rollDiceByType(originalDice);
 
       expect(rolledDice.id).toBe(originalDice.id);
       expect(rolledDice.type).toBe(originalDice.type);
@@ -90,7 +182,7 @@ describe('dice utils', () => {
       let valueChanged = false;
 
       for (let i = 0; i < 50; i++) {
-        const rolled = rollDice(dice);
+        const rolled = rollDiceByType(dice);
         if (rolled.value !== dice.value) {
           valueChanged = true;
           break;
@@ -98,6 +190,21 @@ describe('dice utils', () => {
       }
 
       expect(valueChanged).toBe(true);
+    });
+
+    it('should respect dice type when rolling', () => {
+      const d4 = createDice('red', null, 'd4');
+      const d20 = createDice('blue', null, 'd20');
+
+      for (let i = 0; i < 50; i++) {
+        const rolled4 = rollDiceByType(d4);
+        const rolled20 = rollDiceByType(d20);
+
+        expect(rolled4.value).toBeGreaterThanOrEqual(1);
+        expect(rolled4.value).toBeLessThanOrEqual(4);
+        expect(rolled20.value).toBeGreaterThanOrEqual(1);
+        expect(rolled20.value).toBeLessThanOrEqual(20);
+      }
     });
   });
 

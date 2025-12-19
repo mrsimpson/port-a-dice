@@ -14,13 +14,13 @@
     </div>
 
     <div v-else class="dice-grid">
-      <SingleDice v-for="die in dice" :key="die.id" :dice="die" @click="handleDiceClick" />
+      <DiceRenderer v-for="die in dice" :key="die.id" :dice="die" @click="handleDiceClick" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import SingleDice from './SingleDice.vue';
+import DiceRenderer from './dice/DiceRenderer.vue';
 import { useDiceStore } from '@/stores/dice';
 import { storeToRefs } from 'pinia';
 

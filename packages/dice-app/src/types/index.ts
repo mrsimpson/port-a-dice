@@ -10,9 +10,11 @@ export type PresetDiceColor =
   | 'white'
   | 'black';
 
+export type DiceType = 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20';
+
 export interface Dice {
   id: string;
-  type: 'd6';
+  type: DiceType;
   color: DiceColor;
   value: number;
   areaId: string | null;
@@ -62,6 +64,15 @@ export const DICE_COLORS: Record<PresetDiceColor, string> = {
   purple: '#a855f7',
   orange: '#f97316',
   black: '#1f2937',
+};
+
+export const DICE_TYPE_INFO: Record<DiceType, { sides: number; label: string }> = {
+  d4: { sides: 4, label: 'D4' },
+  d6: { sides: 6, label: 'D6' },
+  d8: { sides: 8, label: 'D8' },
+  d10: { sides: 10, label: 'D10' },
+  d12: { sides: 12, label: 'D12' },
+  d20: { sides: 20, label: 'D20' },
 };
 
 export const DEFAULT_AREAS: Omit<ParkingArea, 'id'>[] = [

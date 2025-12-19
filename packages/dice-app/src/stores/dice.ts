@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import type { Dice, DiceColor } from '@/types';
-import { createDice, rollDice, assignDiceToArea } from '@/utils/dice';
+import type { Dice, DiceColor, DiceType } from '@/types';
+import { createDice, rollDiceByType, assignDiceToArea } from '@/utils/dice';
 import { useHistoryStore } from './history';
 import { useAreasStore } from './areas';
 import { useToastStore } from './toast';
@@ -21,9 +21,9 @@ export const useDiceStore = defineStore('dice', {
   },
 
   actions: {
-    addDice(color: DiceColor, count: number = 1) {
+    addDice(color: DiceColor, count: number = 1, type: DiceType = 'd6') {
       for (let i = 0; i < count; i++) {
-        this.dice.push(createDice(color));
+        this.dice.push(createDice(color, null, type));
       }
     },
 
@@ -52,7 +52,7 @@ export const useDiceStore = defineStore('dice', {
       // Create new array with rolled dice
       const newDiceArray = this.dice.map((d) => {
         if (d.areaId === null) {
-          return rollDice(d);
+          return rollDiceByType(d);
         }
         return d;
       });
@@ -77,7 +77,7 @@ export const useDiceStore = defineStore('dice', {
 
       this.isRolling = true;
 
-      this.dice = this.dice.map((d) => rollDice(d));
+      this.dice = this.dice.map((d) => rollDiceByType(d));
 
       const historyStore = useHistoryStore();
       const areasStore = useAreasStore();
