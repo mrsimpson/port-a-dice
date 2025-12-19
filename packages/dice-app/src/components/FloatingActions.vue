@@ -61,11 +61,13 @@ const handleRollAll = () => {
 .floating-actions {
   position: fixed;
   bottom: 2rem;
-  right: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: row;
   gap: 1rem;
   z-index: 10;
+  padding: 0 1rem;
 }
 
 .btn {
