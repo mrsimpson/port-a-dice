@@ -506,6 +506,7 @@ const loadConfigurations = async () => {
   font-size: 0.875rem;
   font-weight: 600;
   color: #d1d5db;
+  margin-top: 1rem;
   margin-bottom: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
