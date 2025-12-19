@@ -85,9 +85,9 @@ const onOverlayClick = () => {
 
 .drawer {
   width: 100%;
-  /* Use dynamic viewport height which adjusts for browser UI and keyboard */
-  height: 100dvh;
-  height: 100vh; /* Fallback for older browsers */
+  /* Use max-height to allow drawer to shrink when browser UI reduces viewport */
+  max-height: 100dvh;
+  max-height: 100vh; /* Fallback for older browsers */
   background: #1f2937;
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
@@ -176,9 +176,7 @@ const onOverlayClick = () => {
 .drawer-content {
   flex: 1;
   overflow-y: auto;
-  padding: 1.5rem;
-  padding-right: calc(1.5rem + env(safe-area-inset-right, 0px));
-  padding-left: calc(1.5rem + env(safe-area-inset-left, 0px));
+  min-height: 0; /* Allow flex child to shrink below content size */
 }
 
 .drawer-footer {
