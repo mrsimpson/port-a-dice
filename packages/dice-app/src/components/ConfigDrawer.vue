@@ -50,88 +50,90 @@
         <div class="drawer-content">
           <!-- DICE TAB -->
           <div v-if="activeTab === 'dice'" class="tab-content">
-            <div class="color-picker">
-              <label class="section-label">Add a new die</label>
-              <div style="display: flex; justify-content: space-between">
-                <div class="color-grid-compact">
-                  <button
-                    v-for="color in presetColors"
-                    :key="color"
-                    :style="{ backgroundColor: DICE_COLORS[color] }"
-                    :class="[
-                      'color-btn-compact',
-                      { active: !useCustomColor && selectedPresetColor === color },
-                    ]"
-                    :aria-label="`Select ${color} dice`"
-                    @click="handlePresetColorClick(color)"
-                    :title="color"
-                  />
-                  <div class="custom-color-btn-wrapper">
-                    <label class="custom-color-label-compact">Custom</label>
-                    <input
-                      v-model="customColor"
-                      type="color"
-                      class="custom-color-btn-compact"
-                      :class="{ active: useCustomColor }"
-                      :aria-label="`Custom color: ${customColor}`"
-                      @focus="handleCustomColorFocus"
-                      @input="handleCustomColorFocus"
-                      :title="`Custom color: ${customColor}`"
+            <div class="tab-scroll-content">
+              <div class="color-picker">
+                <label class="section-label">Add a new die</label>
+                <div style="display: flex; justify-content: space-between">
+                  <div class="color-grid-compact">
+                    <button
+                      v-for="color in presetColors"
+                      :key="color"
+                      :style="{ backgroundColor: DICE_COLORS[color] }"
+                      :class="[
+                        'color-btn-compact',
+                        { active: !useCustomColor && selectedPresetColor === color },
+                      ]"
+                      :aria-label="`Select ${color} dice`"
+                      @click="handlePresetColorClick(color)"
+                      :title="color"
                     />
+                    <div class="custom-color-btn-wrapper">
+                      <label class="custom-color-label-compact">Custom</label>
+                      <input
+                        v-model="customColor"
+                        type="color"
+                        class="custom-color-btn-compact"
+                        :class="{ active: useCustomColor }"
+                        :aria-label="`Custom color: ${customColor}`"
+                        @focus="handleCustomColorFocus"
+                        @input="handleCustomColorFocus"
+                        :title="`Custom color: ${customColor}`"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="add-die-btn-wrapper">
+                    <button
+                      class="btn btn-add-compact"
+                      :disabled="uiStore.isRolling"
+                      @click="handleAddDice"
+                      title="Add a die with selected color"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 4v16m8-8H4"
+                        />
+                      </svg>
+                    </button>
                   </div>
                 </div>
+              </div>
 
-                <div class="add-die-btn-wrapper">
-                  <button
-                    class="btn btn-add-compact"
-                    :disabled="uiStore.isRolling"
-                    @click="handleAddDice"
-                    title="Add a die with selected color"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 4v16m8-8H4"
-                      />
-                    </svg>
-                  </button>
+              <div v-if="dice.length > 0" class="dice-list-section">
+                <label class="section-label">Current Dice ({{ dice.length }})</label>
+                <div class="dice-grid">
+                  <div v-for="die in dice" :key="die.id" class="dice-grid-item">
+                    <div class="dice-grid-display">
+                      <div
+                        class="dice-color-indicator-grid"
+                        :style="{ backgroundColor: getColorDisplay(die.color) }"
+                      ></div>
+                      <div class="dice-grid-label">{{ die.color }}</div>
+                    </div>
+                    <button
+                      class="btn-delete-grid"
+                      :title="`Delete ${die.color} die`"
+                      @click="handleRemoveDice(die.id)"
+                      aria-label="Delete die"
+                    >
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div v-if="dice.length > 0" class="dice-list-section">
-              <label class="section-label">Current Dice ({{ dice.length }})</label>
-              <div class="dice-grid">
-                <div v-for="die in dice" :key="die.id" class="dice-grid-item">
-                  <div class="dice-grid-display">
-                    <div
-                      class="dice-color-indicator-grid"
-                      :style="{ backgroundColor: getColorDisplay(die.color) }"
-                    ></div>
-                    <div class="dice-grid-label">{{ die.color }}</div>
-                  </div>
-                  <button
-                    class="btn-delete-grid"
-                    :title="`Delete ${die.color} die`"
-                    @click="handleRemoveDice(die.id)"
-                    aria-label="Delete die"
-                  >
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div class="action-section danger-section">
+            <div class="tab-footer">
               <button
                 class="btn btn-reset-game"
                 :disabled="dice.length === 0"
@@ -144,152 +146,162 @@
 
           <!-- AREAS TAB -->
           <div v-if="activeTab === 'areas'" class="tab-content">
-            <div v-if="areasStore.sortedAreas.length === 0" class="empty-state">
-              <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                />
-              </svg>
-              <p>No parking areas yet. Add one below.</p>
-            </div>
-
-            <div v-else class="areas-list">
-              <ParkingAreaItem
-                v-for="area in areasStore.sortedAreas"
-                :key="area.id"
-                :area="area"
-                @delete="handleDeleteArea"
-              />
-            </div>
-
-            <div class="add-area-form">
-              <input
-                ref="newAreaInput"
-                v-model="newAreaName"
-                type="text"
-                placeholder="New area name..."
-                class="area-name-input"
-                @keyup.enter="handleAddArea"
-              />
-              <button class="btn-add" :disabled="!newAreaName.trim()" @click="handleAddArea">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="tab-scroll-content">
+              <div v-if="areasStore.sortedAreas.length === 0" class="empty-state">
+                <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M12 4v16m8-8H4"
+                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                   />
                 </svg>
-              </button>
+                <p>No parking areas yet. Add one below.</p>
+              </div>
+
+              <div v-else class="areas-list">
+                <ParkingAreaItem
+                  v-for="area in areasStore.sortedAreas"
+                  :key="area.id"
+                  :area="area"
+                  @delete="handleDeleteArea"
+                />
+              </div>
+            </div>
+
+            <div class="tab-footer">
+              <div class="add-area-form">
+                <input
+                  ref="newAreaInput"
+                  v-model="newAreaName"
+                  type="text"
+                  placeholder="New area name..."
+                  class="area-name-input"
+                  @keyup.enter="handleAddArea"
+                />
+                <button class="btn-add" :disabled="!newAreaName.trim()" @click="handleAddArea">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
 
           <!-- SAVE TAB -->
           <div v-if="activeTab === 'save'" class="tab-content">
-            <div class="save-form">
-              <div class="form-group">
-                <label for="config-name" class="form-label">Game Name *</label>
-                <input
-                  id="config-name"
-                  v-model="saveName"
-                  type="text"
-                  class="form-input"
-                  placeholder="Enter game configuration name"
-                  @keyup.enter="handleSaveConfiguration"
-                />
-              </div>
+            <div class="tab-scroll-content">
+              <div class="save-form">
+                <div class="form-group">
+                  <label for="config-name" class="form-label">Game Name *</label>
+                  <input
+                    id="config-name"
+                    v-model="saveName"
+                    type="text"
+                    class="form-input"
+                    placeholder="Enter game configuration name"
+                    @keyup.enter="handleSaveConfiguration"
+                  />
+                </div>
 
-              <div class="form-group">
-                <label for="config-description" class="form-label">Description (optional)</label>
-                <textarea
-                  id="config-description"
-                  v-model="saveDescription"
-                  class="form-textarea"
-                  placeholder="e.g., For tournament on Friday"
-                  rows="3"
-                ></textarea>
-              </div>
+                <div class="form-group">
+                  <label for="config-description" class="form-label">Description (optional)</label>
+                  <textarea
+                    id="config-description"
+                    v-model="saveDescription"
+                    class="form-textarea"
+                    placeholder="e.g., For tournament on Friday"
+                    rows="3"
+                  ></textarea>
+                </div>
 
-              <div v-if="configManagerStore.error" class="error-message">
-                {{ configManagerStore.error }}
-              </div>
+                <div v-if="configManagerStore.error" class="error-message">
+                  {{ configManagerStore.error }}
+                </div>
 
-              <div class="form-actions">
-                <button
-                  class="btn btn-save"
-                  :disabled="!saveName.trim() || dice.length === 0"
-                  @click="handleSaveConfiguration"
-                >
-                  Save Game
-                </button>
+                <p v-if="dice.length === 0" class="info-text">No dice to save. Add dice first.</p>
               </div>
+            </div>
 
-              <p v-if="dice.length === 0" class="info-text">No dice to save. Add dice first.</p>
+            <div class="tab-footer">
+              <button
+                class="btn btn-save"
+                :disabled="!saveName.trim() || dice.length === 0"
+                @click="handleSaveConfiguration"
+              >
+                Save Game
+              </button>
             </div>
           </div>
 
           <!-- LOAD TAB -->
           <div v-if="activeTab === 'load'" class="tab-content">
-            <div v-if="configManagerStore.loading" class="loading-state">
-              Loading saved games...
-            </div>
+            <div class="tab-scroll-content">
+              <div v-if="configManagerStore.loading" class="loading-state">
+                Loading saved games...
+              </div>
 
-            <div v-else-if="configManagerStore.configurations.length === 0" class="empty-state">
-              <p>No saved games yet. Create one in the Save tab!</p>
-            </div>
+              <div v-else-if="configManagerStore.configurations.length === 0" class="empty-state">
+                <p>No saved games yet. Create one in the Save tab!</p>
+              </div>
 
-            <div v-else class="configurations-list">
-              <div
-                v-for="config in configManagerStore.configurations"
-                :key="config.id"
-                class="config-item"
-              >
-                <div class="config-info">
-                  <h3 class="config-name">{{ config.name }}</h3>
-                  <p v-if="config.description" class="config-description">
-                    {{ config.description }}
-                  </p>
-                  <div class="config-meta">
-                    <span class="meta-item">
-                      <strong>{{ config.dice.length }}</strong> dice
-                    </span>
-                    <span class="meta-item">
-                      <strong>{{ config.areas.length }}</strong> areas
-                    </span>
-                    <span class="meta-item">
-                      {{ formatDate(config.updatedAt) }}
-                    </span>
+              <div v-else class="configurations-list">
+                <div
+                  v-for="config in configManagerStore.configurations"
+                  :key="config.id"
+                  class="config-item"
+                >
+                  <div class="config-info">
+                    <h3 class="config-name">{{ config.name }}</h3>
+                    <p v-if="config.description" class="config-description">
+                      {{ config.description }}
+                    </p>
+                    <div class="config-meta">
+                      <span class="meta-item">
+                        <strong>{{ config.dice.length }}</strong> dice
+                      </span>
+                      <span class="meta-item">
+                        <strong>{{ config.areas.length }}</strong> areas
+                      </span>
+                      <span class="meta-item">
+                        {{ formatDate(config.updatedAt) }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="config-actions">
+                    <button class="btn btn-load" @click="handleLoadConfiguration(config.id)">
+                      Load
+                    </button>
+                    <button
+                      class="btn btn-delete-config"
+                      title="Delete configuration"
+                      @click="handleDeleteConfiguration(config.id)"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </button>
                   </div>
                 </div>
+              </div>
 
-                <div class="config-actions">
-                  <button class="btn btn-load" @click="handleLoadConfiguration(config.id)">
-                    Load
-                  </button>
-                  <button
-                    class="btn btn-delete-config"
-                    title="Delete configuration"
-                    @click="handleDeleteConfiguration(config.id)"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                  </button>
-                </div>
+              <div v-if="configManagerStore.error" class="error-message">
+                {{ configManagerStore.error }}
               </div>
             </div>
 
-            <div v-if="configManagerStore.error" class="error-message">
-              {{ configManagerStore.error }}
-            </div>
+            <div class="tab-footer"></div>
           </div>
         </div>
       </div>
@@ -490,8 +502,8 @@ const handleOverlayClick = () => {
 
 .drawer {
   width: 100%;
-  max-height: 95dvh;
-  max-height: 95vh;
+  height: 95dvh;
+  height: 95vh;
   background: #1f2937;
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
@@ -584,14 +596,31 @@ const handleOverlayClick = () => {
 
 .drawer-content {
   flex: 1;
-  overflow-y: auto;
-  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .tab-content {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  height: 100%;
+  min-height: 0;
+}
+
+.tab-scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+.tab-footer {
+  padding: 1.5rem;
+  border-top: 1px solid #374151;
+  flex-shrink: 0;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
 }
 
 .section-label {
@@ -696,9 +725,7 @@ const handleOverlayClick = () => {
 }
 
 .danger-section {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #374151;
+  /* Removed: button is now in tab-footer */
 }
 
 .btn {
@@ -896,8 +923,6 @@ const handleOverlayClick = () => {
 .add-area-form {
   display: flex;
   gap: 0.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid #374151;
 }
 
 .area-name-input {
