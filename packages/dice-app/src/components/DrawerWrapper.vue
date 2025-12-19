@@ -70,6 +70,7 @@ const onOverlayClick = () => {
   z-index: 1000;
   display: flex;
   align-items: flex-end;
+  justify-content: center;
   animation: fadeIn 0.2s ease-out;
 }
 
@@ -96,6 +97,33 @@ const onOverlayClick = () => {
   /* Account for safe areas and keyboard insets */
   padding-bottom: max(0px, env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .drawer-overlay {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .drawer {
+    width: 90%;
+    max-width: 1024px;
+    height: 90vh;
+    border-radius: 1rem;
+    animation: zoomIn 0.3s ease-out;
+    padding-bottom: 0;
+  }
+
+  @keyframes zoomIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
 }
 
 @keyframes slideUp {
