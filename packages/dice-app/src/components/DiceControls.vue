@@ -12,29 +12,30 @@
     </div>
 
     <div class="action-buttons">
-      <button class="btn btn-add" :disabled="diceStore.isRolling" @click="handleAddDice">
+      <BaseButton variant="primary" :disabled="diceStore.isRolling" @click="handleAddDice">
         Add Dice
-      </button>
-      <button
-        class="btn btn-roll"
+      </BaseButton>
+      <BaseButton
+        variant="secondary"
         :disabled="dice.length === 0 || unparkedCount === 0 || diceStore.isRolling"
         @click="handleRoll"
       >
         {{ rollButtonText }}
-      </button>
-      <button
-        class="btn btn-roll-all"
+      </BaseButton>
+      <BaseButton
+        variant="success"
         :disabled="dice.length === 0 || diceStore.isRolling"
         @click="handleRollAll"
       >
         {{ rollAllButtonText }}
-      </button>
+      </BaseButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import BaseButton from './base/BaseButton.vue';
 import { useDiceStore } from '@/stores/dice';
 import { storeToRefs } from 'pinia';
 import { DICE_COLORS, type DiceColor, type PresetDiceColor } from '@/types';
@@ -121,55 +122,11 @@ const handleRollAll = () => {
 .action-buttons {
   display: flex;
   gap: 0.5rem;
-}
-
-.btn {
   flex: 1;
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn:not(:disabled):active {
-  transform: scale(0.95);
-}
-
-.btn-add {
-  background: #10b981;
-  color: white;
-}
-
-.btn-add:not(:disabled):hover {
-  background: #059669;
-}
-
-.btn-roll {
-  background: #3b82f6;
-  color: white;
-}
-
-.btn-roll:not(:disabled):hover {
-  background: #2563eb;
-}
-
-.btn-roll-all {
-  background: #8b5cf6;
-  color: white;
-}
-
-.btn-roll-all:not(:disabled):hover {
-  background: #7c3aed;
+.action-buttons :deep(.base-btn) {
+  flex: 1;
 }
 
 @media (min-width: 768px) {

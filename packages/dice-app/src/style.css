@@ -2,6 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Design Tokens - Color Palette */
+:root {
+  /* Primary Colors */
+  --color-primary-green: #10b981;
+  --color-primary-green-dark: #059669;
+  --color-primary-blue: #3b82f6;
+  --color-primary-blue-dark: #2563eb;
+  --color-primary-purple: #8b5cf6;
+  --color-primary-purple-dark: #7c3aed;
+  --color-primary-red: #ef4444;
+  --color-primary-red-dark: #dc2626;
+
+  /* Background Colors */
+  --color-bg-darkest: #111827;
+  --color-bg-dark: #1f2937;
+  --color-bg-darker: #374151;
+  --color-bg-hover: #4b5563;
+
+  /* Text Colors */
+  --color-text-light: #f3f4f6;
+  --color-text-muted: #d1d5db;
+  --color-text-gray: #9ca3af;
+
+  /* Border & Accent Colors */
+  --color-border: #4b5563;
+  --color-accent-blue: #60a5fa;
+  --color-error: #7f1d1d;
+  --color-error-light: #fca5a5;
+
+  /* Transitions */
+  --transition-default: all 0.2s;
+  --transition-transform: transform 0.2s;
+}
+
 *,
 *::before,
 *::after {

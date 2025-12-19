@@ -108,7 +108,7 @@ const onOverlayClick = () => {
   .drawer {
     width: 90%;
     max-width: 1024px;
-    height: 90vh;
+    height: 90svh;
     border-radius: 1rem;
     animation: zoomIn 0.3s ease-out;
     padding-bottom: 0;

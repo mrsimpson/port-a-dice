@@ -1,10 +1,11 @@
 <template>
   <div class="floating-actions">
-    <button
-      class="btn btn-roll"
+    <BaseButton
+      variant="secondary"
       :disabled="dice.length === 0 || diceStore.isRolling"
       aria-label="Roll unparked dice"
       @click="handleRoll"
+      class="btn-with-icon"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -16,12 +17,13 @@
       </svg>
       <span v-if="!diceStore.isRolling">Roll</span>
       <span v-else>Rolling...</span>
-    </button>
-    <button
-      class="btn btn-roll-all"
+    </BaseButton>
+    <BaseButton
+      variant="primary"
       :disabled="dice.length === 0 || diceStore.isRolling"
       aria-label="Roll all dice including parked"
       @click="handleRollAll"
+      class="btn-with-icon"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -33,11 +35,12 @@
       </svg>
       <span v-if="!diceStore.isRolling">Roll All</span>
       <span v-else>Rolling...</span>
-    </button>
+    </BaseButton>
   </div>
 </template>
 
 <script setup lang="ts">
+import BaseButton from './base/BaseButton.vue';
 import { useDiceStore } from '@/stores/dice';
 import { storeToRefs } from 'pinia';
 
@@ -70,63 +73,28 @@ const handleRollAll = () => {
   padding: 0 1rem;
 }
 
-.btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+.btn-with-icon {
   min-width: 3.5rem;
   height: 3.5rem;
   padding: 0 1.25rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  border: none;
   border-radius: 9999px;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn:not(:disabled):hover {
+.btn-with-icon:not(:disabled):hover {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
 }
 
-.btn:not(:disabled):active {
+.btn-with-icon:not(:disabled):active {
   transform: translateY(0);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-.btn-roll {
-  background: #3b82f6;
-  color: white;
+.w-6 {
+  width: 1.5rem;
 }
 
-.btn-roll:not(:disabled):hover {
-  background: #2563eb;
-}
-
-.btn-reset {
-  background: #ef4444;
-  color: white;
-}
-
-.btn-reset:not(:disabled):hover {
-  background: #dc2626;
-}
-
-.btn-roll-all {
-  background: #10b981;
-  color: white;
-}
-
-.btn-roll-all:not(:disabled):hover {
-  background: #059669;
+.h-6 {
+  height: 1.5rem;
 }
 </style>

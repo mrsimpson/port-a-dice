@@ -1,0 +1,215 @@
+<template>
+  <div class="dice-management-panel">
+    <div class="color-picker-section">
+      <BaseColorPicker v-model="selectedColor" label="Add a new die" />
+      <BaseButton
+        variant="primary"
+        class="add-button"
+        :disabled="diceStore.isRolling"
+        @click="handleAddDice"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4v16m8-8H4"
+          />
+        </svg>
+      </BaseButton>
+    </div>
+
+    <div v-if="dice.length > 0" class="dice-list-section">
+      <label class="section-label">Current Dice ({{ dice.length }})</label>
+      <div class="dice-grid">
+        <div v-for="die in dice" :key="die.id" class="dice-grid-item">
+          <div class="dice-grid-display">
+            <div
+              class="dice-color-indicator-grid"
+              :style="{ backgroundColor: getColorDisplay(die.color) }"
+            ></div>
+            <div class="dice-grid-label">{{ die.color }}</div>
+          </div>
+          <button
+            class="btn-delete-grid"
+            :title="`Delete ${die.color} die`"
+            @click="handleRemoveDice(die.id)"
+            aria-label="Delete die"
+          >
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <BaseEmptyState v-else message="No dice added yet. Add one above using the color picker." />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useDiceStore } from '@/stores/dice';
+import { useToastStore } from '@/stores/toast';
+import { storeToRefs } from 'pinia';
+import { DICE_COLORS, type DiceColor, type PresetDiceColor } from '@/types';
+import BaseColorPicker from '@/components/base/BaseColorPicker.vue';
+import BaseButton from '@/components/base/BaseButton.vue';
+import BaseEmptyState from '@/components/base/BaseEmptyState.vue';
+
+const diceStore = useDiceStore();
+const toastStore = useToastStore();
+
+const { dice } = storeToRefs(diceStore);
+const selectedColor = ref<DiceColor>('white');
+
+const getColorDisplay = (color: DiceColor): string => {
+  return DICE_COLORS[color as PresetDiceColor] || color;
+};
+
+const handleAddDice = () => {
+  diceStore.addDice(selectedColor.value, 1);
+  toastStore.show('Die added');
+};
+
+const handleRemoveDice = (id: string) => {
+  diceStore.removeDice(id);
+  toastStore.show('Die removed');
+};
+</script>
+
+<style scoped>
+.color-picker-section {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.color-picker-section :deep(.base-color-picker) {
+  flex: 1;
+}
+
+.add-button {
+  height: 2.5rem;
+  padding: 0;
+  width: 2.5rem;
+  flex-shrink: 0;
+}
+
+.section-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #d1d5db;
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dice-list-section {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5rem;
+}
+
+.dice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .dice-grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  }
+}
+
+.dice-grid-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: #374151;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  min-height: 100px;
+}
+
+.dice-grid-item:hover {
+  background: #4b5563;
+}
+
+.dice-grid-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.dice-color-indicator-grid {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.25rem;
+}
+
+.dice-grid-label {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  text-transform: capitalize;
+}
+
+.btn-delete-grid {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0;
+}
+
+.dice-grid-item:hover .btn-delete-grid {
+  opacity: 1;
+}
+
+.btn-delete-grid:hover {
+  background: #dc2626;
+}
+
+.w-4 {
+  width: 1rem;
+}
+
+.h-4 {
+  height: 1rem;
+}
+
+.w-3 {
+  width: 0.75rem;
+}
+
+.h-3 {
+  height: 0.75rem;
+}
+</style>
