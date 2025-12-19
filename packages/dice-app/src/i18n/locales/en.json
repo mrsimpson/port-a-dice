@@ -1,0 +1,90 @@
+{
+  "header": {
+    "title": "Port-A-Dice",
+    "dice-config": "Dice Configuration",
+    "history": "History"
+  },
+  "buttons": {
+    "roll": "Roll",
+    "roll-all": "Roll All",
+    "rolling": "Rolling...",
+    "add": "Add",
+    "all-parked": "All Parked",
+    "save-game": "Save Game",
+    "load": "Load",
+    "reset-game": "Reset Game",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "clear-history": "Clear History",
+    "restore": "Restore this state"
+  },
+  "panels": {
+    "game-config": "Game Configuration",
+    "dice-management": "Dice Management",
+    "areas-management": "Areas Management",
+    "save-game": "Save Game",
+    "load-game": "Load Game"
+  },
+  "tabs": {
+    "dice": "Dice",
+    "areas": "Areas",
+    "save": "Save",
+    "load": "Load"
+  },
+  "forms": {
+    "game-name": "Game Name",
+    "description": "Description (Optional)",
+    "new-area-placeholder": "New area name...",
+    "add-die": "Add a new die",
+    "enter-game-name": "Enter a name for this game...",
+    "add-description": "Add a description for this game...",
+    "dice-count": "{count} dice",
+    "areas-count": "{count} areas",
+    "dice-singular": "die",
+    "dice-plural": "dice",
+    "areas-singular": "area",
+    "areas-plural": "areas",
+    "select": "Select",
+    "custom": "Custom",
+    "area-color": "Area Color",
+    "edit-area-color": "Edit area color"
+  },
+  "labels": {
+    "current-dice": "Current Dice ({count})"
+  },
+  "messages": {
+    "no-dice": "No dice added yet. Add one above using the color picker.",
+    "no-areas": "No parking areas yet. Add one using the form below.",
+    "no-history": "No roll history yet",
+    "no-saved-games": "No saved games yet. Create one in the Save tab!",
+    "loading": "Loading saved games...",
+    "area-added": "Area added",
+    "area-deleted": "Area deleted",
+    "area-renamed": "Area renamed",
+    "die-added": "Die added",
+    "die-removed": "Die removed",
+    "game-saved": "Game saved successfully",
+    "game-loaded": "Game loaded",
+    "game-reset": "Game reset",
+    "game-deleted": "Game deleted",
+    "state-restored": "Dice state restored",
+    "save-failed": "Failed to save game",
+    "load-failed": "Failed to load saved games",
+    "delete-failed": "Failed to delete game",
+    "delete-game-confirmation": "Delete this saved game?"
+  },
+  "validation": {
+    "empty-area-name": "Area name cannot be empty",
+    "duplicate-area": "Area name already exists"
+  },
+  "dialogs": {
+    "confirm-reset": "Confirm Reset",
+    "reset-warning": "Are you sure you want to reset all dice? This action cannot be undone."
+  },
+  "ariaLabels": {
+    "roll-unparked": "Roll unparked dice",
+    "roll-all-dice": "Roll all dice including parked",
+    "delete-die": "Delete {color} die",
+    "delete-area": "Delete area"
+  }
+}

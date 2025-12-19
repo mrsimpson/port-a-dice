@@ -1,10 +1,10 @@
 <template>
   <div class="load-game-panel">
-    <div v-if="configManagerStore.loading" class="loading-state">Loading saved games...</div>
+    <div v-if="configManagerStore.loading" class="loading-state">{{ $t('messages.loading') }}</div>
 
     <BaseEmptyState
       v-else-if="configManagerStore.configurations.length === 0"
-      message="No saved games yet. Create one in the Save tab!"
+      :message="$t('messages.no-saved-games')"
     />
 
     <div v-else class="configurations-list">
@@ -16,10 +16,14 @@
           </p>
           <div class="config-meta">
             <span class="meta-item">
-              <strong>{{ config.dice.length }}</strong> dice
+              <strong>{{ config.dice.length }}</strong>
+              {{ config.dice.length === 1 ? $t('forms.dice-singular') : $t('forms.dice-plural') }}
             </span>
             <span class="meta-item">
-              <strong>{{ config.areas.length }}</strong> areas
+              <strong>{{ config.areas.length }}</strong>
+              {{
+                config.areas.length === 1 ? $t('forms.areas-singular') : $t('forms.areas-plural')
+              }}
             </span>
             <span class="meta-item">
               {{ formatDate(config.updatedAt) }}
@@ -29,12 +33,12 @@
 
         <div class="config-actions">
           <BaseButton variant="primary" @click="handleLoadConfiguration(config.id)">
-            Load
+            {{ $t('buttons.load') }}
           </BaseButton>
           <BaseButton
             variant="danger"
             @click="handleDeleteConfiguration(config.id)"
-            title="Delete configuration"
+            :title="$t('buttons.delete')"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -56,10 +60,13 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import { useConfigManagerStore } from '@/stores/configManager';
 import { useToastStore } from '@/stores/toast';
 import BaseEmptyState from '@/components/base/BaseEmptyState.vue';
 import BaseButton from '@/components/base/BaseButton.vue';
+
+const { t } = useI18n();
 
 const configManagerStore = useConfigManagerStore();
 const toastStore = useToastStore();
@@ -81,21 +88,21 @@ const formatDate = (timestamp: number): string => {
 const handleLoadConfiguration = async (configId: string) => {
   try {
     await configManagerStore.loadConfiguration(configId);
-    toastStore.show('Game loaded');
+    toastStore.show(t('messages.game-loaded'));
     emit('load', configId);
   } catch {
-    toastStore.show('Failed to load game');
+    toastStore.show(t('messages.load-failed'));
   }
 };
 
 const handleDeleteConfiguration = async (configId: string) => {
-  if (confirm('Delete this saved game?')) {
+  if (confirm(t('messages.delete-game-confirmation') || 'Delete this saved game?')) {
     try {
       await configManagerStore.deleteConfiguration(configId);
-      toastStore.show('Game deleted');
+      toastStore.show(t('messages.game-deleted'));
       emit('delete', configId);
     } catch {
-      toastStore.show('Failed to delete game');
+      toastStore.show(t('messages.delete-failed'));
     }
   }
 };

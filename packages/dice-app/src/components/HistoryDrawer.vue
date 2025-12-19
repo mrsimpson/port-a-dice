@@ -1,8 +1,12 @@
 <template>
-  <DrawerWrapper title="Roll History" :is-open="uiStore.showHistory" @close="uiStore.closeHistory">
+  <DrawerWrapper
+    :title="$t('panels.load-game')"
+    :is-open="uiStore.showHistory"
+    @close="uiStore.closeHistory"
+  >
     <!-- Content -->
     <div v-if="historyStore.entryCount === 0" class="empty-state">
-      <p>No roll history yet</p>
+      <p>{{ $t('messages.no-history') }}</p>
     </div>
 
     <div v-else class="history-list">
@@ -11,7 +15,11 @@
           <div class="history-time">
             {{ formatTime(entry.timestamp) }}
           </div>
-          <BaseButton variant="secondary" @click="handleRestore(entry)" title="Restore this state">
+          <BaseButton
+            variant="secondary"
+            @click="handleRestore(entry)"
+            :title="$t('buttons.restore')"
+          >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -37,7 +45,9 @@
 
     <!-- Footer -->
     <template v-if="historyStore.entryCount > 0" #footer>
-      <BaseButton variant="danger" block @click="handleClearHistory">Clear History</BaseButton>
+      <BaseButton variant="danger" block @click="handleClearHistory">{{
+        $t('buttons.clear-history')
+      }}</BaseButton>
     </template>
   </DrawerWrapper>
 </template>
@@ -45,12 +55,15 @@
 <script setup lang="ts">
 import BaseButton from './base/BaseButton.vue';
 import DrawerWrapper from './DrawerWrapper.vue';
+import { useI18n } from 'vue-i18n';
 import { useHistoryStore } from '@/stores/history';
 import { useUIStore } from '@/stores/ui';
 import { useDiceStore } from '@/stores/dice';
 import { useAreasStore } from '@/stores/areas';
 import { useToastStore } from '@/stores/toast';
 import { DICE_COLORS, type DiceColor, type PresetDiceColor, type RollHistoryEntry } from '@/types';
+
+const { t } = useI18n();
 
 const historyStore = useHistoryStore();
 const uiStore = useUIStore();
@@ -74,7 +87,7 @@ const handleClearHistory = () => {
 const handleRestore = (entry: RollHistoryEntry) => {
   diceStore.restoreFromHistory(entry);
   areasStore.setAreas(entry.areas);
-  toastStore.show('Dice state restored');
+  toastStore.show(t('messages.state-restored'));
 
   // Delay closing to allow Vue to render the restored state
   setTimeout(() => {

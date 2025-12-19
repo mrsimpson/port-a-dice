@@ -1,9 +1,14 @@
 <template>
   <div class="app">
     <header class="header">
-      <h1 class="title">Port-A-Dice</h1>
+      <h1 class="title">{{ $t('header.title') }}</h1>
+      <LanguageSwitcher />
       <div class="header-actions">
-        <button class="btn-icon" aria-label="Dice Configuration" @click="uiStore.toggleConfig">
+        <button
+          class="btn-icon"
+          :aria-label="$t('header.dice-config')"
+          @click="uiStore.toggleConfig"
+        >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
@@ -13,7 +18,7 @@
             />
           </svg>
         </button>
-        <button class="btn-icon" aria-label="History" @click="uiStore.toggleHistory">
+        <button class="btn-icon" :aria-label="$t('header.history')" @click="uiStore.toggleHistory">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
@@ -46,6 +51,7 @@ import HistoryDrawer from './components/HistoryDrawer.vue';
 import ConfirmDialog from './components/ConfirmDialog.vue';
 import ConfigDrawer from './components/ConfigDrawer.vue';
 import Toast from './components/Toast.vue';
+import LanguageSwitcher from './components/LanguageSwitcher.vue';
 import { useAreasStore } from './stores/areas';
 import { useUIStore } from './stores/ui';
 
@@ -75,6 +81,7 @@ onMounted(() => {
   background: #1f2937;
   border-bottom: 1px solid #374151;
   z-index: 10;
+  gap: 1rem;
 }
 
 .title {
@@ -82,11 +89,13 @@ onMounted(() => {
   font-weight: 700;
   color: #f3f4f6;
   margin: 0;
+  flex: 1;
 }
 
 .header-actions {
   display: flex;
   gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .btn-icon {

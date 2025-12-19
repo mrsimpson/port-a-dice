@@ -3,18 +3,22 @@
     <div v-if="uiStore.showResetConfirm" class="modal-overlay" @click="handleCancel">
       <div class="modal" @click.stop>
         <div class="modal-header">
-          <h2 class="modal-title">Confirm Reset</h2>
+          <h2 class="modal-title">{{ $t('dialogs.confirm-reset') }}</h2>
         </div>
 
         <div class="modal-content">
           <p class="message">
-            Are you sure you want to reset all dice? This action cannot be undone.
+            {{ $t('dialogs.reset-warning') }}
           </p>
         </div>
 
         <div class="modal-footer">
-          <BaseButton variant="default" @click="handleCancel">Cancel</BaseButton>
-          <BaseButton variant="danger" @click="handleConfirm">Reset</BaseButton>
+          <BaseButton variant="default" @click="handleCancel">{{
+            $t('buttons.cancel')
+          }}</BaseButton>
+          <BaseButton variant="danger" @click="handleConfirm">{{
+            $t('buttons.reset-game')
+          }}</BaseButton>
         </div>
       </div>
     </div>

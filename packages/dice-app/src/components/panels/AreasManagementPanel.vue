@@ -1,9 +1,6 @@
 <template>
   <div class="areas-management-panel">
-    <BaseEmptyState
-      v-if="areasStore.sortedAreas.length === 0"
-      message="No parking areas yet. Add one using the form below."
-    />
+    <BaseEmptyState v-if="areasStore.sortedAreas.length === 0" :message="$t('messages.no-areas')" />
 
     <div v-else class="areas-list">
       <ParkingAreaItem
@@ -17,11 +14,14 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import { useAreasStore } from '@/stores/areas';
 import { useDiceStore } from '@/stores/dice';
 import { useToastStore } from '@/stores/toast';
 import ParkingAreaItem from '@/components/ParkingAreaItem.vue';
 import BaseEmptyState from '@/components/base/BaseEmptyState.vue';
+
+const { t } = useI18n();
 
 const areasStore = useAreasStore();
 const diceStore = useDiceStore();
@@ -36,7 +36,7 @@ const handleDeleteArea = (areaId: string) => {
     if (dice.areaId === areaId) dice.areaId = null;
   });
   areasStore.removeArea(areaId);
-  toastStore.show('Area deleted');
+  toastStore.show(t('messages.area-deleted'));
   emit('delete', areaId);
 };
 </script>

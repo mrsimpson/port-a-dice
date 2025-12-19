@@ -15,23 +15,23 @@
             'base-color-picker__btn',
             { 'base-color-picker__btn--active': !useCustomColor && selectedPresetColor === color },
           ]"
-          :aria-label="`Select ${color}`"
+          :aria-label="`${t('forms.select')} ${color}`"
           @mousedown="handlePresetColorMouseDown(color)"
           @mouseenter="handlePresetColorMouseEnter(color)"
           @mouseup="handlePresetColorMouseUp(color)"
           :title="color"
         />
         <div class="base-color-picker__custom-wrapper">
-          <label class="base-color-picker__custom-label">Custom</label>
+          <label class="base-color-picker__custom-label">{{ $t('forms.custom') }}</label>
           <input
             v-model="localCustomColor"
             type="color"
             class="base-color-picker__custom-input"
             :class="{ 'base-color-picker__custom-input--active': useCustomColor }"
-            :aria-label="`Custom color: ${localCustomColor}`"
+            :aria-label="`${$t('forms.custom')} color: ${localCustomColor}`"
             @focus="handleCustomColorFocus"
             @input="handleCustomColorInput"
-            :title="`Custom color: ${localCustomColor}`"
+            :title="`${$t('forms.custom')} color: ${localCustomColor}`"
           />
         </div>
       </div>
@@ -41,7 +41,10 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { DICE_COLORS, type PresetDiceColor } from '@/types';
+
+const { t } = useI18n();
 
 interface Props {
   modelValue: string;

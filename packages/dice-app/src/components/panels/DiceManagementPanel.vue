@@ -1,7 +1,7 @@
 <template>
   <div class="dice-management-panel">
     <div class="color-picker-section">
-      <BaseColorPicker v-model="selectedColor" label="Add a new die" />
+      <BaseColorPicker v-model="selectedColor" :label="$t('forms.add-die')" />
       <BaseButton
         variant="primary"
         class="add-button"
@@ -20,7 +20,7 @@
     </div>
 
     <div v-if="dice.length > 0" class="dice-list-section">
-      <label class="section-label">Current Dice ({{ dice.length }})</label>
+      <label class="section-label">{{ $t('labels.current-dice', { count: dice.length }) }}</label>
       <div class="dice-grid">
         <div v-for="die in dice" :key="die.id" class="dice-grid-item">
           <div class="dice-grid-display">
@@ -32,9 +32,9 @@
           </div>
           <button
             class="btn-delete-grid"
-            :title="`Delete ${die.color} die`"
+            :title="$t('ariaLabels.delete-die', { color: die.color })"
             @click="handleRemoveDice(die.id)"
-            aria-label="Delete die"
+            :aria-label="$t('ariaLabels.delete-die', { color: die.color })"
           >
             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -49,12 +49,13 @@
       </div>
     </div>
 
-    <BaseEmptyState v-else message="No dice added yet. Add one above using the color picker." />
+    <BaseEmptyState v-else :message="$t('messages.no-dice')" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useDiceStore } from '@/stores/dice';
 import { useToastStore } from '@/stores/toast';
 import { storeToRefs } from 'pinia';
@@ -62,6 +63,8 @@ import { DICE_COLORS, type DiceColor, type PresetDiceColor } from '@/types';
 import BaseColorPicker from '@/components/base/BaseColorPicker.vue';
 import BaseButton from '@/components/base/BaseButton.vue';
 import BaseEmptyState from '@/components/base/BaseEmptyState.vue';
+
+const { t } = useI18n();
 
 const diceStore = useDiceStore();
 const toastStore = useToastStore();
@@ -75,12 +78,12 @@ const getColorDisplay = (color: DiceColor): string => {
 
 const handleAddDice = () => {
   diceStore.addDice(selectedColor.value, 1);
-  toastStore.show('Die added');
+  toastStore.show(t('messages.die-added'));
 };
 
 const handleRemoveDice = (id: string) => {
   diceStore.removeDice(id);
-  toastStore.show('Die removed');
+  toastStore.show(t('messages.die-removed'));
 };
 </script>
 
