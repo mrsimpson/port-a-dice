@@ -17,11 +17,6 @@ export const useHistoryStore = defineStore('history', {
 
   actions: {
     addEntry(dice: Dice[], areas: ParkingArea[]) {
-      console.log(
-        '[History] addEntry called with dice:',
-        dice.map((d) => ({ id: d.id.substring(0, 8), value: d.value, color: d.color }))
-      );
-
       const entry: RollHistoryEntry = {
         id: crypto.randomUUID(),
         timestamp: Date.now(),
@@ -29,18 +24,11 @@ export const useHistoryStore = defineStore('history', {
         areas: JSON.parse(JSON.stringify(areas)),
       };
 
-      console.log('[History] Created entry:', {
-        id: entry.id.substring(0, 8),
-        dice: entry.dice.map((d) => ({ id: d.id.substring(0, 8), value: d.value })),
-      });
-
       this.entries.push(entry);
 
       if (this.entries.length > this.maxEntries) {
         this.entries.shift();
       }
-
-      console.log('[History] Total entries:', this.entries.length);
     },
 
     removeEntry(id: string) {

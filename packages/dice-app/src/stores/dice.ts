@@ -107,6 +107,11 @@ export const useDiceStore = defineStore('dice', {
       this.assignDiceToAreaById(diceId, nextAreaId);
     },
 
+    restoreFromHistory(entry: import('@/types').RollHistoryEntry) {
+      this.dice = JSON.parse(JSON.stringify(entry.dice));
+      this.isRolling = false;
+    },
+
     resetAll() {
       this.dice = [];
       this.isRolling = false;
