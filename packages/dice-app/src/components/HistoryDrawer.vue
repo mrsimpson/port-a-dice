@@ -11,7 +11,7 @@
           <div class="history-time">
             {{ formatTime(entry.timestamp) }}
           </div>
-          <button class="btn-restore" @click="handleRestore(entry)" title="Restore this state">
+          <BaseButton variant="secondary" @click="handleRestore(entry)" title="Restore this state">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -20,7 +20,7 @@
                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
               />
             </svg>
-          </button>
+          </BaseButton>
         </div>
         <div class="history-dice">
           <span
@@ -37,12 +37,13 @@
 
     <!-- Footer -->
     <template v-if="historyStore.entryCount > 0" #footer>
-      <button class="btn btn-clear" @click="handleClearHistory">Clear History</button>
+      <BaseButton variant="danger" block @click="handleClearHistory">Clear History</BaseButton>
     </template>
   </DrawerWrapper>
 </template>
 
 <script setup lang="ts">
+import BaseButton from './base/BaseButton.vue';
 import DrawerWrapper from './DrawerWrapper.vue';
 import { useHistoryStore } from '@/stores/history';
 import { useUIStore } from '@/stores/ui';
@@ -134,53 +135,6 @@ const handleRestore = (entry: RollHistoryEntry) => {
   border-radius: 0.375rem;
   font-weight: 700;
   font-size: 0.875rem;
-}
-
-.btn {
-  width: 100%;
-  padding: 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-clear {
-  background: #ef4444;
-  color: white;
-}
-
-.btn-clear:hover {
-  background: #dc2626;
-}
-
-.btn-clear:active {
-  transform: scale(0.98);
-}
-
-.btn-restore {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  background: #3b82f6;
-  border: none;
-  color: white;
-  cursor: pointer;
-  border-radius: 0.375rem;
-  transition: all 0.2s;
-  align-self: flex-start;
-}
-
-.btn-restore:hover {
-  background: #2563eb;
-}
-
-.btn-restore:active {
-  transform: scale(0.95);
 }
 
 .w-5 {

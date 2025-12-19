@@ -5,7 +5,7 @@
         <div class="area-label" @click.stop="startEditing">{{ area.label }}</div>
         <div class="area-count">{{ diceCount }} dice</div>
       </div>
-      <input
+      <BaseInput
         v-else-if="isEditing && !isEditingColor"
         ref="editInput"
         v-model="editedLabel"
@@ -17,11 +17,7 @@
         @click.stop
       />
       <div v-else-if="isEditingColor" class="color-editor">
-        <ColorPickerCompact
-          :model-value="editingColor"
-          label="Area Color"
-          @update:model-value="handleColorChange"
-        />
+        <BaseColorPicker v-model="editingColor" label="Area Color" />
       </div>
     </div>
 
@@ -33,7 +29,7 @@
         @click.stop="startEditingColor"
         aria-label="Edit area color"
       />
-      <button class="btn-delete" @click.stop="handleDelete">
+      <BaseButton variant="danger" class="btn-delete-area" @click.stop="handleDelete">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
@@ -42,14 +38,16 @@
             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
           />
         </svg>
-      </button>
+      </BaseButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue';
-import ColorPickerCompact from './ColorPickerCompact.vue';
+import { ref, computed, nextTick, watch } from 'vue';
+import BaseButton from './base/BaseButton.vue';
+import BaseInput from './base/BaseInput.vue';
+import BaseColorPicker from './base/BaseColorPicker.vue';
 import type { ParkingArea } from '@/types';
 import { useDiceStore } from '@/stores/dice';
 import { useAreasStore } from '@/stores/areas';
@@ -76,6 +74,13 @@ const editingColor = ref('');
 const editInput = ref<HTMLInputElement | null>(null);
 
 const diceCount = computed(() => diceStore.diceInArea(props.area.id).length);
+
+// Watch for color changes and update the store
+watch(editingColor, (newColor) => {
+  if (isEditingColor.value && newColor) {
+    areasStore.updateAreaColor(props.area.id, newColor);
+  }
+});
 
 const startEditing = async () => {
   isEditing.value = true;
@@ -120,12 +125,6 @@ const saveEdit = () => {
 const cancelEdit = () => {
   isEditing.value = false;
   editedLabel.value = '';
-};
-
-const handleColorChange = (newColor: string) => {
-  areasStore.updateAreaColor(props.area.id, newColor);
-  editingColor.value = newColor;
-  // Don't close the picker - let user try different colors
 };
 
 const handleDelete = () => {
@@ -186,14 +185,6 @@ const handleDelete = () => {
 
 .area-input {
   width: 100%;
-  padding: 0.375rem 0.5rem;
-  background: #1f2937;
-  border: 2px solid #3b82f6;
-  border-radius: 0.375rem;
-  color: #f3f4f6;
-  font-size: 0.875rem;
-  font-weight: 600;
-  outline: none;
 }
 
 .color-editor {
@@ -225,27 +216,18 @@ const handleDelete = () => {
   transform: scale(0.95);
 }
 
-.btn-delete {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.btn-delete-area {
   width: 2rem;
   height: 2rem;
-  background: transparent;
-  border: none;
-  color: #9ca3af;
-  cursor: pointer;
-  border-radius: 0.375rem;
-  transition: all 0.2s;
+  padding: 0;
   flex-shrink: 0;
 }
 
-.btn-delete:hover {
-  background: #ef4444;
-  color: white;
+.w-4 {
+  width: 1rem;
 }
 
-.btn-delete:active {
-  transform: scale(0.95);
+.h-4 {
+  height: 1rem;
 }
 </style>

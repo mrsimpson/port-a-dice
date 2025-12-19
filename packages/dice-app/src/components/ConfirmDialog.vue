@@ -13,8 +13,8 @@
         </div>
 
         <div class="modal-footer">
-          <button class="btn btn-cancel" @click="handleCancel">Cancel</button>
-          <button class="btn btn-confirm" @click="handleConfirm">Reset</button>
+          <BaseButton variant="default" @click="handleCancel">Cancel</BaseButton>
+          <BaseButton variant="danger" @click="handleConfirm">Reset</BaseButton>
         </div>
       </div>
     </div>
@@ -22,6 +22,7 @@
 </template>
 
 <script setup lang="ts">
+import BaseButton from './base/BaseButton.vue';
 import { useDiceStore } from '@/stores/dice';
 import { useUIStore } from '@/stores/ui';
 
@@ -111,38 +112,5 @@ const handleCancel = () => {
   gap: 0.5rem;
   padding: 1.5rem;
   border-top: 1px solid #374151;
-}
-
-.btn {
-  flex: 1;
-  padding: 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn:active {
-  transform: scale(0.98);
-}
-
-.btn-cancel {
-  background: #6b7280;
-  color: white;
-}
-
-.btn-cancel:hover {
-  background: #4b5563;
-}
-
-.btn-confirm {
-  background: #ef4444;
-  color: white;
-}
-
-.btn-confirm:hover {
-  background: #dc2626;
 }
 </style>
