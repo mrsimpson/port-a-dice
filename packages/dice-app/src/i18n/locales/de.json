@@ -4,6 +4,10 @@
     "dice-config": "Würfelkonfiguration",
     "history": "Verlauf"
   },
+  "languages": {
+    "english": "English",
+    "german": "Deutsch"
+  },
   "buttons": {
     "roll": "Würfeln",
     "roll-all": "Alle würfeln",
@@ -36,8 +40,8 @@
     "description": "Beschreibung (Optional)",
     "new-area-placeholder": "Name des neuen Bereichs...",
     "add-die": "Neuen Würfel hinzufügen",
-    "enter-game-name": "Geben Sie einen Namen für dieses Spiel ein...",
-    "add-description": "Fügen Sie eine Beschreibung für dieses Spiel hinzu...",
+    "enter-game-name": "Gib einen Namen für dieses Spiel ein...",
+    "add-description": "Füg eine Beschreibung für dieses Spiel hinzu...",
     "dice-count": "{count} Würfel",
     "areas-count": "{count} Bereiche",
     "dice-singular": "Würfel",
@@ -53,11 +57,13 @@
     "current-dice": "Aktuelle Würfel ({count})"
   },
   "messages": {
-    "no-dice": "Noch keine Würfel hinzugefügt. Fügen Sie einen oben mit der Farbauswahl hinzu.",
-    "no-areas": "Noch keine Parkplätze. Fügen Sie einen mithilfe des folgenden Formulars hinzu.",
+    "no-dice": "Noch keine Würfel hinzugefügt. Füg einen oben mit der Farbauswahl hinzu.",
+    "no-areas": "Noch keine Parkplätze. Füg einen mithilfe des folgenden Formulars hinzu.",
     "no-history": "Noch kein Würfelverlauf",
-    "no-saved-games": "Noch keine gespeicherten Spiele. Erstellen Sie eines im Speichern-Tab!",
+    "no-saved-games": "Noch keine gespeicherten Spiele. Erstell eines im Speichern-Tab!",
     "loading": "Gespeicherte Spiele werden geladen...",
+    "no-dice-yet": "Noch keine Würfel",
+    "open-dice-config": "Öffne die Würfelkonfiguration, um Würfel hinzuzufügen",
     "area-added": "Bereich hinzugefügt",
     "area-deleted": "Bereich gelöscht",
     "area-renamed": "Bereich umbenannt",
@@ -79,7 +85,7 @@
   },
   "dialogs": {
     "confirm-reset": "Zurücksetzen bestätigen",
-    "reset-warning": "Sind Sie sicher, dass Sie alle Würfel zurücksetzen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+    "reset-warning": "Bist du sicher, dass du alle Würfel zurücksetzen möchtest? Diese Aktion kann nicht rückgängig gemacht werden."
   },
   "ariaLabels": {
     "roll-unparked": "Nicht geparkte Würfel würfeln",
