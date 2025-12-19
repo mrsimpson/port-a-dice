@@ -1,7 +1,13 @@
 import { defineStore } from 'pinia';
 import type { ParkingArea } from '@/types';
 import { DEFAULT_AREAS } from '@/types';
-import { createArea, updateAreaLabel, sortAreasByOrder, reorderAreas } from '@/utils/areas';
+import {
+  createArea,
+  updateAreaLabel,
+  updateAreaColor,
+  sortAreasByOrder,
+  reorderAreas,
+} from '@/utils/areas';
 
 /**
  * Areas store manages the current game session's parking areas.
@@ -31,15 +37,22 @@ export const useAreasStore = defineStore('areas', {
       }
     },
 
-    addArea(label: string) {
+    addArea(label: string, color?: string) {
       const order = this.areas.length;
-      this.areas.push(createArea(label, order));
+      this.areas.push(createArea(label, order, color));
     },
 
     updateArea(id: string, label: string) {
       const index = this.areas.findIndex((a) => a.id === id);
       if (index !== -1) {
         this.areas[index] = updateAreaLabel(this.areas[index], label);
+      }
+    },
+
+    updateAreaColor(id: string, color: string) {
+      const index = this.areas.findIndex((a) => a.id === id);
+      if (index !== -1) {
+        this.areas[index] = updateAreaColor(this.areas[index], color);
       }
     },
 

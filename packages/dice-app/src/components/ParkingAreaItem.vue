@@ -1,12 +1,12 @@
 <template>
   <div class="area-item">
     <div class="area-content">
-      <div v-if="!isEditing" class="area-info">
+      <div v-if="!isEditing && !isEditingColor" class="area-info">
         <div class="area-label" @click.stop="startEditing">{{ area.label }}</div>
         <div class="area-count">{{ diceCount }} dice</div>
       </div>
       <input
-        v-else
+        v-else-if="isEditing && !isEditingColor"
         ref="editInput"
         v-model="editedLabel"
         type="text"
@@ -16,22 +16,40 @@
         @keyup.esc="cancelEdit"
         @click.stop
       />
-    </div>
-    <button class="btn-delete" @click.stop="handleDelete">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+      <div v-else-if="isEditingColor" class="color-editor">
+        <ColorPickerCompact
+          :model-value="editingColor"
+          label="Area Color"
+          @update:model-value="handleColorChange"
         />
-      </svg>
-    </button>
+      </div>
+    </div>
+
+    <div class="area-actions">
+      <button
+        class="btn-color"
+        :style="{ backgroundColor: area.color || '#3b82f6' }"
+        :title="area.color || '#3b82f6'"
+        @click.stop="startEditingColor"
+        aria-label="Edit area color"
+      />
+      <button class="btn-delete" @click.stop="handleDelete">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          />
+        </svg>
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, nextTick } from 'vue';
+import ColorPickerCompact from './ColorPickerCompact.vue';
 import type { ParkingArea } from '@/types';
 import { useDiceStore } from '@/stores/dice';
 import { useAreasStore } from '@/stores/areas';
@@ -52,17 +70,28 @@ const areasStore = useAreasStore();
 const toastStore = useToastStore();
 
 const isEditing = ref(false);
+const isEditingColor = ref(false);
 const editedLabel = ref('');
+const editingColor = ref('');
 const editInput = ref<HTMLInputElement | null>(null);
 
 const diceCount = computed(() => diceStore.diceInArea(props.area.id).length);
 
 const startEditing = async () => {
   isEditing.value = true;
+  isEditingColor.value = false;
   editedLabel.value = props.area.label;
   await nextTick();
   editInput.value?.focus();
   editInput.value?.select();
+};
+
+const startEditingColor = async () => {
+  isEditingColor.value = !isEditingColor.value;
+  isEditing.value = false;
+  if (isEditingColor.value) {
+    editingColor.value = props.area.color || '#3b82f6';
+  }
 };
 
 const saveEdit = () => {
@@ -93,6 +122,12 @@ const cancelEdit = () => {
   editedLabel.value = '';
 };
 
+const handleColorChange = (newColor: string) => {
+  areasStore.updateAreaColor(props.area.id, newColor);
+  editingColor.value = newColor;
+  // Don't close the picker - let user try different colors
+};
+
 const handleDelete = () => {
   emit('delete', props.area.id);
 };
@@ -101,7 +136,7 @@ const handleDelete = () => {
 <style scoped>
 .area-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   padding: 0.75rem 1rem;
   background: #374151;
@@ -159,6 +194,35 @@ const handleDelete = () => {
   font-size: 0.875rem;
   font-weight: 600;
   outline: none;
+}
+
+.color-editor {
+  padding: 0.75rem 0;
+}
+
+.area-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.btn-color {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid #4b5563;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-color:hover {
+  border-color: #60a5fa;
+  transform: scale(1.05);
+}
+
+.btn-color:active {
+  transform: scale(0.95);
 }
 
 .btn-delete {

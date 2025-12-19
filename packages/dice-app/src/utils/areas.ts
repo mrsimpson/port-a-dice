@@ -1,10 +1,11 @@
 import type { ParkingArea } from '@/types';
 
-export function createArea(label: string, order: number): ParkingArea {
+export function createArea(label: string, order: number, color?: string): ParkingArea {
   return {
     id: crypto.randomUUID(),
     label,
     order,
+    color,
   };
 }
 
@@ -12,6 +13,13 @@ export function updateAreaLabel(area: ParkingArea, label: string): ParkingArea {
   return {
     ...area,
     label,
+  };
+}
+
+export function updateAreaColor(area: ParkingArea, color: string): ParkingArea {
+  return {
+    ...area,
+    color,
   };
 }
 
