@@ -1,11 +1,20 @@
 <template>
-  <input :class="['base-input', { 'base-input--error': error }]" v-bind="$attrs" />
+  <input ref="inputRef" :class="['base-input', { 'base-input--error': error }]" v-bind="$attrs" />
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+
 defineProps<{
   error?: boolean;
 }>();
+
+const inputRef = ref<HTMLInputElement | null>(null);
+
+// Expose the focus method so parent components can focus the input
+defineExpose({
+  focus: () => inputRef.value?.focus(),
+});
 </script>
 
 <style scoped>

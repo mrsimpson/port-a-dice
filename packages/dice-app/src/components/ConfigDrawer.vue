@@ -131,7 +131,7 @@ const activeTab = ref<'dice' | 'areas' | 'save' | 'load'>('dice');
 
 // Areas form state
 const newAreaName = ref<string>('');
-const newAreaInput = ref<HTMLInputElement | null>(null);
+const newAreaInput = ref<InstanceType<typeof BaseInput> | null>(null);
 
 // Refs for child components
 const dicePanel = ref<InstanceType<typeof DiceManagementPanel> | null>(null);
