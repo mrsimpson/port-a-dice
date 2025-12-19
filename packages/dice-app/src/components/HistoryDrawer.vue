@@ -23,8 +23,24 @@
 
           <div v-else class="history-list">
             <div v-for="entry in historyStore.sortedEntries" :key="entry.id" class="history-item">
-              <div class="history-time">
-                {{ formatTime(entry.timestamp) }}
+              <div class="history-header">
+                <div class="history-time">
+                  {{ formatTime(entry.timestamp) }}
+                </div>
+                <button
+                  class="btn-restore"
+                  @click="handleRestore(entry)"
+                  title="Restore this state"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    />
+                  </svg>
+                </button>
               </div>
               <div class="history-dice">
                 <span
@@ -51,10 +67,16 @@
 <script setup lang="ts">
 import { useHistoryStore } from '@/stores/history';
 import { useUIStore } from '@/stores/ui';
-import { DICE_COLORS, type DiceColor, type PresetDiceColor } from '@/types';
+import { useDiceStore } from '@/stores/dice';
+import { useAreasStore } from '@/stores/areas';
+import { useToastStore } from '@/stores/toast';
+import { DICE_COLORS, type DiceColor, type PresetDiceColor, type RollHistoryEntry } from '@/types';
 
 const historyStore = useHistoryStore();
 const uiStore = useUIStore();
+const diceStore = useDiceStore();
+const areasStore = useAreasStore();
+const toastStore = useToastStore();
 
 const getColorDisplay = (color: DiceColor): string => {
   return DICE_COLORS[color as PresetDiceColor] || color;
@@ -67,6 +89,17 @@ const formatTime = (timestamp: number) => {
 
 const handleClearHistory = () => {
   historyStore.clearHistory();
+};
+
+const handleRestore = (entry: RollHistoryEntry) => {
+  diceStore.restoreFromHistory(entry);
+  areasStore.setAreas(entry.areas);
+  toastStore.show('Dice state restored');
+
+  // Delay closing to allow Vue to render the restored state
+  setTimeout(() => {
+    uiStore.closeHistory();
+  }, 100);
 };
 </script>
 
@@ -173,12 +206,20 @@ const handleClearHistory = () => {
   padding: 1rem;
   background: #374151;
   border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .history-time {
   font-size: 0.75rem;
   color: #9ca3af;
-  margin-bottom: 0.5rem;
 }
 
 .history-dice {
@@ -226,5 +267,28 @@ const handleClearHistory = () => {
 
 .btn-clear:active {
   transform: scale(0.98);
+}
+
+.btn-restore {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: #3b82f6;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+  align-self: flex-start;
+}
+
+.btn-restore:hover {
+  background: #2563eb;
+}
+
+.btn-restore:active {
+  transform: scale(0.95);
 }
 </style>
