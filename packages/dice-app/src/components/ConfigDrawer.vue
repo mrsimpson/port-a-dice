@@ -1,6 +1,6 @@
 <template>
   <DrawerWrapper
-    title="Game Configuration"
+    :title="$t('panels.game-config')"
     :is-open="uiStore.showConfig"
     @close="uiStore.closeConfig"
   >
@@ -8,16 +8,16 @@
     <template #header>
       <div class="tab-navigation">
         <button :class="['tab-btn', { active: activeTab === 'dice' }]" @click="activeTab = 'dice'">
-          Dice
+          {{ $t('tabs.dice') }}
         </button>
         <button
           :class="['tab-btn', { active: activeTab === 'areas' }]"
           @click="activeTab = 'areas'"
         >
-          Areas
+          {{ $t('tabs.areas') }}
         </button>
         <button :class="['tab-btn', { active: activeTab === 'save' }]" @click="activeTab = 'save'">
-          Save
+          {{ $t('tabs.save') }}
         </button>
         <button
           :class="['tab-btn', { active: activeTab === 'load' }]"
@@ -26,7 +26,7 @@
             loadConfigurations();
           "
         >
-          Load
+          {{ $t('tabs.load') }}
         </button>
       </div>
     </template>
@@ -63,14 +63,14 @@
         block
         @click="handleDeleteCurrentConfiguration"
       >
-        Reset Game
+        {{ $t('buttons.reset-game') }}
       </BaseButton>
       <div v-else-if="activeTab === 'areas'" class="add-area-form">
         <BaseInput
           ref="newAreaInput"
           v-model="newAreaName"
           type="text"
-          placeholder="New area name..."
+          :placeholder="$t('forms.new-area-placeholder')"
           @keyup.enter="handleAddArea"
         />
         <BaseButton variant="primary" :disabled="!newAreaName.trim()" @click="handleAddArea">
@@ -91,7 +91,7 @@
         block
         @click="handleSave"
       >
-        Save Game
+        {{ $t('buttons.save-game') }}
       </BaseButton>
       <div v-else-if="activeTab === 'load'"></div>
     </template>
@@ -100,6 +100,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import DrawerWrapper from './DrawerWrapper.vue';
 import DiceManagementPanel from './panels/DiceManagementPanel.vue';
 import AreasManagementPanel from './panels/AreasManagementPanel.vue';
@@ -114,6 +115,8 @@ import { useToastStore } from '@/stores/toast';
 import { useConfigManagerStore } from '@/stores/configManager';
 import { storeToRefs } from 'pinia';
 import { isAreaNameUnique } from '@/utils/areas';
+
+const { t } = useI18n();
 
 const diceStore = useDiceStore();
 const areasStore = useAreasStore();
@@ -142,18 +145,18 @@ const handleAddArea = () => {
   const trimmedName = newAreaName.value.trim();
 
   if (!trimmedName) {
-    toastStore.show('Area name cannot be empty');
+    toastStore.show(t('validation.empty-area-name'));
     return;
   }
 
   if (!isAreaNameUnique(areasStore.areas, trimmedName)) {
-    toastStore.show('Area name already exists');
+    toastStore.show(t('validation.duplicate-area'));
     return;
   }
 
   areasStore.addArea(trimmedName);
   newAreaName.value = '';
-  toastStore.show('Area added');
+  toastStore.show(t('messages.area-added'));
   newAreaInput.value?.focus();
 };
 
@@ -165,10 +168,10 @@ const handleAreaDeleted = () => {
 const handleSaveConfiguration = async (name: string, description: string) => {
   try {
     await configManagerStore.saveConfiguration(name, description);
-    toastStore.show('Game saved successfully');
+    toastStore.show(t('messages.game-saved'));
     activeTab.value = 'dice';
   } catch {
-    toastStore.show('Failed to save game');
+    toastStore.show(t('messages.save-failed'));
   }
 };
 
@@ -185,9 +188,9 @@ const handleConfigurationDeleted = () => {
 };
 
 const handleDeleteCurrentConfiguration = () => {
-  if (confirm('Reset game and delete all dice and areas?')) {
+  if (confirm(t('dialogs.reset-warning'))) {
     configManagerStore.deleteCurrentConfiguration();
-    toastStore.show('Game reset');
+    toastStore.show(t('messages.game-reset'));
   }
 };
 
@@ -195,7 +198,7 @@ const loadConfigurations = async () => {
   try {
     await configManagerStore.loadConfigurations();
   } catch {
-    toastStore.show('Failed to load saved games');
+    toastStore.show(t('messages.load-failed'));
   }
 };
 </script>

@@ -1,0 +1,90 @@
+{
+  "header": {
+    "title": "Port-A-Dice",
+    "dice-config": "Würfelkonfiguration",
+    "history": "Verlauf"
+  },
+  "buttons": {
+    "roll": "Würfeln",
+    "roll-all": "Alle würfeln",
+    "rolling": "Würfelt...",
+    "add": "Hinzufügen",
+    "all-parked": "Alle geparkt",
+    "save-game": "Spiel speichern",
+    "load": "Laden",
+    "reset-game": "Spiel zurücksetzen",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "clear-history": "Verlauf löschen",
+    "restore": "Diesen Status wiederherstellen"
+  },
+  "panels": {
+    "game-config": "Spielkonfiguration",
+    "dice-management": "Würfelverwaltung",
+    "areas-management": "Bereichsverwaltung",
+    "save-game": "Spiel speichern",
+    "load-game": "Spiel laden"
+  },
+  "tabs": {
+    "dice": "Würfel",
+    "areas": "Bereiche",
+    "save": "Speichern",
+    "load": "Laden"
+  },
+  "forms": {
+    "game-name": "Spielname",
+    "description": "Beschreibung (Optional)",
+    "new-area-placeholder": "Name des neuen Bereichs...",
+    "add-die": "Neuen Würfel hinzufügen",
+    "enter-game-name": "Geben Sie einen Namen für dieses Spiel ein...",
+    "add-description": "Fügen Sie eine Beschreibung für dieses Spiel hinzu...",
+    "dice-count": "{count} Würfel",
+    "areas-count": "{count} Bereiche",
+    "dice-singular": "Würfel",
+    "dice-plural": "Würfel",
+    "areas-singular": "Bereich",
+    "areas-plural": "Bereiche",
+    "select": "Wählen",
+    "custom": "Benutzerdefiniert",
+    "area-color": "Bereichsfarbe",
+    "edit-area-color": "Bereichsfarbe bearbeiten"
+  },
+  "labels": {
+    "current-dice": "Aktuelle Würfel ({count})"
+  },
+  "messages": {
+    "no-dice": "Noch keine Würfel hinzugefügt. Fügen Sie einen oben mit der Farbauswahl hinzu.",
+    "no-areas": "Noch keine Parkplätze. Fügen Sie einen mithilfe des folgenden Formulars hinzu.",
+    "no-history": "Noch kein Würfelverlauf",
+    "no-saved-games": "Noch keine gespeicherten Spiele. Erstellen Sie eines im Speichern-Tab!",
+    "loading": "Gespeicherte Spiele werden geladen...",
+    "area-added": "Bereich hinzugefügt",
+    "area-deleted": "Bereich gelöscht",
+    "area-renamed": "Bereich umbenannt",
+    "die-added": "Würfel hinzugefügt",
+    "die-removed": "Würfel entfernt",
+    "game-saved": "Spiel erfolgreich gespeichert",
+    "game-loaded": "Spiel geladen",
+    "game-reset": "Spiel zurückgesetzt",
+    "game-deleted": "Spiel gelöscht",
+    "state-restored": "Würfelstatus wiederhergestellt",
+    "save-failed": "Spiel konnte nicht gespeichert werden",
+    "load-failed": "Gespeicherte Spiele konnten nicht geladen werden",
+    "delete-failed": "Spiel konnte nicht gelöscht werden",
+    "delete-game-confirmation": "Dieses gespeicherte Spiel löschen?"
+  },
+  "validation": {
+    "empty-area-name": "Bereichsname kann nicht leer sein",
+    "duplicate-area": "Bereichsname existiert bereits"
+  },
+  "dialogs": {
+    "confirm-reset": "Zurücksetzen bestätigen",
+    "reset-warning": "Sind Sie sicher, dass Sie alle Würfel zurücksetzen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+  },
+  "ariaLabels": {
+    "roll-unparked": "Nicht geparkte Würfel würfeln",
+    "roll-all-dice": "Alle Würfel einschließlich geparkte würfeln",
+    "delete-die": "Würfel {color} löschen",
+    "delete-area": "Bereich löschen"
+  }
+}

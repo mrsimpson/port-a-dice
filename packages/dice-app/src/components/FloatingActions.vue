@@ -3,7 +3,7 @@
     <BaseButton
       variant="secondary"
       :disabled="dice.length === 0 || diceStore.isRolling"
-      aria-label="Roll unparked dice"
+      :aria-label="$t('ariaLabels.roll-unparked')"
       @click="handleRoll"
       class="btn-with-icon"
     >
@@ -15,13 +15,13 @@
           d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
         />
       </svg>
-      <span v-if="!diceStore.isRolling">Roll</span>
-      <span v-else>Rolling...</span>
+      <span v-if="!diceStore.isRolling">{{ $t('buttons.roll') }}</span>
+      <span v-else>{{ $t('buttons.rolling') }}</span>
     </BaseButton>
     <BaseButton
       variant="primary"
       :disabled="dice.length === 0 || diceStore.isRolling"
-      aria-label="Roll all dice including parked"
+      :aria-label="$t('ariaLabels.roll-all-dice')"
       @click="handleRollAll"
       class="btn-with-icon"
     >
@@ -33,8 +33,8 @@
           d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
         />
       </svg>
-      <span v-if="!diceStore.isRolling">Roll All</span>
-      <span v-else>Rolling...</span>
+      <span v-if="!diceStore.isRolling">{{ $t('buttons.roll-all') }}</span>
+      <span v-else>{{ $t('buttons.rolling') }}</span>
     </BaseButton>
   </div>
 </template>

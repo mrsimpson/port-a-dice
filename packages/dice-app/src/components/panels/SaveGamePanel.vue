@@ -2,33 +2,35 @@
   <div class="save-game-panel">
     <div class="save-form">
       <div class="form-group">
-        <label for="save-name" class="form-label">Game Name</label>
+        <label for="save-name" class="form-label">{{ $t('forms.game-name') }}</label>
         <BaseInput
           id="save-name"
           v-model="saveName"
           type="text"
-          placeholder="Enter a name for this game..."
+          :placeholder="$t('forms.enter-game-name')"
           @keyup.enter="handleSave"
         />
       </div>
 
       <div class="form-group">
-        <label for="save-description" class="form-label">Description (Optional)</label>
+        <label for="save-description" class="form-label">{{ $t('forms.description') }}</label>
         <textarea
           id="save-description"
           v-model="saveDescription"
           class="save-description"
-          placeholder="Add a description for this game..."
+          :placeholder="$t('forms.add-description')"
           rows="4"
         ></textarea>
       </div>
 
       <div class="form-info">
         <p>
-          <strong>{{ diceCount }}</strong> dice
+          <strong>{{ diceCount }}</strong>
+          {{ diceCount === 1 ? $t('forms.dice-singular') : $t('forms.dice-plural') }}
         </p>
         <p>
-          <strong>{{ areaCount }}</strong> areas
+          <strong>{{ areaCount }}</strong>
+          {{ areaCount === 1 ? $t('forms.areas-singular') : $t('forms.areas-plural') }}
         </p>
       </div>
     </div>

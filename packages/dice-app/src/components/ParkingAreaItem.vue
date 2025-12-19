@@ -3,7 +3,10 @@
     <div class="area-content">
       <div v-if="!isEditing && !isEditingColor" class="area-info">
         <div class="area-label" @click.stop="startEditing">{{ area.label }}</div>
-        <div class="area-count">{{ diceCount }} dice</div>
+        <div class="area-count">
+          {{ diceCount }}
+          {{ diceCount === 1 ? $t('forms.dice-singular') : $t('forms.dice-plural') }}
+        </div>
       </div>
       <BaseInput
         v-else-if="isEditing && !isEditingColor"
@@ -17,7 +20,7 @@
         @click.stop
       />
       <div v-else-if="isEditingColor" class="color-editor">
-        <BaseColorPicker v-model="editingColor" label="Area Color" />
+        <BaseColorPicker v-model="editingColor" :label="$t('forms.area-color')" />
       </div>
     </div>
 
@@ -27,7 +30,7 @@
         :style="{ backgroundColor: area.color || '#3b82f6' }"
         :title="area.color || '#3b82f6'"
         @click.stop="startEditingColor"
-        aria-label="Edit area color"
+        :aria-label="$t('forms.edit-area-color')"
       />
       <BaseButton variant="danger" class="btn-delete-area" @click.stop="handleDelete">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -45,6 +48,7 @@
 
 <script setup lang="ts">
 import { ref, computed, nextTick, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import BaseButton from './base/BaseButton.vue';
 import BaseInput from './base/BaseInput.vue';
 import BaseColorPicker from './base/BaseColorPicker.vue';
@@ -53,6 +57,8 @@ import { useDiceStore } from '@/stores/dice';
 import { useAreasStore } from '@/stores/areas';
 import { useToastStore } from '@/stores/toast';
 import { isAreaNameUnique } from '@/utils/areas';
+
+const { t } = useI18n();
 
 interface Props {
   area: ParkingArea;
@@ -103,20 +109,20 @@ const saveEdit = () => {
   const trimmedLabel = editedLabel.value.trim();
 
   if (!trimmedLabel) {
-    toastStore.show('Area name cannot be empty');
+    toastStore.show(t('validation.empty-area-name'));
     cancelEdit();
     return;
   }
 
   if (!isAreaNameUnique(areasStore.areas, trimmedLabel, props.area.id)) {
-    toastStore.show('Area name already exists');
+    toastStore.show(t('validation.duplicate-area'));
     cancelEdit();
     return;
   }
 
   if (trimmedLabel !== props.area.label) {
     areasStore.updateArea(props.area.id, trimmedLabel);
-    toastStore.show('Area renamed');
+    toastStore.show(t('messages.area-renamed'));
   }
 
   isEditing.value = false;

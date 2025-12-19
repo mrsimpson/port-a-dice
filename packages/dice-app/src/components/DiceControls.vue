@@ -6,14 +6,14 @@
         :key="color"
         :style="{ backgroundColor: DICE_COLORS[color] }"
         :class="['color-btn', { active: selectedColor === color }]"
-        :aria-label="`Select ${color} dice`"
+        :aria-label="`${t('forms.add-die')} - ${color}`"
         @click="selectedColor = color"
       />
     </div>
 
     <div class="action-buttons">
       <BaseButton variant="primary" :disabled="diceStore.isRolling" @click="handleAddDice">
-        Add Dice
+        {{ $t('buttons.add') }}
       </BaseButton>
       <BaseButton
         variant="secondary"
@@ -35,10 +35,13 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import BaseButton from './base/BaseButton.vue';
 import { useDiceStore } from '@/stores/dice';
 import { storeToRefs } from 'pinia';
 import { DICE_COLORS, type DiceColor, type PresetDiceColor } from '@/types';
+
+const { t } = useI18n();
 
 const diceStore = useDiceStore();
 
@@ -51,15 +54,15 @@ const unparkedCount = computed(() => dice.value.filter((d) => d.areaId === null)
 const parkedCount = computed(() => dice.value.filter((d) => d.areaId !== null).length);
 
 const rollButtonText = computed(() => {
-  if (diceStore.isRolling) return 'Rolling...';
-  if (unparkedCount.value === 0) return 'All Parked';
-  if (parkedCount.value === 0) return 'Roll';
-  return `Roll (${unparkedCount.value})`;
+  if (diceStore.isRolling) return t('buttons.rolling');
+  if (unparkedCount.value === 0) return t('buttons.all-parked') || 'All Parked';
+  if (parkedCount.value === 0) return t('buttons.roll');
+  return `${t('buttons.roll')} (${unparkedCount.value})`;
 });
 
 const rollAllButtonText = computed(() => {
-  if (parkedCount.value === 0) return 'Roll All';
-  return `Roll All (${dice.value.length})`;
+  if (parkedCount.value === 0) return t('buttons.roll-all');
+  return `${t('buttons.roll-all')} (${dice.value.length})`;
 });
 
 const handleAddDice = () => {
