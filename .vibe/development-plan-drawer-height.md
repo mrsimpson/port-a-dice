@@ -249,7 +249,13 @@ Use `max-height` with safe margin to guarantee header visibility on all mobile d
 5. **Backward compatibility**: Maintain vh fallback for browsers that don't support dvh
 
 ## Notes
-*Additional context and observations*
+**Related Task**: Create shared DrawerWrapper component for ConfigDrawer and HistoryDrawer to reduce code duplication. Both components have nearly identical overlay, header, and footer structure. This refactoring will:
+1. Extract common drawer UI structure into reusable DrawerWrapper component
+2. Keep content-specific logic in ConfigDrawer and HistoryDrawer
+3. Ensure safe-area-inset handling is consistent across both drawers
+4. Simplify future drawer implementations
+
+This task should be tracked as a separate feature/refactoring effort with its own development plan.
 
 ---
 *This plan is maintained by the LLM. Tool responses provide guidance on which section to focus on and what tasks to work on.*

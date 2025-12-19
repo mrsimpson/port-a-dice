@@ -1,316 +1,290 @@
 <template>
-  <Teleport to="body">
-    <div v-if="uiStore.showConfig" class="drawer-overlay" @click="handleOverlayClick">
-      <div class="drawer" @click.stop>
-        <div class="drawer-header">
-          <h2 class="drawer-title">Game Configuration</h2>
-          <button class="btn-close" aria-label="Close" @click="uiStore.closeConfig">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
+  <DrawerWrapper
+    title="Game Configuration"
+    :is-open="uiStore.showConfig"
+    @close="uiStore.closeConfig"
+  >
+    <!-- Tab Navigation Header -->
+    <template #header>
+      <div class="tab-navigation">
+        <button :class="['tab-btn', { active: activeTab === 'dice' }]" @click="activeTab = 'dice'">
+          Dice
+        </button>
+        <button
+          :class="['tab-btn', { active: activeTab === 'areas' }]"
+          @click="activeTab = 'areas'"
+        >
+          Areas
+        </button>
+        <button :class="['tab-btn', { active: activeTab === 'save' }]" @click="activeTab = 'save'">
+          Save
+        </button>
+        <button
+          :class="['tab-btn', { active: activeTab === 'load' }]"
+          @click="
+            activeTab = 'load';
+            loadConfigurations();
+          "
+        >
+          Load
+        </button>
+      </div>
+    </template>
 
-        <!-- Tab Navigation -->
-        <div class="tab-navigation">
-          <button
-            :class="['tab-btn', { active: activeTab === 'dice' }]"
-            @click="activeTab = 'dice'"
-          >
-            Dice
-          </button>
-          <button
-            :class="['tab-btn', { active: activeTab === 'areas' }]"
-            @click="activeTab = 'areas'"
-          >
-            Areas
-          </button>
-          <button
-            :class="['tab-btn', { active: activeTab === 'save' }]"
-            @click="activeTab = 'save'"
-          >
-            Save
-          </button>
-          <button
-            :class="['tab-btn', { active: activeTab === 'load' }]"
-            @click="
-              activeTab = 'load';
-              loadConfigurations();
-            "
-          >
-            Load
-          </button>
-        </div>
-
-        <div class="drawer-content">
-          <!-- DICE TAB -->
-          <div v-if="activeTab === 'dice'" class="tab-content">
-            <div class="tab-scroll-content">
-              <div class="color-picker">
-                <label class="section-label">Add a new die</label>
-                <div style="display: flex; justify-content: space-between">
-                  <div class="color-grid-compact">
-                    <button
-                      v-for="color in presetColors"
-                      :key="color"
-                      :style="{ backgroundColor: DICE_COLORS[color] }"
-                      :class="[
-                        'color-btn-compact',
-                        { active: !useCustomColor && selectedPresetColor === color },
-                      ]"
-                      :aria-label="`Select ${color} dice`"
-                      @click="handlePresetColorClick(color)"
-                      :title="color"
-                    />
-                    <div class="custom-color-btn-wrapper">
-                      <label class="custom-color-label-compact">Custom</label>
-                      <input
-                        v-model="customColor"
-                        type="color"
-                        class="custom-color-btn-compact"
-                        :class="{ active: useCustomColor }"
-                        :aria-label="`Custom color: ${customColor}`"
-                        @focus="handleCustomColorFocus"
-                        @input="handleCustomColorFocus"
-                        :title="`Custom color: ${customColor}`"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="add-die-btn-wrapper">
-                    <button
-                      class="btn btn-add-compact"
-                      :disabled="uiStore.isRolling"
-                      @click="handleAddDice"
-                      title="Add a die with selected color"
-                    >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M12 4v16m8-8H4"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div v-if="dice.length > 0" class="dice-list-section">
-                <label class="section-label">Current Dice ({{ dice.length }})</label>
-                <div class="dice-grid">
-                  <div v-for="die in dice" :key="die.id" class="dice-grid-item">
-                    <div class="dice-grid-display">
-                      <div
-                        class="dice-color-indicator-grid"
-                        :style="{ backgroundColor: getColorDisplay(die.color) }"
-                      ></div>
-                      <div class="dice-grid-label">{{ die.color }}</div>
-                    </div>
-                    <button
-                      class="btn-delete-grid"
-                      :title="`Delete ${die.color} die`"
-                      @click="handleRemoveDice(die.id)"
-                      aria-label="Delete die"
-                    >
-                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tab-footer">
+    <!-- Content -->
+    <!-- DICE TAB -->
+    <div v-if="activeTab === 'dice'" class="tab-content">
+      <div class="tab-scroll-content">
+        <div class="color-picker">
+          <label class="section-label">Add a new die</label>
+          <div style="display: flex; justify-content: space-between">
+            <div class="color-grid-compact">
               <button
-                class="btn btn-reset-game"
-                :disabled="dice.length === 0"
-                @click="handleDeleteCurrentConfiguration"
-              >
-                Reset Game
-              </button>
+                v-for="color in presetColors"
+                :key="color"
+                :style="{ backgroundColor: DICE_COLORS[color] }"
+                :class="[
+                  'color-btn-compact',
+                  { active: !useCustomColor && selectedPresetColor === color },
+                ]"
+                :aria-label="`Select ${color} dice`"
+                @click="handlePresetColorClick(color)"
+                :title="color"
+              />
+              <div class="custom-color-btn-wrapper">
+                <label class="custom-color-label-compact">Custom</label>
+                <input
+                  v-model="customColor"
+                  type="color"
+                  class="custom-color-btn-compact"
+                  :class="{ active: useCustomColor }"
+                  :aria-label="`Custom color: ${customColor}`"
+                  @focus="handleCustomColorFocus"
+                  @input="handleCustomColorFocus"
+                  :title="`Custom color: ${customColor}`"
+                />
+              </div>
             </div>
-          </div>
 
-          <!-- AREAS TAB -->
-          <div v-if="activeTab === 'areas'" class="tab-content">
-            <div class="tab-scroll-content">
-              <div v-if="areasStore.sortedAreas.length === 0" class="empty-state">
-                <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="add-die-btn-wrapper">
+              <button
+                class="btn btn-add-compact"
+                :disabled="uiStore.isRolling"
+                @click="handleAddDice"
+                title="Add a die with selected color"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                    d="M12 4v16m8-8H4"
                   />
                 </svg>
-                <p>No parking areas yet. Add one below.</p>
-              </div>
-
-              <div v-else class="areas-list">
-                <ParkingAreaItem
-                  v-for="area in areasStore.sortedAreas"
-                  :key="area.id"
-                  :area="area"
-                  @delete="handleDeleteArea"
-                />
-              </div>
-            </div>
-
-            <div class="tab-footer">
-              <div class="add-area-form">
-                <input
-                  ref="newAreaInput"
-                  v-model="newAreaName"
-                  type="text"
-                  placeholder="New area name..."
-                  class="area-name-input"
-                  @keyup.enter="handleAddArea"
-                />
-                <button class="btn-add" :disabled="!newAreaName.trim()" @click="handleAddArea">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- SAVE TAB -->
-          <div v-if="activeTab === 'save'" class="tab-content">
-            <div class="tab-scroll-content">
-              <div class="save-form">
-                <div class="form-group">
-                  <label for="config-name" class="form-label">Game Name *</label>
-                  <input
-                    id="config-name"
-                    v-model="saveName"
-                    type="text"
-                    class="form-input"
-                    placeholder="Enter game configuration name"
-                    @keyup.enter="handleSaveConfiguration"
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label for="config-description" class="form-label">Description (optional)</label>
-                  <textarea
-                    id="config-description"
-                    v-model="saveDescription"
-                    class="form-textarea"
-                    placeholder="e.g., For tournament on Friday"
-                    rows="3"
-                  ></textarea>
-                </div>
-
-                <div v-if="configManagerStore.error" class="error-message">
-                  {{ configManagerStore.error }}
-                </div>
-
-                <p v-if="dice.length === 0" class="info-text">No dice to save. Add dice first.</p>
-              </div>
-            </div>
-
-            <div class="tab-footer">
-              <button
-                class="btn btn-save"
-                :disabled="!saveName.trim() || dice.length === 0"
-                @click="handleSaveConfiguration"
-              >
-                Save Game
               </button>
             </div>
           </div>
+        </div>
 
-          <!-- LOAD TAB -->
-          <div v-if="activeTab === 'load'" class="tab-content">
-            <div class="tab-scroll-content">
-              <div v-if="configManagerStore.loading" class="loading-state">
-                Loading saved games...
-              </div>
-
-              <div v-else-if="configManagerStore.configurations.length === 0" class="empty-state">
-                <p>No saved games yet. Create one in the Save tab!</p>
-              </div>
-
-              <div v-else class="configurations-list">
+        <div v-if="dice.length > 0" class="dice-list-section">
+          <label class="section-label">Current Dice ({{ dice.length }})</label>
+          <div class="dice-grid">
+            <div v-for="die in dice" :key="die.id" class="dice-grid-item">
+              <div class="dice-grid-display">
                 <div
-                  v-for="config in configManagerStore.configurations"
-                  :key="config.id"
-                  class="config-item"
-                >
-                  <div class="config-info">
-                    <h3 class="config-name">{{ config.name }}</h3>
-                    <p v-if="config.description" class="config-description">
-                      {{ config.description }}
-                    </p>
-                    <div class="config-meta">
-                      <span class="meta-item">
-                        <strong>{{ config.dice.length }}</strong> dice
-                      </span>
-                      <span class="meta-item">
-                        <strong>{{ config.areas.length }}</strong> areas
-                      </span>
-                      <span class="meta-item">
-                        {{ formatDate(config.updatedAt) }}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div class="config-actions">
-                    <button class="btn btn-load" @click="handleLoadConfiguration(config.id)">
-                      Load
-                    </button>
-                    <button
-                      class="btn btn-delete-config"
-                      title="Delete configuration"
-                      @click="handleDeleteConfiguration(config.id)"
-                    >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
+                  class="dice-color-indicator-grid"
+                  :style="{ backgroundColor: getColorDisplay(die.color) }"
+                ></div>
+                <div class="dice-grid-label">{{ die.color }}</div>
               </div>
-
-              <div v-if="configManagerStore.error" class="error-message">
-                {{ configManagerStore.error }}
-              </div>
+              <button
+                class="btn-delete-grid"
+                :title="`Delete ${die.color} die`"
+                @click="handleRemoveDice(die.id)"
+                aria-label="Delete die"
+              >
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+              </button>
             </div>
-
-            <div class="tab-footer"></div>
           </div>
         </div>
       </div>
     </div>
-  </Teleport>
+
+    <!-- AREAS TAB -->
+    <div v-if="activeTab === 'areas'" class="tab-content">
+      <div class="tab-scroll-content">
+        <div v-if="areasStore.sortedAreas.length === 0" class="empty-state">
+          <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+            />
+          </svg>
+          <p>No parking areas yet. Add one below.</p>
+        </div>
+
+        <div v-else class="areas-list">
+          <ParkingAreaItem
+            v-for="area in areasStore.sortedAreas"
+            :key="area.id"
+            :area="area"
+            @delete="handleDeleteArea"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- SAVE TAB -->
+    <div v-if="activeTab === 'save'" class="tab-content">
+      <div class="tab-scroll-content">
+        <div class="save-form">
+          <div class="form-group">
+            <label for="config-name" class="form-label">Game Name *</label>
+            <input
+              id="config-name"
+              v-model="saveName"
+              type="text"
+              class="form-input"
+              placeholder="Enter game configuration name"
+              @keyup.enter="handleSaveConfiguration"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="config-description" class="form-label">Description (optional)</label>
+            <textarea
+              id="config-description"
+              v-model="saveDescription"
+              class="form-textarea"
+              placeholder="e.g., For tournament on Friday"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div v-if="configManagerStore.error" class="error-message">
+            {{ configManagerStore.error }}
+          </div>
+
+          <p v-if="dice.length === 0" class="info-text">No dice to save. Add dice first.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOAD TAB -->
+    <div v-if="activeTab === 'load'" class="tab-content">
+      <div class="tab-scroll-content">
+        <div v-if="configManagerStore.loading" class="loading-state">Loading saved games...</div>
+
+        <div v-else-if="configManagerStore.configurations.length === 0" class="empty-state">
+          <p>No saved games yet. Create one in the Save tab!</p>
+        </div>
+
+        <div v-else class="configurations-list">
+          <div
+            v-for="config in configManagerStore.configurations"
+            :key="config.id"
+            class="config-item"
+          >
+            <div class="config-info">
+              <h3 class="config-name">{{ config.name }}</h3>
+              <p v-if="config.description" class="config-description">
+                {{ config.description }}
+              </p>
+              <div class="config-meta">
+                <span class="meta-item">
+                  <strong>{{ config.dice.length }}</strong> dice
+                </span>
+                <span class="meta-item">
+                  <strong>{{ config.areas.length }}</strong> areas
+                </span>
+                <span class="meta-item">
+                  {{ formatDate(config.updatedAt) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="config-actions">
+              <button class="btn btn-load" @click="handleLoadConfiguration(config.id)">Load</button>
+              <button
+                class="btn btn-delete-config"
+                title="Delete configuration"
+                @click="handleDeleteConfiguration(config.id)"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="configManagerStore.error" class="error-message">
+          {{ configManagerStore.error }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer with Actions -->
+    <template #footer>
+      <button
+        v-if="activeTab === 'dice'"
+        class="btn btn-reset-game"
+        :disabled="dice.length === 0"
+        @click="handleDeleteCurrentConfiguration"
+      >
+        Reset Game
+      </button>
+      <div v-else-if="activeTab === 'areas'" class="add-area-form">
+        <input
+          ref="newAreaInput"
+          v-model="newAreaName"
+          type="text"
+          placeholder="New area name..."
+          class="area-name-input"
+          @keyup.enter="handleAddArea"
+        />
+        <button class="btn-add" :disabled="!newAreaName.trim()" @click="handleAddArea">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+        </button>
+      </div>
+      <button
+        v-else-if="activeTab === 'save'"
+        class="btn btn-save"
+        :disabled="!saveName.trim() || dice.length === 0"
+        @click="handleSaveConfiguration"
+      >
+        Save Game
+      </button>
+      <div v-else-if="activeTab === 'load'"></div>
+    </template>
+  </DrawerWrapper>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import DrawerWrapper from './DrawerWrapper.vue';
 import ParkingAreaItem from './ParkingAreaItem.vue';
 import { useDiceStore } from '@/stores/dice';
 import { useAreasStore } from '@/stores/areas';
@@ -471,98 +445,9 @@ const loadConfigurations = async () => {
     toastStore.show('Failed to load saved games');
   }
 };
-
-const handleOverlayClick = () => {
-  uiStore.closeConfig();
-};
 </script>
 
 <style scoped>
-.drawer-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 1000;
-  display: flex;
-  align-items: flex-end;
-  animation: fadeIn 0.2s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.drawer {
-  width: 100%;
-  /* Use dynamic viewport height which adjusts for browser UI and keyboard */
-  height: 100dvh;
-  height: 100vh; /* Fallback for older browsers */
-  background: #1f2937;
-  border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem;
-  display: flex;
-  flex-direction: column;
-  animation: slideUp 0.3s ease-out;
-  /* Account for safe areas and keyboard insets */
-  padding-bottom: max(0px, env(safe-area-inset-bottom, 0px));
-  box-sizing: border-box;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-.drawer-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  padding-right: calc(1.5rem + env(safe-area-inset-right, 0px));
-  padding-top: calc(1.5rem + env(safe-area-inset-top, 0px));
-  padding-left: calc(1.5rem + env(safe-area-inset-left, 0px));
-  border-bottom: 1px solid #374151;
-  flex-shrink: 0;
-}
-
-.drawer-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #f3f4f6;
-  margin: 0;
-}
-
-.btn-close {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  background: transparent;
-  border: none;
-  color: #9ca3af;
-  cursor: pointer;
-  border-radius: 0.375rem;
-  transition: all 0.2s;
-}
-
-.btn-close:hover {
-  background: #374151;
-  color: #f3f4f6;
-}
-
 /* Tab Navigation */
 .tab-navigation {
   display: flex;
@@ -601,13 +486,6 @@ const handleOverlayClick = () => {
   border-bottom: 2px solid #3b82f6;
 }
 
-.drawer-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
 .tab-content {
   display: flex;
   flex-direction: column;
@@ -621,18 +499,6 @@ const handleOverlayClick = () => {
   padding: 1.5rem;
   padding-right: calc(1.5rem + env(safe-area-inset-right, 0px));
   padding-left: calc(1.5rem + env(safe-area-inset-left, 0px));
-}
-
-.tab-footer {
-  padding: 1.5rem;
-  padding-right: calc(1.5rem + env(safe-area-inset-right, 0px));
-  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
-  padding-left: calc(1.5rem + env(safe-area-inset-left, 0px));
-  border-top: 1px solid #374151;
-  flex-shrink: 0;
-  min-height: 56px;
-  display: flex;
-  align-items: center;
 }
 
 .section-label {
@@ -729,15 +595,11 @@ const handleOverlayClick = () => {
   box-shadow: inset 0 0 0 2px #60a5fa;
 }
 
-.action-section {
+.add-die-btn-wrapper {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
-}
-
-.danger-section {
-  /* Removed: button is now in tab-footer */
 }
 
 .btn {
@@ -779,6 +641,7 @@ const handleOverlayClick = () => {
 }
 
 .btn-save {
+  width: 100%;
   background: #3b82f6;
   color: white;
 }
@@ -797,6 +660,7 @@ const handleOverlayClick = () => {
 }
 
 .btn-reset-game {
+  width: 100%;
   background: #ef4444;
   color: white;
 }
@@ -814,6 +678,28 @@ const handleOverlayClick = () => {
 .btn-delete-config:hover {
   background: #ef4444;
   color: white;
+}
+
+.btn-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-add:not(:disabled):hover {
+  background: #059669;
+}
+
+.btn-add:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .dice-list-section {
@@ -935,6 +821,7 @@ const handleOverlayClick = () => {
 .add-area-form {
   display: flex;
   gap: 0.5rem;
+  width: 100%;
 }
 
 .area-name-input {
@@ -1002,9 +889,9 @@ const handleOverlayClick = () => {
   min-height: 3rem;
 }
 
-.form-actions {
-  display: flex;
-  gap: 0.75rem;
+.info-text {
+  color: #9ca3af;
+  font-size: 0.875rem;
 }
 
 /* Load Tab */
@@ -1073,5 +960,29 @@ const handleOverlayClick = () => {
   border-radius: 0.5rem;
   font-size: 0.875rem;
   border: 1px solid #991b1b;
+}
+
+.w-3 {
+  width: 0.75rem;
+}
+
+.h-3 {
+  height: 0.75rem;
+}
+
+.w-4 {
+  width: 1rem;
+}
+
+.h-4 {
+  height: 1rem;
+}
+
+.w-5 {
+  width: 1.25rem;
+}
+
+.h-5 {
+  height: 1.25rem;
 }
 </style>

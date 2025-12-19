@@ -1,70 +1,49 @@
 <template>
-  <Teleport to="body">
-    <div v-if="uiStore.showHistory" class="drawer-overlay" @click="uiStore.closeHistory">
-      <div class="drawer" @click.stop>
-        <div class="drawer-header">
-          <h2 class="drawer-title">Roll History</h2>
-          <button class="btn-close" @click="uiStore.closeHistory">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <DrawerWrapper title="Roll History" :is-open="uiStore.showHistory" @close="uiStore.closeHistory">
+    <!-- Content -->
+    <div v-if="historyStore.entryCount === 0" class="empty-state">
+      <p>No roll history yet</p>
+    </div>
+
+    <div v-else class="history-list">
+      <div v-for="entry in historyStore.sortedEntries" :key="entry.id" class="history-item">
+        <div class="history-header">
+          <div class="history-time">
+            {{ formatTime(entry.timestamp) }}
+          </div>
+          <button class="btn-restore" @click="handleRestore(entry)" title="Restore this state">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
               />
             </svg>
           </button>
         </div>
-
-        <div class="drawer-content">
-          <div v-if="historyStore.entryCount === 0" class="empty-state">
-            <p>No roll history yet</p>
-          </div>
-
-          <div v-else class="history-list">
-            <div v-for="entry in historyStore.sortedEntries" :key="entry.id" class="history-item">
-              <div class="history-header">
-                <div class="history-time">
-                  {{ formatTime(entry.timestamp) }}
-                </div>
-                <button
-                  class="btn-restore"
-                  @click="handleRestore(entry)"
-                  title="Restore this state"
-                >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <div class="history-dice">
-                <span
-                  v-for="dice in entry.dice"
-                  :key="dice.id"
-                  :style="{ color: getColorDisplay(dice.color) }"
-                  class="dice-value"
-                >
-                  {{ dice.value }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="historyStore.entryCount > 0" class="drawer-footer">
-          <button class="btn btn-clear" @click="handleClearHistory">Clear History</button>
+        <div class="history-dice">
+          <span
+            v-for="dice in entry.dice"
+            :key="dice.id"
+            :style="{ color: getColorDisplay(dice.color) }"
+            class="dice-value"
+          >
+            {{ dice.value }}
+          </span>
         </div>
       </div>
     </div>
-  </Teleport>
+
+    <!-- Footer -->
+    <template v-if="historyStore.entryCount > 0" #footer>
+      <button class="btn btn-clear" @click="handleClearHistory">Clear History</button>
+    </template>
+  </DrawerWrapper>
 </template>
 
 <script setup lang="ts">
+import DrawerWrapper from './DrawerWrapper.vue';
 import { useHistoryStore } from '@/stores/history';
 import { useUIStore } from '@/stores/ui';
 import { useDiceStore } from '@/stores/dice';
@@ -104,89 +83,6 @@ const handleRestore = (entry: RollHistoryEntry) => {
 </script>
 
 <style scoped>
-.drawer-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 50;
-  display: flex;
-  align-items: flex-end;
-  animation: fadeIn 0.2s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.drawer {
-  width: 100%;
-  max-height: 80dvh;
-  max-height: 80vh;
-  background: #1f2937;
-  border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem;
-  display: flex;
-  flex-direction: column;
-  animation: slideUp 0.3s ease-out;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-.drawer-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #374151;
-}
-
-.drawer-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #f3f4f6;
-  margin: 0;
-}
-
-.btn-close {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  background: transparent;
-  border: none;
-  color: #9ca3af;
-  cursor: pointer;
-  border-radius: 0.5rem;
-  transition: all 0.2s;
-}
-
-.btn-close:hover {
-  background: #374151;
-  color: #f3f4f6;
-}
-
-.drawer-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1rem;
-}
-
 .empty-state {
   display: flex;
   justify-content: center;
@@ -240,11 +136,6 @@ const handleRestore = (entry: RollHistoryEntry) => {
   font-size: 0.875rem;
 }
 
-.drawer-footer {
-  padding: 1rem 1.5rem;
-  border-top: 1px solid #374151;
-}
-
 .btn {
   width: 100%;
   padding: 0.75rem;
@@ -290,5 +181,13 @@ const handleRestore = (entry: RollHistoryEntry) => {
 
 .btn-restore:active {
   transform: scale(0.95);
+}
+
+.w-5 {
+  width: 1.25rem;
+}
+
+.h-5 {
+  height: 1.25rem;
 }
 </style>
