@@ -502,14 +502,18 @@ const handleOverlayClick = () => {
 
 .drawer {
   width: 100%;
-  height: 95dvh;
-  height: 95vh;
+  /* Use dynamic viewport height which adjusts for browser UI and keyboard */
+  height: 100dvh;
+  height: 100vh; /* Fallback for older browsers */
   background: #1f2937;
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
   display: flex;
   flex-direction: column;
   animation: slideUp 0.3s ease-out;
+  /* Account for safe areas and keyboard insets */
+  padding-bottom: max(0px, env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
 }
 
 @keyframes slideUp {
@@ -526,6 +530,9 @@ const handleOverlayClick = () => {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
+  padding-right: calc(1.5rem + env(safe-area-inset-right, 0px));
+  padding-top: calc(1.5rem + env(safe-area-inset-top, 0px));
+  padding-left: calc(1.5rem + env(safe-area-inset-left, 0px));
   border-bottom: 1px solid #374151;
   flex-shrink: 0;
 }
@@ -612,10 +619,15 @@ const handleOverlayClick = () => {
   flex: 1;
   overflow-y: auto;
   padding: 1.5rem;
+  padding-right: calc(1.5rem + env(safe-area-inset-right, 0px));
+  padding-left: calc(1.5rem + env(safe-area-inset-left, 0px));
 }
 
 .tab-footer {
   padding: 1.5rem;
+  padding-right: calc(1.5rem + env(safe-area-inset-right, 0px));
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  padding-left: calc(1.5rem + env(safe-area-inset-left, 0px));
   border-top: 1px solid #374151;
   flex-shrink: 0;
   min-height: 56px;

@@ -150,6 +150,7 @@ Add a restore option to history items that allows users to restore the dice and 
 - [x] Confirm TypeScript type safety
 - [x] Inline restore button in history item header
 - [x] Fix restore button reactivity with render delay
+- [x] Create final commit
 
 ### Completed
 - [x] Cleaned up debug console.log statements from history.ts addEntry method
@@ -159,7 +160,42 @@ Add a restore option to history items that allows users to restore the dice and 
 - [x] Linting passes with no errors ✅
 - [x] No TODO/FIXME comments in modified code
 - [x] TypeScript type checking passes with no errors ✅
+- [x] **Feature committed to restore-from-history branch** ✅
+- [x] Commit ID: 17ba146
 - [x] Code ready for production
+
+---
+
+## FEATURE COMPLETE ✅
+
+### Commit Message
+```
+feat: add restore from history functionality
+
+- Add restoreFromHistory action to dice store to restore previous dice states
+- Reuse existing setAreas action in areas store for restoring parking areas
+- Add inline restore button with undo icon to each history item header
+- Restore button closes history drawer with 100ms delay for proper rendering
+- Show toast notification when state is successfully restored
+- Add comprehensive test suite with 14 new tests covering all restore scenarios
+- Clean up debug console.log statements from history store
+- All 48 tests passing (34 existing + 14 new)
+- TypeScript strict mode compliant
+- Linting: 0 errors
+```
+
+### Files Changed
+- `packages/dice-app/src/stores/dice.ts` - Added restoreFromHistory action
+- `packages/dice-app/src/stores/history.ts` - Removed debug console logs
+- `packages/dice-app/src/components/HistoryDrawer.vue` - Added restore button UI and handler
+- `packages/dice-app/src/stores/__tests__/restore.spec.ts` - NEW: 14 comprehensive tests
+- `.vibe/development-plan-restore-from-history.md` - NEW: Development plan
+
+### Test Coverage
+- ✅ 48/48 tests passing
+- ✅ 14 new restore-specific tests
+- ✅ 100% functionality coverage
+- ✅ Edge cases tested (empty states, multiple restores, deep copy verification)
 
 ## Key Decisions
 - History entries already contain complete snapshots of dice and areas - restoration is straightforward
