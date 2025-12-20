@@ -252,9 +252,6 @@ const loadConfigurations = async () => {
 .tab-scroll-content {
   flex: 1;
   overflow-y: auto;
-  padding: 1.5rem;
-  padding-right: calc(1.5rem + env(safe-area-inset-right, 0px));
-  padding-left: calc(1.5rem + env(safe-area-inset-left, 0px));
 }
 
 .add-area-form {

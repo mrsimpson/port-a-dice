@@ -104,18 +104,12 @@ const handleRestore = (entry: RollHistoryEntry) => {
   height: 200px;
   color: #9ca3af;
   font-size: 0.875rem;
-  padding: 1.5rem;
-  padding-right: calc(1.5rem + env(safe-area-inset-right, 0px));
-  padding-left: calc(1.5rem + env(safe-area-inset-left, 0px));
 }
 
 .history-list {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  padding: 1.5rem;
-  padding-right: calc(1.5rem + env(safe-area-inset-right, 0px));
-  padding-left: calc(1.5rem + env(safe-area-inset-left, 0px));
 }
 
 .history-item {
