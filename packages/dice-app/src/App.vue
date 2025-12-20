@@ -60,6 +60,7 @@ const uiStore = useUIStore();
 
 onMounted(() => {
   areasStore.initializeDefaultAreas();
+  uiStore.initializeLanguageSwitcherVisibility();
 });
 </script>
 

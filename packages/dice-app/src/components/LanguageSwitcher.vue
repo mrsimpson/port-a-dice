@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isBrowserLanguageAuto" class="language-switcher">
+  <div v-if="uiStore.showLanguageSwitcher" class="language-switcher">
     <button
       v-for="lang in languages"
       :key="lang"
@@ -13,13 +13,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { isBrowserLanguageDetected } from '@/i18n';
+import { useUIStore } from '@/stores/ui';
 
 const { locale } = useI18n();
+const uiStore = useUIStore();
 const languages = ['en', 'de'] as const;
-const isBrowserLanguageAuto = computed(() => isBrowserLanguageDetected());
 
 const setLocale = (lang: 'en' | 'de') => {
   locale.value = lang;
