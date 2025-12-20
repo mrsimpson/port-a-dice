@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { isBrowserLanguageDetected } from '@/i18n';
 
 export const useUIStore = defineStore('ui', {
   state: () => ({
@@ -7,6 +8,7 @@ export const useUIStore = defineStore('ui', {
     showHistory: false,
     showResetConfirm: false,
     showConfig: false,
+    showLanguageSwitcher: true, // Will be initialized during app setup
   }),
 
   actions: {
@@ -49,6 +51,10 @@ export const useUIStore = defineStore('ui', {
 
     closeConfig() {
       this.showConfig = false;
+    },
+
+    initializeLanguageSwitcherVisibility() {
+      this.showLanguageSwitcher = !isBrowserLanguageDetected();
     },
   },
 });
