@@ -1,12 +1,23 @@
 <template>
-  <input ref="inputRef" :class="['base-input', { 'base-input--error': error }]" v-bind="$attrs" />
+  <input
+    ref="inputRef"
+    :class="['base-input', { 'base-input--error': error }]"
+    :value="modelValue"
+    v-bind="$attrs"
+    @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+  />
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 
 defineProps<{
+  modelValue?: string;
   error?: boolean;
+}>();
+
+const emit = defineEmits<{
+  'update:modelValue': [value: string];
 }>();
 
 const inputRef = ref<HTMLInputElement | null>(null);
