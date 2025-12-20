@@ -13,17 +13,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isBrowserLanguageDetected } from '@/i18n';
 
 const { locale } = useI18n();
 const languages = ['en', 'de'] as const;
-const isBrowserLanguageAuto = ref(false);
-
-onMounted(() => {
-  isBrowserLanguageAuto.value = isBrowserLanguageDetected();
-});
+const isBrowserLanguageAuto = computed(() => isBrowserLanguageDetected());
 
 const setLocale = (lang: 'en' | 'de') => {
   locale.value = lang;
