@@ -16,17 +16,15 @@
         >
           {{ $t('tabs.areas') }}
         </button>
-        <button :class="['tab-btn', { active: activeTab === 'save' }]" @click="activeTab = 'save'">
-          {{ $t('tabs.save') }}
-        </button>
         <button
-          :class="['tab-btn', { active: activeTab === 'load' }]"
+          :class="['tab-btn', { active: activeTab === 'configs' }]"
           @click="
-            activeTab = 'load';
+            activeTab = 'configs';
+            configsSubTab = 'load';
             loadConfigurations();
           "
         >
-          {{ $t('tabs.load') }}
+          {{ $t('tabs.configs') }}
         </button>
       </div>
     </template>
@@ -43,14 +41,39 @@
         <AreasManagementPanel @delete="handleAreaDeleted" />
       </div>
 
-      <!-- SAVE TAB -->
-      <div v-if="activeTab === 'save'" class="tab-scroll-content">
-        <SaveGamePanel ref="savePanel" @save="handleSaveConfiguration" />
-      </div>
-
-      <!-- LOAD TAB -->
-      <div v-if="activeTab === 'load'" class="tab-scroll-content">
-        <LoadGamePanel @load="handleConfigurationLoaded" @delete="handleConfigurationDeleted" />
+      <!-- CONFIGS TAB (Save & Load) -->
+      <div v-if="activeTab === 'configs'" class="tab-scroll-content">
+        <div class="configs-subtabs">
+          <div class="configs-subtab-nav">
+            <button
+              :class="['subtab-btn', { active: configsSubTab === 'load' }]"
+              @click="
+                configsSubTab = 'load';
+                loadConfigurations();
+              "
+            >
+              {{ $t('tabs.load') }}
+            </button>
+            <button
+              :class="['subtab-btn', { active: configsSubTab === 'save' }]"
+              @click="configsSubTab = 'save'"
+            >
+              {{ $t('tabs.save') }}
+            </button>
+          </div>
+          <div class="configs-subtab-content">
+            <LoadGamePanel
+              v-if="configsSubTab === 'load'"
+              @load="handleConfigurationLoaded"
+              @delete="handleConfigurationDeleted"
+            />
+            <SaveGamePanel
+              v-else-if="configsSubTab === 'save'"
+              ref="savePanel"
+              @save="handleSaveConfiguration"
+            />
+          </div>
+        </div>
       </div>
     </div>
 
@@ -85,21 +108,20 @@
         </BaseButton>
       </div>
       <BaseButton
-        v-else-if="activeTab === 'save'"
+        v-else-if="activeTab === 'configs' && configsSubTab === 'save'"
         variant="secondary"
-        :disabled="!saveName.trim() || dice.length === 0"
+        :disabled="!saveGamePanelName.trim() || dice.length === 0"
         block
         @click="handleSave"
       >
         {{ $t('buttons.save-game') }}
       </BaseButton>
-      <div v-else-if="activeTab === 'load'"></div>
     </template>
   </DrawerWrapper>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DrawerWrapper from './DrawerWrapper.vue';
 import DiceManagementPanel from './panels/DiceManagementPanel.vue';
@@ -127,7 +149,8 @@ const configManagerStore = useConfigManagerStore();
 const { dice } = storeToRefs(diceStore);
 
 // Tab state
-const activeTab = ref<'dice' | 'areas' | 'save' | 'load'>('dice');
+const activeTab = ref<'dice' | 'areas' | 'configs'>('dice');
+const configsSubTab = ref<'load' | 'save'>('load');
 
 // Areas form state
 const newAreaName = ref<string>('');
@@ -137,8 +160,13 @@ const newAreaInput = ref<InstanceType<typeof BaseInput> | null>(null);
 const dicePanel = ref<InstanceType<typeof DiceManagementPanel> | null>(null);
 const savePanel = ref<InstanceType<typeof SaveGamePanel> | null>(null);
 
-// Computed save form state - delegated to SaveGamePanel
-const saveName = ref<string>('');
+// Computed property to get save game panel's name input
+const saveGamePanelName = computed(() => {
+  const panelComponent = savePanel.value as {
+    saveName?: { value: string };
+  } | null;
+  return panelComponent?.saveName?.value ?? '';
+});
 
 // Areas management
 const handleAddArea = () => {
@@ -262,5 +290,53 @@ const loadConfigurations = async () => {
 
 .add-area-form :deep(.base-input) {
   flex: 1;
+}
+
+/* Configs Sub-tabs */
+.configs-subtabs {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 0;
+}
+
+.configs-subtab-nav {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: #1f2937;
+  border-bottom: 1px solid #374151;
+  flex-shrink: 0;
+}
+
+.subtab-btn {
+  flex: 1;
+  padding: 0.6rem;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+
+.subtab-btn:hover {
+  color: #d1d5db;
+}
+
+.subtab-btn.active {
+  background: #374151;
+  color: #f3f4f6;
+  border-bottom: 2px solid #3b82f6;
+}
+
+.configs-subtab-content {
+  flex: 1;
+  overflow-y: auto;
 }
 </style>

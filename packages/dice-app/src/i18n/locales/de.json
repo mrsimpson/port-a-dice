@@ -33,7 +33,8 @@
     "dice": "Würfel",
     "areas": "Bereiche",
     "save": "Speichern",
-    "load": "Laden"
+    "load": "Laden",
+    "configs": "Spiele"
   },
   "forms": {
     "game-name": "Spielname",
