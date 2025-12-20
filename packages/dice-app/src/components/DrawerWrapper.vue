@@ -108,7 +108,7 @@ const onOverlayClick = () => {
   .drawer {
     width: 90%;
     max-width: 1024px;
-    max-height: 90svh;
+    height: 90svh;
     border-radius: 1rem;
     animation: zoomIn 0.3s ease-out;
     padding-bottom: 0;
@@ -176,6 +176,9 @@ const onOverlayClick = () => {
 .drawer-content {
   flex: 1;
   overflow-y: auto;
+  padding: 1.5rem;
+  padding-right: calc(1.5rem + env(safe-area-inset-right, 0px));
+  padding-left: calc(1.5rem + env(safe-area-inset-left, 0px));
   min-height: 0; /* Allow flex child to shrink below content size */
 }
 
