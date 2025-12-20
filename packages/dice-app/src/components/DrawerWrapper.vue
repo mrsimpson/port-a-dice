@@ -85,9 +85,9 @@ const onOverlayClick = () => {
 
 .drawer {
   width: 100%;
-  /* Use max-height to allow drawer to shrink when browser UI reduces viewport */
-  max-height: 100dvh;
-  max-height: 100vh; /* Fallback for older browsers */
+  /* Use max-height to allow drawer to shrink and leave room at top on mobile */
+  max-height: 92dvh;
+  max-height: 92vh; /* Fallback for older browsers */
   background: #1f2937;
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
@@ -108,7 +108,7 @@ const onOverlayClick = () => {
   .drawer {
     width: 90%;
     max-width: 1024px;
-    height: 90svh;
+    max-height: 90svh;
     border-radius: 1rem;
     animation: zoomIn 0.3s ease-out;
     padding-bottom: 0;
