@@ -3,10 +3,6 @@
     <div class="area-content">
       <div v-if="!isEditing && !isEditingColor" class="area-info">
         <div class="area-label" @click.stop="startEditing">{{ area.label }}</div>
-        <div class="area-count">
-          {{ diceCount }}
-          {{ diceCount === 1 ? $t('forms.dice-singular') : $t('forms.dice-plural') }}
-        </div>
       </div>
       <BaseInput
         v-else-if="isEditing && !isEditingColor"
@@ -25,7 +21,7 @@
     </div>
 
     <div class="area-actions">
-      <button
+      <BaseButton
         class="btn-color"
         :style="{ backgroundColor: area.color || '#3b82f6' }"
         :title="area.color || '#3b82f6'"
@@ -47,13 +43,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick, watch } from 'vue';
+import { ref, nextTick, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import BaseButton from './base/BaseButton.vue';
 import BaseInput from './base/BaseInput.vue';
 import BaseColorPicker from './base/BaseColorPicker.vue';
 import type { ParkingArea } from '@/types';
-import { useDiceStore } from '@/stores/dice';
 import { useAreasStore } from '@/stores/areas';
 import { useToastStore } from '@/stores/toast';
 import { isAreaNameUnique } from '@/utils/areas';
@@ -69,7 +64,6 @@ const emit = defineEmits<{
   delete: [areaId: string];
 }>();
 
-const diceStore = useDiceStore();
 const areasStore = useAreasStore();
 const toastStore = useToastStore();
 
@@ -78,8 +72,6 @@ const isEditingColor = ref(false);
 const editedLabel = ref('');
 const editingColor = ref('');
 const editInput = ref<HTMLInputElement | null>(null);
-
-const diceCount = computed(() => diceStore.diceInArea(props.area.id).length);
 
 // Watch for color changes and update the store
 watch(editingColor, (newColor) => {
@@ -171,7 +163,6 @@ const handleDelete = () => {
 }
 
 .area-label {
-  font-size: 0.875rem;
   font-weight: 600;
   color: #f3f4f6;
   cursor: text;
@@ -204,28 +195,30 @@ const handleDelete = () => {
 }
 
 .btn-color {
-  width: 2rem;
-  height: 2rem;
-  border: 2px solid #4b5563;
+  width: 40px;
+  height: 40px;
+  border: none !important;
   border-radius: 0.375rem;
   cursor: pointer;
   transition: all 0.2s;
   flex-shrink: 0;
+  padding: 0 !important;
+  min-width: 40px;
 }
 
 .btn-color:hover {
-  border-color: #60a5fa;
+  filter: brightness(1.1);
   transform: scale(1.05);
 }
 
-.btn-color:active {
+.btn-color:not(:disabled):active {
   transform: scale(0.95);
 }
 
 .btn-delete-area {
-  width: 2rem;
-  height: 2rem;
-  padding: 0;
+  width: 40px;
+  height: 40px;
+  padding: 0 !important;
   flex-shrink: 0;
 }
 
