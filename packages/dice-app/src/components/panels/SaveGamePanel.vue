@@ -19,7 +19,7 @@
           v-model="saveDescription"
           class="save-description"
           :placeholder="$t('forms.add-description')"
-          rows="4"
+          rows="2"
         ></textarea>
       </div>
 
@@ -85,18 +85,18 @@ defineExpose({
 .save-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.75rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.25rem;
 }
 
 .form-label {
   display: block;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #d1d5db;
   text-transform: uppercase;
@@ -108,11 +108,12 @@ defineExpose({
   border: 1px solid #4b5563;
   color: #f3f4f6;
   border-radius: 0.5rem;
-  padding: 0.75rem;
-  font-size: 0.875rem;
+  padding: 0.5rem;
+  font-size: 0.8rem;
   font-family: inherit;
   transition: all 0.2s;
   resize: vertical;
+  min-height: 2.5rem;
 }
 
 .save-description::placeholder {
@@ -128,11 +129,12 @@ defineExpose({
 .form-info {
   display: flex;
   gap: 1rem;
-  padding: 1rem;
+  padding: 0.75rem;
   background: #1f2937;
   border-radius: 0.5rem;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: #d1d5db;
+  margin-top: 0.25rem;
 }
 
 .form-info p {

@@ -43,19 +43,19 @@
       <!-- CONFIGS TAB (Save & Load) -->
       <div v-if="activeTab === 'configs'" class="tab-scroll-content">
         <div class="configs-container">
-          <!-- Load Section -->
-          <div class="configs-section">
-            <h3 class="section-title">{{ $t('tabs.load') }}</h3>
-            <LoadGamePanel @load="handleConfigurationLoaded" @delete="handleConfigurationDeleted" />
+          <!-- Save Section (Compact, on top) -->
+          <div class="configs-section configs-section-save">
+            <h3 class="section-title">{{ $t('tabs.save') }}</h3>
+            <SaveGamePanel ref="savePanel" @save="handleSaveConfiguration" />
           </div>
 
           <!-- Divider -->
           <div class="configs-divider"></div>
 
-          <!-- Save Section -->
+          <!-- Load Section -->
           <div class="configs-section">
-            <h3 class="section-title">{{ $t('tabs.save') }}</h3>
-            <SaveGamePanel ref="savePanel" @save="handleSaveConfiguration" />
+            <h3 class="section-title">{{ $t('tabs.load') }}</h3>
+            <LoadGamePanel @load="handleConfigurationLoaded" @delete="handleConfigurationDeleted" />
           </div>
         </div>
       </div>
@@ -279,19 +279,25 @@ const loadConfigurations = async () => {
 .configs-container {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  padding: 1.5rem;
+  gap: 1.25rem;
+  padding: 1rem;
 }
 
 .configs-section {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.5rem;
+}
+
+.configs-section-save {
+  padding: 0.75rem;
+  background: #1f2937;
+  border-radius: 0.375rem;
 }
 
 .section-title {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #d1d5db;
   text-transform: uppercase;
@@ -301,6 +307,6 @@ const loadConfigurations = async () => {
 .configs-divider {
   height: 1px;
   background: #374151;
-  margin: 0.5rem 0;
+  margin: 0.25rem 0;
 }
 </style>
