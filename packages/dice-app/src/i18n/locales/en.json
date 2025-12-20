@@ -33,7 +33,8 @@
     "dice": "Dice",
     "areas": "Areas",
     "save": "Save",
-    "load": "Load"
+    "load": "Load",
+    "configs": "Configs"
   },
   "forms": {
     "game-name": "Game Name",
