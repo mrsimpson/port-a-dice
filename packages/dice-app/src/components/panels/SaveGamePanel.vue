@@ -1,15 +1,21 @@
 <template>
   <div class="save-game-panel">
     <div class="save-form">
-      <div class="form-group">
-        <label for="save-name" class="form-label">{{ $t('forms.game-name') }}</label>
-        <BaseInput
-          id="save-name"
-          v-model="saveName"
-          type="text"
-          :placeholder="$t('forms.enter-game-name')"
-          @keyup.enter="handleSave"
-        />
+      <div class="save-name-group">
+        <label for="save-name" class="form-label">{{ $t('forms.save-as') }}</label>
+        <div class="name-input-group">
+          <BaseInput
+            id="save-name"
+            v-model="saveName"
+            type="text"
+            :placeholder="$t('forms.enter-game-name')"
+            @keyup.enter="handleSave"
+            class="save-input"
+          />
+          <button class="save-btn" @click="handleSave" :disabled="!saveName.trim()">
+            {{ $t('buttons.save') }}
+          </button>
+        </div>
       </div>
 
       <div class="form-group">
@@ -22,46 +28,29 @@
           rows="2"
         ></textarea>
       </div>
-
-      <div class="form-info">
-        <p>
-          <strong>{{ diceCount }}</strong>
-          {{ diceCount === 1 ? $t('forms.dice-singular') : $t('forms.dice-plural') }}
-        </p>
-        <p>
-          <strong>{{ areaCount }}</strong>
-          {{ areaCount === 1 ? $t('forms.areas-singular') : $t('forms.areas-plural') }}
-        </p>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useDiceStore } from '@/stores/dice';
-import { useAreasStore } from '@/stores/areas';
 import { storeToRefs } from 'pinia';
 import BaseInput from '@/components/base/BaseInput.vue';
 
 const diceStore = useDiceStore();
-const areasStore = useAreasStore();
 
 const { dice } = storeToRefs(diceStore);
-const areas = computed(() => areasStore.areas);
 
 const saveName = ref<string>('');
 const saveDescription = ref<string>('');
-
-const diceCount = computed(() => dice.value.length);
-const areaCount = computed(() => areas.value.length);
 
 const emit = defineEmits<{
   save: [name: string, description: string];
 }>();
 
 const handleSave = () => {
-  if (saveName.value.trim() && diceCount.value > 0) {
+  if (saveName.value.trim() && dice.value.length > 0) {
     emit('save', saveName.value, saveDescription.value);
     saveName.value = '';
     saveDescription.value = '';
@@ -85,7 +74,48 @@ defineExpose({
 .save-form {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
+}
+
+.save-name-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.name-input-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.save-input {
+  flex: 1;
+}
+
+.save-btn {
+  padding: 0.375rem 0.75rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.save-btn:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.save-btn:disabled {
+  background: #6b7280;
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .form-group {
@@ -107,13 +137,13 @@ defineExpose({
   background: #374151;
   border: 1px solid #4b5563;
   color: #f3f4f6;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  font-size: 0.8rem;
+  border-radius: 0.375rem;
+  padding: 0.375rem;
+  font-size: 0.75rem;
   font-family: inherit;
   transition: all 0.2s;
   resize: vertical;
-  min-height: 2.5rem;
+  min-height: 2rem;
 }
 
 .save-description::placeholder {
@@ -123,21 +153,6 @@ defineExpose({
 .save-description:focus {
   outline: none;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.form-info {
-  display: flex;
-  gap: 1rem;
-  padding: 0.75rem;
-  background: #1f2937;
-  border-radius: 0.5rem;
-  font-size: 0.75rem;
-  color: #d1d5db;
-  margin-top: 0.25rem;
-}
-
-.form-info p {
-  margin: 0;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
 }
 </style>

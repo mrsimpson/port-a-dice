@@ -14,6 +14,7 @@
     "rolling": "Rolling...",
     "add": "Add",
     "all-parked": "All Parked",
+    "save": "Save",
     "save-game": "Save Game",
     "load": "Load",
     "reset-game": "Reset Game",
@@ -38,6 +39,7 @@
   },
   "forms": {
     "game-name": "Game Name",
+    "save-as": "Save current config as",
     "description": "Description (Optional)",
     "new-area-placeholder": "New area name...",
     "add-die": "Add a new die",
