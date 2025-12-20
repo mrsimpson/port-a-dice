@@ -91,21 +91,12 @@
           </svg>
         </BaseButton>
       </div>
-      <BaseButton
-        v-else-if="activeTab === 'configs'"
-        variant="secondary"
-        :disabled="!saveGamePanelName.trim() || dice.length === 0"
-        block
-        @click="handleSave"
-      >
-        {{ $t('buttons.save-game') }}
-      </BaseButton>
     </template>
   </DrawerWrapper>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DrawerWrapper from './DrawerWrapper.vue';
 import DiceManagementPanel from './panels/DiceManagementPanel.vue';
@@ -143,14 +134,6 @@ const newAreaInput = ref<InstanceType<typeof BaseInput> | null>(null);
 const dicePanel = ref<InstanceType<typeof DiceManagementPanel> | null>(null);
 const savePanel = ref<InstanceType<typeof SaveGamePanel> | null>(null);
 
-// Computed property to get save game panel's name input
-const saveGamePanelName = computed(() => {
-  const panelComponent = savePanel.value as {
-    saveName?: { value: string };
-  } | null;
-  return panelComponent?.saveName?.value ?? '';
-});
-
 // Areas management
 const handleAddArea = () => {
   const trimmedName = newAreaName.value.trim();
@@ -184,10 +167,6 @@ const handleSaveConfiguration = async (name: string, description: string) => {
   } catch {
     toastStore.show(t('messages.save-failed'));
   }
-};
-
-const handleSave = () => {
-  savePanel.value?.handleSave();
 };
 
 const handleConfigurationLoaded = () => {
