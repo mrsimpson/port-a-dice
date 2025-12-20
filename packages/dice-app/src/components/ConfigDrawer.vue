@@ -20,7 +20,6 @@
           :class="['tab-btn', { active: activeTab === 'configs' }]"
           @click="
             activeTab = 'configs';
-            configsSubTab = 'load';
             loadConfigurations();
           "
         >
@@ -43,35 +42,20 @@
 
       <!-- CONFIGS TAB (Save & Load) -->
       <div v-if="activeTab === 'configs'" class="tab-scroll-content">
-        <div class="configs-subtabs">
-          <div class="configs-subtab-nav">
-            <button
-              :class="['subtab-btn', { active: configsSubTab === 'load' }]"
-              @click="
-                configsSubTab = 'load';
-                loadConfigurations();
-              "
-            >
-              {{ $t('tabs.load') }}
-            </button>
-            <button
-              :class="['subtab-btn', { active: configsSubTab === 'save' }]"
-              @click="configsSubTab = 'save'"
-            >
-              {{ $t('tabs.save') }}
-            </button>
+        <div class="configs-container">
+          <!-- Load Section -->
+          <div class="configs-section">
+            <h3 class="section-title">{{ $t('tabs.load') }}</h3>
+            <LoadGamePanel @load="handleConfigurationLoaded" @delete="handleConfigurationDeleted" />
           </div>
-          <div class="configs-subtab-content">
-            <LoadGamePanel
-              v-if="configsSubTab === 'load'"
-              @load="handleConfigurationLoaded"
-              @delete="handleConfigurationDeleted"
-            />
-            <SaveGamePanel
-              v-else-if="configsSubTab === 'save'"
-              ref="savePanel"
-              @save="handleSaveConfiguration"
-            />
+
+          <!-- Divider -->
+          <div class="configs-divider"></div>
+
+          <!-- Save Section -->
+          <div class="configs-section">
+            <h3 class="section-title">{{ $t('tabs.save') }}</h3>
+            <SaveGamePanel ref="savePanel" @save="handleSaveConfiguration" />
           </div>
         </div>
       </div>
@@ -108,7 +92,7 @@
         </BaseButton>
       </div>
       <BaseButton
-        v-else-if="activeTab === 'configs' && configsSubTab === 'save'"
+        v-else-if="activeTab === 'configs'"
         variant="secondary"
         :disabled="!saveGamePanelName.trim() || dice.length === 0"
         block
@@ -150,7 +134,6 @@ const { dice } = storeToRefs(diceStore);
 
 // Tab state
 const activeTab = ref<'dice' | 'areas' | 'configs'>('dice');
-const configsSubTab = ref<'load' | 'save'>('load');
 
 // Areas form state
 const newAreaName = ref<string>('');
@@ -292,51 +275,32 @@ const loadConfigurations = async () => {
   flex: 1;
 }
 
-/* Configs Sub-tabs */
-.configs-subtabs {
+/* Configs Container */
+.configs-container {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  gap: 0;
+  gap: 2rem;
+  padding: 1.5rem;
 }
 
-.configs-subtab-nav {
+.configs-section {
   display: flex;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  background: #1f2937;
-  border-bottom: 1px solid #374151;
-  flex-shrink: 0;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.subtab-btn {
-  flex: 1;
-  padding: 0.6rem;
-  background: transparent;
-  border: none;
-  color: #9ca3af;
-  font-size: 0.8rem;
+.section-title {
+  margin: 0;
+  font-size: 0.875rem;
   font-weight: 600;
-  cursor: pointer;
-  border-radius: 0.375rem;
-  transition: all 0.2s;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  white-space: nowrap;
-}
-
-.subtab-btn:hover {
   color: #d1d5db;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.subtab-btn.active {
+.configs-divider {
+  height: 1px;
   background: #374151;
-  color: #f3f4f6;
-  border-bottom: 2px solid #3b82f6;
-}
-
-.configs-subtab-content {
-  flex: 1;
-  overflow-y: auto;
+  margin: 0.5rem 0;
 }
 </style>
