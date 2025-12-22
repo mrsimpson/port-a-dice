@@ -1,7 +1,10 @@
 <template>
   <div class="dice-management-panel">
     <div class="color-picker-section">
-      <BaseColorPicker v-model="selectedColor" :label="$t('forms.add-die')" />
+      <p>
+        <label class="section-label">{{ $t('forms.add-die') }}</label>
+      </p>
+      <BaseColorPicker v-model="selectedColor" />
       <BaseButton
         variant="primary"
         class="add-button"
@@ -168,6 +171,12 @@ const handleRemoveDice = (id: string) => {
 .add-button-compact span {
   font-weight: 600;
   font-size: 0.875rem;
+}
+
+.color-picker-section {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
 }
 
 .section-label {

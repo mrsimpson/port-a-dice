@@ -1,6 +1,5 @@
 <template>
   <div class="base-color-picker">
-    <label v-if="label" class="base-color-picker__label">{{ label }}</label>
     <div class="base-color-picker__wrapper">
       <div
         class="base-color-picker__grid"
@@ -48,12 +47,10 @@ const { t } = useI18n();
 
 interface Props {
   modelValue: string;
-  label?: string;
   presetColors?: PresetDiceColor[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  label: '',
   presetColors: () => ['white', 'red', 'blue', 'green', 'yellow', 'orange'],
 });
 
@@ -121,7 +118,7 @@ const handleMouseLeave = () => {
 <style scoped>
 .base-color-picker {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.5rem;
 }
 

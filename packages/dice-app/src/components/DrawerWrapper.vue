@@ -86,8 +86,8 @@ const onOverlayClick = () => {
 .drawer {
   width: 100%;
   /* Use dynamic viewport height which adjusts for browser UI and keyboard */
-  height: 100dvh;
-  height: 100vh; /* Fallback for older browsers */
+  height: 90dvh;
+  height: 90vh; /* Fallback for older browsers */
   background: #1f2937;
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
@@ -108,7 +108,7 @@ const onOverlayClick = () => {
   .drawer {
     width: 90%;
     max-width: 1024px;
-    height: 90svh;
+    height: 85svh;
     border-radius: 1rem;
     animation: zoomIn 0.3s ease-out;
     padding-bottom: 0;
