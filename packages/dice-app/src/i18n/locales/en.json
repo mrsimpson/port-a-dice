@@ -2,11 +2,19 @@
   "header": {
     "title": "Port-A-Dice",
     "dice-config": "Dice Configuration",
-    "history": "History"
+    "history": "History",
+    "score-sheet": "Score Sheet"
   },
   "languages": {
     "english": "English",
     "german": "Deutsch"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "clear": "Clear",
+    "reset": "Reset"
   },
   "buttons": {
     "roll": "Roll",
@@ -89,6 +97,19 @@
   "dialogs": {
     "confirm-reset": "Confirm Reset",
     "reset-warning": "Are you sure you want to reset all dice? This action cannot be undone."
+  },
+  "scoreSheet": {
+    "title": "Score Sheet",
+    "clear": "Clear",
+    "clearCell": "Clear Cell",
+    "enterScore": "Enter Score",
+    "scorePlaceholder": "Enter a number...",
+    "cellLocked": "This cell is locked",
+    "lockRequiresValue": "Lock requires a value",
+    "locked": "Cell locked",
+    "unlocked": "Cell unlocked",
+    "cleared": "Score sheet cleared",
+    "invalidNumber": "Please enter a valid number"
   },
   "ariaLabels": {
     "roll-unparked": "Roll unparked dice",

@@ -86,3 +86,22 @@ export interface IConfigStore {
   delete(id: string): Promise<void>;
   exists(id: string): Promise<boolean>;
 }
+
+// Score Sheet Types
+export interface ScoreSheetCell {
+  id: string;
+  row: number;
+  col: number;
+  value: number | null;
+  locked: boolean;
+}
+
+export interface ScoreSheet {
+  id: string;
+  name: string;
+  rows: number;
+  cols: number;
+  cells: ScoreSheetCell[];
+  createdAt: number;
+  updatedAt: number;
+}
