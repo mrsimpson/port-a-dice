@@ -2,7 +2,8 @@
   "header": {
     "title": "Port-A-Dice",
     "dice-config": "Würfelkonfiguration",
-    "history": "Verlauf"
+    "history": "Verlauf",
+    "score-sheet": "Punktezettel"
   },
   "languages": {
     "english": "English",
@@ -21,14 +22,16 @@
     "cancel": "Abbrechen",
     "delete": "Löschen",
     "clear-history": "Verlauf löschen",
-    "restore": "Diesen Status wiederherstellen"
+    "restore": "Diesen Status wiederherstellen",
+    "close": "Schließen"
   },
   "panels": {
     "game-config": "Spielkonfiguration",
     "dice-management": "Würfelverwaltung",
     "areas-management": "Bereichsverwaltung",
     "save-game": "Spiel speichern",
-    "load-game": "Spiel laden"
+    "load-game": "Spiel laden",
+    "score-sheet": "Punktezettel"
   },
   "tabs": {
     "dice": "Würfel",
@@ -95,5 +98,10 @@
     "roll-all-dice": "Alle Würfel einschließlich geparkte würfeln",
     "delete-die": "Würfel {color} löschen",
     "delete-area": "Bereich löschen"
+  },
+  "tools": {
+    "pen": "Stift",
+    "eraser": "Radiergummi",
+    "clear": "Leere Leinwand"
   }
 }

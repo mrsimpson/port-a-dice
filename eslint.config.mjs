@@ -21,6 +21,7 @@ export default [
         clearInterval: 'readonly',
         HTMLElement: 'readonly',
         HTMLInputElement: 'readonly',
+        HTMLCanvasElement: 'readonly',
         // Node globals
         process: 'readonly',
         global: 'readonly',
