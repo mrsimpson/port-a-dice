@@ -2,11 +2,19 @@
   "header": {
     "title": "Port-A-Dice",
     "dice-config": "Würfelkonfiguration",
-    "history": "Verlauf"
+    "history": "Verlauf",
+    "score-sheet": "Punkteblatt"
   },
   "languages": {
     "english": "English",
     "german": "Deutsch"
+  },
+  "common": {
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "clear": "Löschen",
+    "reset": "Zurücksetzen"
   },
   "buttons": {
     "roll": "Würfeln",
@@ -89,6 +97,19 @@
   "dialogs": {
     "confirm-reset": "Zurücksetzen bestätigen",
     "reset-warning": "Bist du sicher, dass du alle Würfel zurücksetzen möchtest? Diese Aktion kann nicht rückgängig gemacht werden."
+  },
+  "scoreSheet": {
+    "title": "Punkteblatt",
+    "clear": "Leeren",
+    "clearCell": "Zelle leeren",
+    "enterScore": "Punktzahl eingeben",
+    "scorePlaceholder": "Zahl eingeben...",
+    "cellLocked": "Diese Zelle ist gesperrt",
+    "lockRequiresValue": "Sperren erfordert einen Wert",
+    "locked": "Zelle gesperrt",
+    "unlocked": "Zelle entsperrt",
+    "cleared": "Punkteblatt geleert",
+    "invalidNumber": "Bitte eine gültige Zahl eingeben"
   },
   "ariaLabels": {
     "roll-unparked": "Nicht geparkte Würfel würfeln",
