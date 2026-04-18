@@ -8,6 +8,7 @@ export const useUIStore = defineStore('ui', {
     showHistory: false,
     showResetConfirm: false,
     showConfig: false,
+    showScoreSheet: false,
     showLanguageSwitcher: true, // Will be initialized during app setup
   }),
 
@@ -51,6 +52,18 @@ export const useUIStore = defineStore('ui', {
 
     closeConfig() {
       this.showConfig = false;
+    },
+
+    toggleScoreSheet() {
+      this.showScoreSheet = !this.showScoreSheet;
+    },
+
+    openScoreSheet() {
+      this.showScoreSheet = true;
+    },
+
+    closeScoreSheet() {
+      this.showScoreSheet = false;
     },
 
     initializeLanguageSwitcherVisibility() {

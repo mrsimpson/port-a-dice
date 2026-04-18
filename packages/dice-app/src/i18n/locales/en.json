@@ -2,7 +2,8 @@
   "header": {
     "title": "Port-A-Dice",
     "dice-config": "Dice Configuration",
-    "history": "History"
+    "history": "History",
+    "score-sheet": "Score Sheet"
   },
   "languages": {
     "english": "English",
@@ -21,14 +22,16 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "clear-history": "Clear History",
-    "restore": "Restore this state"
+    "restore": "Restore this state",
+    "close": "Close"
   },
   "panels": {
     "game-config": "Game Configuration",
     "dice-management": "Dice Management",
     "areas-management": "Areas Management",
     "save-game": "Save Game",
-    "load-game": "Load Game"
+    "load-game": "Load Game",
+    "score-sheet": "Score Sheet"
   },
   "tabs": {
     "dice": "Dice",
@@ -95,5 +98,10 @@
     "roll-all-dice": "Roll all dice including parked",
     "delete-die": "Delete {color} die",
     "delete-area": "Delete area"
+  },
+  "tools": {
+    "pen": "Pen",
+    "eraser": "Eraser",
+    "clear": "Clear Canvas"
   }
 }
