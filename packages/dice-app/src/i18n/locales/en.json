@@ -2,7 +2,8 @@
   "header": {
     "title": "Port-A-Dice",
     "dice-config": "Dice Configuration",
-    "history": "History"
+    "history": "History",
+    "sheets": "Player Sheets"
   },
   "languages": {
     "english": "English",
@@ -95,5 +96,25 @@
     "roll-all-dice": "Roll all dice including parked",
     "delete-die": "Delete {color} die",
     "delete-area": "Delete area"
+  },
+  "sheets": {
+    "title": "Player Sheets",
+    "player": "Player",
+    "addPlayer": "Add Player",
+    "removePlayer": "Remove Player",
+    "noSheets": "No player sheets yet. Add a player to start drawing!",
+    "tools": "Tools",
+    "pen": "Pen",
+    "eraser": "Eraser",
+    "clear": "Clear Canvas",
+    "background": "Background",
+    "save": "Save",
+    "newSheet": "New Sheet",
+    "undo": "Undo",
+    "redo": "Redo",
+    "lineWidth": "Line Width",
+    "color": "Color",
+    "playerName": "Player Name",
+    "enterPlayerName": "Enter player name..."
   }
 }

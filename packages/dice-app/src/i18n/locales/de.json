@@ -2,7 +2,8 @@
   "header": {
     "title": "Port-A-Dice",
     "dice-config": "Würfelkonfiguration",
-    "history": "Verlauf"
+    "history": "Verlauf",
+    "sheets": "Spieler-Blätter"
   },
   "languages": {
     "english": "English",
@@ -95,5 +96,25 @@
     "roll-all-dice": "Alle Würfel einschließlich geparkte würfeln",
     "delete-die": "Würfel {color} löschen",
     "delete-area": "Bereich löschen"
+  },
+  "sheets": {
+    "title": "Spieler-Blätter",
+    "player": "Spieler",
+    "addPlayer": "Spieler hinzufügen",
+    "removePlayer": "Spieler entfernen",
+    "noSheets": "Noch keine Spieler-Blätter. Füg einen Spieler hinzu, um zu zeichnen!",
+    "tools": "Werkzeuge",
+    "pen": "Stift",
+    "eraser": "Radiergummi",
+    "clear": "Leinwand löschen",
+    "background": "Hintergrund",
+    "save": "Speichern",
+    "newSheet": "Neues Blatt",
+    "undo": "Rückgängig",
+    "redo": "Wiederholen",
+    "lineWidth": "Strichstärke",
+    "color": "Farbe",
+    "playerName": "Spielername",
+    "enterPlayerName": "Spielername eingeben..."
   }
 }

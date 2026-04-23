@@ -51,6 +51,7 @@ export interface UIState {
   showAreaEditor: boolean;
   showResetConfirm: boolean;
   currentEditingAreaId: string | null;
+  showSheets: boolean;
 }
 
 export const DICE_COLORS: Record<PresetDiceColor, string> = {
@@ -85,4 +86,44 @@ export interface IConfigStore {
   list(): Promise<GameConfiguration[]>;
   delete(id: string): Promise<void>;
   exists(id: string): Promise<boolean>;
+}
+
+// ============================================
+// Sheets types for multiplayer scribble sheets
+// ============================================
+
+export type DrawingTool = 'pen' | 'eraser';
+
+export interface Point {
+  x: number;
+  y: number;
+}
+
+/** Individual stroke path with points and styling */
+export interface SheetPath {
+  id: string;
+  points: Point[];
+  color: string;
+  lineWidth: number;
+  tool: DrawingTool;
+}
+
+/** Single player's drawing sheet */
+export interface PlayerSheet {
+  id: string;
+  playerName: string;
+  paths: SheetPath[];
+  backgroundImage: string | null;
+  createdAt: number;
+  updatedAt: number;
+  /** Undo stack for path history (last ~50 states) */
+  undoStack: SheetPath[][];
+  /** Redo stack for redo history */
+  redoStack: SheetPath[][];
+}
+
+/** State for sheets store */
+export interface SheetsState {
+  sheets: PlayerSheet[];
+  activeSheetId: string | null;
 }

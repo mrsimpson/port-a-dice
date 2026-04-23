@@ -9,6 +9,7 @@ export const useUIStore = defineStore('ui', {
     showResetConfirm: false,
     showConfig: false,
     showLanguageSwitcher: true, // Will be initialized during app setup
+    showSheets: false,
   }),
 
   actions: {
@@ -55,6 +56,18 @@ export const useUIStore = defineStore('ui', {
 
     initializeLanguageSwitcherVisibility() {
       this.showLanguageSwitcher = !isBrowserLanguageDetected();
+    },
+
+    toggleSheets() {
+      this.showSheets = !this.showSheets;
+    },
+
+    openSheets() {
+      this.showSheets = true;
+    },
+
+    closeSheets() {
+      this.showSheets = false;
     },
   },
 });
