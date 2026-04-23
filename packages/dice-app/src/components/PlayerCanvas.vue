@@ -16,6 +16,8 @@
 </template>
 
 <script setup lang="ts">
+/// <reference lib="dom" />
+
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import type { SheetPath, DrawingTool, Point } from '@/types';
 
@@ -67,10 +69,16 @@ function getCanvasCoordinates(event: MouseEvent | TouchEvent): Point {
     clientY = (event as MouseEvent).clientY;
   }
 
-  return {
-    x: (clientX - rect.left) * (canvas.width / rect.width),
-    y: (clientY - rect.top) * (canvas.height / rect.height),
-  };
+  // Get the actual CSS dimensions
+  const cssWidth = parseFloat(canvas.style.width) || rect.width;
+  const cssHeight = parseFloat(canvas.style.height) || rect.height;
+
+  // Calculate position relative to canvas (in CSS pixels)
+  // This correctly maps mouse position to canvas coordinates
+  const x = ((clientX - rect.left) / rect.width) * cssWidth;
+  const y = ((clientY - rect.top) / rect.height) * cssHeight;
+
+  return { x, y };
 }
 
 // Start drawing
@@ -98,16 +106,18 @@ function draw(event: MouseEvent | TouchEvent) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    ctx.beginPath();
+    const dpr = window.devicePixelRatio || 1;
     const effectiveColor = props.currentTool === 'eraser' ? '#1f2937' : props.currentColor;
+
+    ctx.beginPath();
     ctx.strokeStyle = effectiveColor;
-    ctx.lineWidth = props.currentLineWidth;
+    ctx.lineWidth = props.currentLineWidth * dpr;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
     const lastIndex = currentPath.value.length - 1;
-    ctx.moveTo(currentPath.value[lastIndex - 1].x, currentPath.value[lastIndex - 1].y);
-    ctx.lineTo(point.x, point.y);
+    ctx.moveTo(currentPath.value[lastIndex - 1].x * dpr, currentPath.value[lastIndex - 1].y * dpr);
+    ctx.lineTo(point.x * dpr, point.y * dpr);
     ctx.stroke();
   }
 }
@@ -146,8 +156,10 @@ function renderCanvas() {
   if (!ctx) return;
 
   // Get the actual visual dimensions
-  const rect = containerRef.value?.getBoundingClientRect();
-  if (!rect) return;
+  const container = containerRef.value;
+  if (!container) return;
+
+  const dpr = window.devicePixelRatio || 1;
 
   // Clear canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -165,13 +177,14 @@ function renderCanvas() {
 
     ctx.beginPath();
     ctx.strokeStyle = path.color;
-    ctx.lineWidth = path.lineWidth;
+    ctx.lineWidth = path.lineWidth * dpr; // Scale line width for high DPI
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
-    ctx.moveTo(path.points[0].x, path.points[0].y);
+    // Scale coordinates to high DPI
+    ctx.moveTo(path.points[0].x * dpr, path.points[0].y * dpr);
     for (let i = 1; i < path.points.length; i++) {
-      ctx.lineTo(path.points[i].x, path.points[i].y);
+      ctx.lineTo(path.points[i].x * dpr, path.points[i].y * dpr);
     }
     ctx.stroke();
   });
