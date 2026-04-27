@@ -204,8 +204,7 @@ function renderCanvas() {
 }
 
 // Shared image element for background loading
-
-let backgroundImg: Image | null = null;
+let backgroundImg: HTMLImageElement | null = null;
 
 function handleResize() {
   nextTick(() => {

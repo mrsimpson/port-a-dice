@@ -23,6 +23,7 @@ export default [
         HTMLInputElement: 'readonly',
         HTMLDivElement: 'readonly',
         HTMLCanvasElement: 'readonly',
+        HTMLImageElement: 'readonly',
         MouseEvent: 'readonly',
         TouchEvent: 'readonly',
         Image: 'readonly',
