@@ -1,0 +1,40 @@
+- generic [ref=e1]:
+    - generic [ref=e3]:
+        - banner [ref=e4]:
+            - heading "Port-A-Dice" [level=1] [ref=e5]
+            - generic [ref=e6]:
+                - button "Player Sheets" [ref=e7] [cursor=pointer]:
+                    - img [ref=e8]
+                - button "Dice Configuration" [ref=e10] [cursor=pointer]:
+                    - img [ref=e11]
+                - button "History" [ref=e13] [cursor=pointer]:
+                    - img [ref=e14]
+        - main [ref=e16]:
+            - generic [ref=e18]:
+                - img [ref=e19]
+                - paragraph [ref=e21]: No dice yet
+                - paragraph [ref=e22]: Open Dice Configuration to add dice
+        - generic [ref=e23]:
+            - button "Roll unparked dice" [disabled] [ref=e24]:
+                - img [ref=e25]
+                - generic [ref=e27]: Roll
+            - button "Roll all dice including parked" [disabled] [ref=e28]:
+                - img [ref=e29]
+                - generic [ref=e31]: Roll All
+    - generic [ref=e33]:
+        - generic [ref=e34]:
+            - heading "Player Sheets" [level=2] [ref=e35]
+            - button "Close Player Sheets" [ref=e36] [cursor=pointer]:
+                - img [ref=e37]
+        - button "Add Player" [ref=e40] [cursor=pointer]:
+            - img [ref=e41]
+        - generic [ref=e44]:
+            - img [ref=e45]
+            - paragraph [ref=e47]: No player sheets yet. Add a player to start drawing!
+            - button "Add Player" [active] [ref=e48] [cursor=pointer]
+    - generic [ref=e51]:
+        - heading "Add Player" [level=3] [ref=e52]
+        - textbox "Enter player name..." [ref=e53]
+        - generic [ref=e54]:
+            - button "Cancel" [ref=e55] [cursor=pointer]
+            - button "Add" [disabled] [ref=e56]

@@ -53,11 +53,13 @@ function generateId(): string {
 }
 
 // Get canvas coordinates from mouse/touch event
+// Uses container rect for reliable coordinate calculation
 function getCanvasCoordinates(event: MouseEvent | TouchEvent): Point {
   const canvas = canvasRef.value;
-  if (!canvas) return { x: 0, y: 0 };
+  const container = containerRef.value;
+  if (!canvas || !container) return { x: 0, y: 0 };
 
-  const rect = canvas.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
   let clientX: number, clientY: number;
 
   if (typeof TouchEvent !== 'undefined' && event instanceof TouchEvent) {
@@ -69,16 +71,19 @@ function getCanvasCoordinates(event: MouseEvent | TouchEvent): Point {
     clientY = (event as MouseEvent).clientY;
   }
 
-  // Get the actual CSS dimensions
-  const cssWidth = parseFloat(canvas.style.width) || rect.width;
-  const cssHeight = parseFloat(canvas.style.height) || rect.height;
+  // Calculate position as ratio of container, then map to canvas CSS dimensions
+  // This avoids coordinate offset issues with DPR scaling
+  const ratioX = (clientX - containerRect.left) / containerRect.width;
+  const ratioY = (clientY - containerRect.top) / containerRect.height;
 
-  // Calculate position relative to canvas (in CSS pixels)
-  // This correctly maps mouse position to canvas coordinates
-  const x = ((clientX - rect.left) / rect.width) * cssWidth;
-  const y = ((clientY - rect.top) / rect.height) * cssHeight;
+  const cssWidth = parseFloat(canvas.style.width) || containerRect.width;
+  const cssHeight = parseFloat(canvas.style.height) || containerRect.height;
 
-  return { x, y };
+  // Store coordinates in CSS pixels (0 to cssWidth/cssHeight)
+  return {
+    x: ratioX * cssWidth,
+    y: ratioY * cssHeight,
+  };
 }
 
 // Start drawing
@@ -106,18 +111,18 @@ function draw(event: MouseEvent | TouchEvent) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const dpr = window.devicePixelRatio || 1;
+    // Context is already scaled by DPR, so we draw in CSS pixels
     const effectiveColor = props.currentTool === 'eraser' ? '#1f2937' : props.currentColor;
 
     ctx.beginPath();
     ctx.strokeStyle = effectiveColor;
-    ctx.lineWidth = props.currentLineWidth * dpr;
+    ctx.lineWidth = props.currentLineWidth;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
     const lastIndex = currentPath.value.length - 1;
-    ctx.moveTo(currentPath.value[lastIndex - 1].x * dpr, currentPath.value[lastIndex - 1].y * dpr);
-    ctx.lineTo(point.x * dpr, point.y * dpr);
+    ctx.moveTo(currentPath.value[lastIndex - 1].x, currentPath.value[lastIndex - 1].y);
+    ctx.lineTo(point.x, point.y);
     ctx.stroke();
   }
 }
@@ -148,18 +153,13 @@ function stopDrawing() {
 }
 
 // Render all paths on canvas
+// Coordinates are stored in CSS pixels; context is DPR-scaled, so we draw directly
 function renderCanvas() {
   const canvas = canvasRef.value;
   if (!canvas) return;
 
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
-
-  // Get the actual visual dimensions
-  const container = containerRef.value;
-  if (!container) return;
-
-  const dpr = window.devicePixelRatio || 1;
 
   // Clear canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -171,20 +171,19 @@ function renderCanvas() {
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
   }
 
-  // Draw all saved paths
+  // Draw all saved paths in CSS pixels (context is DPR-scaled)
   paths.value.forEach((path) => {
     if (path.points.length < 2) return;
 
     ctx.beginPath();
     ctx.strokeStyle = path.color;
-    ctx.lineWidth = path.lineWidth * dpr; // Scale line width for high DPI
+    ctx.lineWidth = path.lineWidth;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
-    // Scale coordinates to high DPI
-    ctx.moveTo(path.points[0].x * dpr, path.points[0].y * dpr);
+    ctx.moveTo(path.points[0].x, path.points[0].y);
     for (let i = 1; i < path.points.length; i++) {
-      ctx.lineTo(path.points[i].x * dpr, path.points[i].y * dpr);
+      ctx.lineTo(path.points[i].x, path.points[i].y);
     }
     ctx.stroke();
   });
