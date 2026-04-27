@@ -4,14 +4,16 @@
       ref="canvasRef"
       class="drawing-canvas"
       @mousedown="startDrawing"
-      @mousemove="draw"
+      @mousemove="handleCanvasMouseMove"
       @mouseup="stopDrawing"
       @mouseleave="stopDrawing"
       @touchstart.prevent="startDrawing"
-      @touchmove.prevent="draw"
+      @touchmove.prevent="handleCanvasMouseMove"
       @touchend.prevent="stopDrawing"
       @touchcancel.prevent="stopDrawing"
     />
+    <!-- Brush preview cursor -->
+    <div ref="previewRef" class="brush-preview" />
   </div>
 </template>
 
@@ -24,7 +26,6 @@ import type { SheetPath, DrawingTool, Point } from '@/types';
 interface Props {
   paths: SheetPath[];
   backgroundImage: string | null;
-  /** Drawing settings from toolbar */
   currentColor?: string;
   currentTool?: DrawingTool;
   currentLineWidth?: number;
@@ -42,18 +43,16 @@ const emit = defineEmits<{
 
 const containerRef = ref<HTMLDivElement | null>(null);
 const canvasRef = ref<HTMLCanvasElement | null>(null);
+const previewRef = ref<HTMLDivElement | null>(null);
 
 const isDrawing = ref(false);
 const currentPath = ref<Point[]>([]);
 const paths = ref<SheetPath[]>([]);
 
-// Generate unique ID for paths
 function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 }
 
-// Get canvas coordinates from mouse/touch event
-// Uses container rect for reliable coordinate calculation
 function getCanvasCoordinates(event: MouseEvent | TouchEvent): Point {
   const canvas = canvasRef.value;
   const container = containerRef.value;
@@ -71,39 +70,60 @@ function getCanvasCoordinates(event: MouseEvent | TouchEvent): Point {
     clientY = (event as MouseEvent).clientY;
   }
 
-  // Calculate position as ratio of container, then map to canvas CSS dimensions
-  // This avoids coordinate offset issues with DPR scaling
   const ratioX = (clientX - containerRect.left) / containerRect.width;
   const ratioY = (clientY - containerRect.top) / containerRect.height;
 
   const cssWidth = parseFloat(canvas.style.width) || containerRect.width;
   const cssHeight = parseFloat(canvas.style.height) || containerRect.height;
 
-  // Store coordinates in CSS pixels (0 to cssWidth/cssHeight)
   return {
     x: ratioX * cssWidth,
     y: ratioY * cssHeight,
   };
 }
 
-// Start drawing
+function updatePreview(x: number, y: number) {
+  const el = previewRef.value;
+  if (!el) return;
+
+  const size = Math.max(props.currentLineWidth * 2, 8);
+  const fillColor =
+    props.currentTool === 'eraser' ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.3)';
+  const strokeColor = 'rgba(255,255,255,0.7)';
+
+  el.style.width = `${size}px`;
+  el.style.height = `${size}px`;
+  el.style.left = `${x}px`;
+  el.style.top = `${y}px`;
+  el.style.backgroundColor = fillColor;
+  el.style.borderColor = strokeColor;
+  el.style.display = 'block';
+}
+
+function hidePreview() {
+  const el = previewRef.value;
+  if (el) el.style.display = 'none';
+}
+
 function startDrawing(event: MouseEvent | TouchEvent) {
   isDrawing.value = true;
+  hidePreview();
   const point = getCanvasCoordinates(event);
   currentPath.value = [point];
 }
 
-// Continue drawing
-function draw(event: MouseEvent | TouchEvent) {
+function handleCanvasMouseMove(event: MouseEvent | TouchEvent) {
+  const point = getCanvasCoordinates(event);
+  updatePreview(point.x, point.y);
+
   if (!isDrawing.value) return;
 
-  const point = getCanvasCoordinates(event);
   currentPath.value.push(point);
 
-  // Render the current stroke in real-time
+  // Full redraw: background + saved paths
   renderCanvas();
 
-  // Draw the current path segment
+  // Draw current segment on top
   if (currentPath.value.length >= 2) {
     const canvas = canvasRef.value;
     if (!canvas) return;
@@ -111,7 +131,6 @@ function draw(event: MouseEvent | TouchEvent) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Context is already scaled by DPR, so we draw in CSS pixels
     const effectiveColor = props.currentTool === 'eraser' ? '#1f2937' : props.currentColor;
 
     ctx.beginPath();
@@ -127,13 +146,11 @@ function draw(event: MouseEvent | TouchEvent) {
   }
 }
 
-// Stop drawing and save the path
 function stopDrawing() {
   if (!isDrawing.value) return;
 
   isDrawing.value = false;
 
-  // Only save if we have at least 2 points
   if (currentPath.value.length >= 2) {
     const effectiveColor = props.currentTool === 'eraser' ? '#1f2937' : props.currentColor;
 
@@ -152,8 +169,6 @@ function stopDrawing() {
   currentPath.value = [];
 }
 
-// Render all paths on canvas
-// Coordinates are stored in CSS pixels; context is DPR-scaled, so we draw directly
 function renderCanvas() {
   const canvas = canvasRef.value;
   if (!canvas) return;
@@ -161,17 +176,16 @@ function renderCanvas() {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  // Clear canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Draw background image if set
-  if (props.backgroundImage) {
-    const img = new Image();
-    img.src = props.backgroundImage;
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  // Draw background if available and loaded
+  if (props.backgroundImage && backgroundImg) {
+    if (backgroundImg.complete && backgroundImg.naturalWidth > 0) {
+      ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
+    }
   }
 
-  // Draw all saved paths in CSS pixels (context is DPR-scaled)
+  // Draw all saved paths
   paths.value.forEach((path) => {
     if (path.points.length < 2) return;
 
@@ -189,15 +203,18 @@ function renderCanvas() {
   });
 }
 
-// Resize handler
+// Shared image element for background loading
+
+let backgroundImg: Image | null = null;
+
 function handleResize() {
   nextTick(() => {
     const canvas = canvasRef.value;
     const container = containerRef.value;
     if (!canvas || !container) return;
 
-    const dpr = window.devicePixelRatio || 1;
     const rect = container.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
 
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
@@ -206,14 +223,13 @@ function handleResize() {
 
     const ctx = canvas.getContext('2d');
     if (ctx) {
-      ctx.scale(dpr, dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
     renderCanvas();
   });
 }
 
-// Watch for path changes from props
 watch(
   () => props.paths,
   (newPaths) => {
@@ -223,7 +239,6 @@ watch(
   { deep: true, immediate: true }
 );
 
-// Watch for drawing setting changes
 watch(
   () => [props.currentColor, props.currentTool, props.currentLineWidth],
   () => {
@@ -231,10 +246,16 @@ watch(
   }
 );
 
-// Watch for background image changes
 watch(
   () => props.backgroundImage,
   () => {
+    if (props.backgroundImage) {
+      const img = new Image();
+      img.src = props.backgroundImage;
+      backgroundImg = img;
+    } else {
+      backgroundImg = null;
+    }
     renderCanvas();
   }
 );
@@ -244,7 +265,6 @@ let resizeObserver: ResizeObserver | null = null;
 onMounted(() => {
   handleResize();
 
-  // Use ResizeObserver for responsive canvas
   if (containerRef.value) {
     resizeObserver = new ResizeObserver(handleResize);
     resizeObserver.observe(containerRef.value);
@@ -265,6 +285,7 @@ onUnmounted(() => {
   background: #1f2937;
   border-radius: 0.5rem;
   overflow: hidden;
+  position: relative;
 }
 
 .drawing-canvas {
@@ -272,6 +293,16 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   touch-action: none;
-  cursor: crosshair;
+  cursor: none;
+}
+
+.brush-preview {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  pointer-events: none;
+  z-index: 10;
+  display: none;
+  transform: translate(-50%, -50%);
 }
 </style>
