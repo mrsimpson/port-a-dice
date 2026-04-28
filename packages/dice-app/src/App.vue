@@ -4,6 +4,16 @@
       <h1 class="title">{{ $t('header.title') }}</h1>
       <LanguageSwitcher />
       <div class="header-actions">
+        <button class="btn-icon" :aria-label="$t('sheets.title')" @click="uiStore.toggleSheets">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15.232 15.232l2.536 2.536m0-2.536l-2.536 2.536m2.536-2.536l-8.464 8.464m-2.536 2.536l8.464-8.464m-5.928 0l5.928 5.928"
+            />
+          </svg>
+        </button>
         <button
           class="btn-icon"
           :aria-label="$t('header.dice-config')"
@@ -40,6 +50,7 @@
     <ConfirmDialog />
     <ConfigDrawer />
     <Toast />
+    <SheetsDrawer />
   </div>
 </template>
 
@@ -52,6 +63,7 @@ import ConfirmDialog from './components/ConfirmDialog.vue';
 import ConfigDrawer from './components/ConfigDrawer.vue';
 import Toast from './components/Toast.vue';
 import LanguageSwitcher from './components/LanguageSwitcher.vue';
+import SheetsDrawer from './components/SheetsDrawer.vue';
 import { useAreasStore } from './stores/areas';
 import { useUIStore } from './stores/ui';
 

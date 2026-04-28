@@ -56,3 +56,5 @@ temp/
 
 # Development workflow state
 .vibe/conversations/
+**/.playwright-cli
+**/.turbo
