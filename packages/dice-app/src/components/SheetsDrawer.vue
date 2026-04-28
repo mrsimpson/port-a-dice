@@ -215,8 +215,8 @@ function handleAddPlayer() {
 
 .canvas-area {
   flex: 1;
-  min-height: 200px;
-  padding: 1rem;
+  min-height: 0;
+  padding: 0.75rem;
 }
 
 .empty-state {
