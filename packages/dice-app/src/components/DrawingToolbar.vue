@@ -42,12 +42,12 @@
         :title="$t('sheets.pen')"
         @click="$emit('update:tool', 'pen')"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M15.232 15.232l2.536 2.536m0-2.536l-2.536 2.536m2.536-2.536l-8.464 8.464m-2.536 2.536l8.464-8.464m-5.928 0l5.928 5.928"
+            d="M17 3a2.83 2.83 0 114 4l-7 7-1.5 5.5 5.5-1.5 7-7a2.83 2.83 0 00-4-4z"
           />
         </svg>
       </button>
@@ -57,12 +57,12 @@
         :title="$t('sheets.eraser')"
         @click="$emit('update:tool', 'eraser')"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            d="M16 3H5a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM3 14h18v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2z"
           />
         </svg>
       </button>
@@ -93,15 +93,15 @@
       />
     </div>
 
-    <!-- Clear button -->
+    <!-- Clear button (trash whole drawing) -->
     <div class="toolbar-section">
       <button class="tool-btn clear-btn" :title="$t('sheets.clear')" @click="$emit('clear')">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V5a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M5 7h14"
+            d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6h16z"
           />
         </svg>
       </button>
