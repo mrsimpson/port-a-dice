@@ -95,5 +95,18 @@
     "roll-all-dice": "Alle Würfel einschließlich geparkte würfeln",
     "delete-die": "Würfel {color} löschen",
     "delete-area": "Bereich löschen"
+  },
+  "scoreSheet": {
+    "title": "Würfelblock",
+    "ariaLabel": "Würfelblock ein-/ausblenden",
+    "clearConfirm": "Die gesamte Zeichnung löschen?",
+    "export": "Als PNG exportieren",
+    "clear": "Löschen",
+    "undo": "Rückgängig",
+    "redo": "Wiederherstellen",
+    "eraser": "Radiergummi",
+    "color": "Farbe",
+    "strokeWidth": "Strichstärke",
+    "noDrawing": "Noch keine Zeichnung. Fang an zu kritzeln!"
   }
 }

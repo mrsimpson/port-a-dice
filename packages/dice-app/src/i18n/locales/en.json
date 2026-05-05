@@ -95,5 +95,18 @@
     "roll-all-dice": "Roll all dice including parked",
     "delete-die": "Delete {color} die",
     "delete-area": "Delete area"
+  },
+  "scoreSheet": {
+    "title": "Score Sheet",
+    "ariaLabel": "Toggle score sheet drawer",
+    "clearConfirm": "Clear the entire drawing?",
+    "export": "Export as PNG",
+    "clear": "Clear",
+    "undo": "Undo",
+    "redo": "Redo",
+    "eraser": "Eraser",
+    "color": "Color",
+    "strokeWidth": "Stroke Width",
+    "noDrawing": "No drawing yet. Start scribbling!"
   }
 }
