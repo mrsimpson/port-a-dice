@@ -104,6 +104,7 @@
     "clear": "Löschen",
     "undo": "Rückgängig",
     "redo": "Wiederherstellen",
+    "eraser": "Radiergummi",
     "color": "Farbe",
     "strokeWidth": "Strichstärke",
     "noDrawing": "Noch keine Zeichnung. Fang an zu kritzeln!"

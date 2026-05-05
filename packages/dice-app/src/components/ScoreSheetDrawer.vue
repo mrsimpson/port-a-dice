@@ -6,8 +6,8 @@
   >
     <!-- Drawing Toolbar -->
     <div class="toolbar">
-      <!-- Color Picker -->
-      <div class="toolbar-group">
+      <!-- Color Picker (hidden when eraser is active) -->
+      <div v-if="!eraserActive" class="toolbar-group">
         <label class="toolbar-label">{{ $t('scoreSheet.color') }}</label>
         <div class="color-picker">
           <button
@@ -15,7 +15,10 @@
             :key="color"
             class="color-swatch"
             :class="{ active: selectedColor === color }"
-            :style="{ backgroundColor: color }"
+            :style="{
+              backgroundColor: color,
+              borderColor: color === '#ffffff' ? '#6b7280' : 'transparent',
+            }"
             :aria-label="color"
             @click="selectedColor = color"
           />
@@ -41,6 +44,23 @@
 
       <!-- Actions -->
       <div class="toolbar-group toolbar-actions">
+        <!-- Eraser toggle -->
+        <button
+          class="btn-tool"
+          :class="{ active: eraserActive }"
+          :aria-label="$t('scoreSheet.eraser')"
+          @click="eraserActive = !eraserActive"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+            />
+          </svg>
+        </button>
+
         <button
           class="btn-tool"
           :aria-label="$t('scoreSheet.undo')"
@@ -102,6 +122,19 @@
       </div>
     </div>
 
+    <!-- Inline Clear Confirmation Banner -->
+    <div v-if="showClearConfirm" class="clear-confirm-banner">
+      <span>{{ $t('scoreSheet.clearConfirm') }}</span>
+      <div class="clear-confirm-actions">
+        <button class="btn-confirm-cancel" @click="showClearConfirm = false">
+          {{ $t('buttons.cancel') }}
+        </button>
+        <button class="btn-confirm-delete" @click="confirmClear">
+          {{ $t('scoreSheet.clear') }}
+        </button>
+      </div>
+    </div>
+
     <!-- Canvas Container with Fixed Sheet Scaling -->
     <div ref="canvasContainerRef" class="canvas-container">
       <div
@@ -116,30 +149,18 @@
           :width="800"
           :height="1200"
           :color="selectedColor"
-          :stroke-width="selectedStrokeWidth"
+          :line-width="selectedStrokeWidth"
+          :eraser="eraserActive"
           :image="scoreSheetStore.canvasData ?? undefined"
           @update:image="onCanvasUpdate"
-          @update:can-undo="canUndo = $event"
-          @update:can-redo="canRedo = $event"
         />
       </div>
     </div>
 
     <!-- Empty State -->
-    <div v-if="!scoreSheetStore.hasDrawing && !isDrawing" class="empty-state">
+    <div v-if="!scoreSheetStore.hasDrawing" class="empty-state">
       <p>{{ $t('scoreSheet.noDrawing') }}</p>
     </div>
-
-    <!-- Clear Confirmation Dialog -->
-    <ConfirmDialog
-      v-if="showClearConfirm"
-      :title="$t('scoreSheet.clearConfirm')"
-      :message="$t('scoreSheet.clearConfirm')"
-      :confirm-text="$t('buttons.delete')"
-      :cancel-text="$t('buttons.cancel')"
-      @confirm="confirmClear"
-      @cancel="showClearConfirm = false"
-    />
   </DrawerWrapper>
 </template>
 
@@ -147,7 +168,6 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import DrawingCanvas from 'vue-drawing-canvas';
 import DrawerWrapper from './DrawerWrapper.vue';
-import ConfirmDialog from './ConfirmDialog.vue';
 import { useUIStore } from '@/stores/ui';
 import { useScoreSheetStore } from '@/stores/scoresheet';
 
@@ -159,30 +179,42 @@ const drawingCanvasRef = ref<InstanceType<typeof DrawingCanvas> | null>(null);
 const canvasContainerRef = ref<HTMLElement | null>(null);
 
 // Drawing state
-const selectedColor = ref('#ffffff');
+const selectedColor = ref('#000000'); // default black
 const selectedStrokeWidth = ref(3);
+const eraserActive = ref(false);
 const canUndo = ref(false);
 const canRedo = ref(false);
-const isDrawing = ref(false);
 const showClearConfirm = ref(false);
 
 // Fixed sheet scaling
 const scaleFactor = ref(1);
 
-// Predefined colors for score sheet (good contrast on dark background)
+// Predefined colors for score sheet (black replaces white as first/default)
 const colors = [
-  '#ffffff', // White
+  '#000000', // Black (default)
   '#ef4444', // Red
   '#f97316', // Orange
   '#eab308', // Yellow
   '#22c55e', // Green
   '#3b82f6', // Blue
   '#8b5cf6', // Purple
-  '#ec4899', // Pink
+  '#ffffff', // White (kept as option with visible border)
 ];
 
 // Stroke width options
 const strokeWidths = [1, 2, 3, 5, 8, 12];
+
+// Update undo/redo availability by inspecting canvas internal state
+const updateUndoRedoState = () => {
+  const canvas = drawingCanvasRef.value as unknown as {
+    images: unknown[];
+    trash: unknown[];
+  } | null;
+  if (canvas) {
+    canUndo.value = Array.isArray(canvas.images) && canvas.images.length > 0;
+    canRedo.value = Array.isArray(canvas.trash) && canvas.trash.length > 0;
+  }
+};
 
 // Calculate scale factor to fit the fixed 800x1200 sheet in the container
 const calculateScale = () => {
@@ -192,7 +224,7 @@ const calculateScale = () => {
   const containerWidth = container.clientWidth;
   const containerHeight = container.clientHeight;
 
-  // Fixed sheet dimensions (3:2 aspect ratio, portrait)
+  // Fixed sheet dimensions (portrait)
   const sheetWidth = 800;
   const sheetHeight = 1200;
 
@@ -205,18 +237,23 @@ const calculateScale = () => {
 // ResizeObserver for responsive scaling
 let resizeObserver: ResizeObserver | null = null;
 
-// Handle canvas image updates
+// Handle canvas image updates - also refresh undo/redo state
 const onCanvasUpdate = (imageData: string) => {
   scoreSheetStore.updateCanvas(imageData);
+  updateUndoRedoState();
 };
 
 // Undo/Redo handlers
 const handleUndo = () => {
   drawingCanvasRef.value?.undo();
+  // State updates after undo via nextTick
+  setTimeout(updateUndoRedoState, 50);
 };
 
 const handleRedo = () => {
   drawingCanvasRef.value?.redo();
+  // State updates after redo via nextTick
+  setTimeout(updateUndoRedoState, 50);
 };
 
 // Clear handlers
@@ -228,6 +265,8 @@ const confirmClear = () => {
   drawingCanvasRef.value?.reset();
   scoreSheetStore.clearCanvas();
   showClearConfirm.value = false;
+  canUndo.value = false;
+  canRedo.value = false;
 };
 
 // Export handler
@@ -243,6 +282,7 @@ watch(
       // Wait for drawer to render then calculate scale
       setTimeout(() => {
         calculateScale();
+        updateUndoRedoState();
       }, 100);
     }
   }
@@ -396,12 +436,70 @@ onUnmounted(() => {
   transform: scale(0.95);
 }
 
+.btn-tool.active {
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+.btn-tool.active:hover {
+  background: #2563eb;
+}
+
 .w-5 {
   width: 1.25rem;
 }
 
 .h-5 {
   height: 1.25rem;
+}
+
+.clear-confirm-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  background: #7f1d1d;
+  border-bottom: 1px solid #991b1b;
+  color: #fecaca;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.clear-confirm-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-confirm-cancel {
+  padding: 0.25rem 0.75rem;
+  background: transparent;
+  border: 1px solid #fca5a5;
+  border-radius: 0.375rem;
+  color: #fecaca;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-confirm-cancel:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-confirm-delete {
+  padding: 0.25rem 0.75rem;
+  background: #dc2626;
+  border: none;
+  border-radius: 0.375rem;
+  color: #fff;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.btn-confirm-delete:hover {
+  background: #b91c1c;
 }
 
 .canvas-container {

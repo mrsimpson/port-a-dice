@@ -104,6 +104,7 @@
     "clear": "Clear",
     "undo": "Undo",
     "redo": "Redo",
+    "eraser": "Eraser",
     "color": "Color",
     "strokeWidth": "Stroke Width",
     "noDrawing": "No drawing yet. Start scribbling!"

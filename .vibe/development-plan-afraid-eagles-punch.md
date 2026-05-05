@@ -72,6 +72,21 @@ Add a score sheet feature that allows users to scribble/draw scores during table
 **Decision**: Use nullish coalescing (`scoreSheetStore.canvasData ?? undefined`) when passing the `image` prop to handle the null case.
 **Rationale**: The library doesn't accept `null` as a valid value for the image prop; using `undefined` when there's no saved canvas data follows the library's API expectations.
 
+### Decision 8: Undo/Redo State Tracking (2026-05-05)
+**Context**: After manual testing, undo/redo buttons were always disabled. The `@update:can-undo` and `@update:can-redo` events do NOT exist in `vue-drawing-canvas` library.
+**Decision**: Track undo/redo availability by inspecting the canvas component's internal `images` and `trash` arrays via `drawingCanvasRef.value.images` and `.trash`. Update state after every canvas update, undo, redo, and clear.
+**Rationale**: The library exposes these as public data properties. `canUndo = images.length > 0`, `canRedo = trash.length > 0`.
+
+### Decision 9: Clear Button Fix - Inline Confirmation Banner (2026-05-05)
+**Context**: Clear (trash) button did nothing. `ConfirmDialog.vue` is NOT generic - it's hardcoded to dice reset (`uiStore.showResetConfirm`).
+**Decision**: Replace `<ConfirmDialog>` with a simple inline red confirmation banner between toolbar and canvas. Has Cancel and Clear buttons.
+**Rationale**: Avoids coupling to existing dialog. Inline banner is clean, contextual, and doesn't require a new generic dialog component.
+
+### Decision 10: Default Color & Eraser Addition (2026-05-05)
+**Context**: Default color was `#ffffff` (invisible on white canvas). No eraser existed.
+**Decision**: Change default to `#000000` (black). Move white to last palette slot with a visible border. Add eraser toggle button using the library's `eraser` boolean prop. Hide color picker while eraser is active.
+**Rationale**: Black is natural default for writing. Eraser is essential. The library supports it natively.
+
 ## Notes
 - Port-a-Dice is a mobile-first 3D dice roller for tabletop gaming (Vue 3 + Pinia + Tailwind)
 - Uses EPCC workflow (Entity-Property-Command-Component)
@@ -366,6 +381,7 @@ Since this is a UI-heavy feature, manual testing will be primary:
 - [x] **C6**: Update App.vue with header button (pencil icon) and register ScoreSheetDrawer
 - [x] **C7**: Manual testing of all functionality (automated: build, lint, typecheck, 48 tests pass)
 - [x] **C8**: Commit all changes
+- [x] **C9**: Bug fixes from user testing - undo/redo, clear, default color, eraser
 
 ### Completed
 - [x] Installed `vue-drawing-canvas@1.0.14` in `/packages/dice-app`
@@ -399,6 +415,14 @@ Since this is a UI-heavy feature, manual testing will be primary:
 - [x] Verified all existing tests pass (`pnpm test:run --filter=port-a-dice-app`) - 48 tests passed
 - [x] **C7**: Manual testing verified - all automated checks pass (build, lint, typecheck, 48 tests)
 - [x] **C8**: Committed as `595c4f7` - "feat: add score sheet feature with fixed 800x1200px canvas"
+- [x] **C9**: Bug fixes applied to ScoreSheetDrawer.vue:
+  - **Undo/Redo**: Fixed by tracking internal `images`/`trash` arrays (events don't exist in library)
+  - **Clear**: Fixed by replacing broken `ConfirmDialog` (not generic) with inline confirmation banner
+  - **Default color**: Changed from white `#ffffff` to black `#000000`; white moved to last palette slot with visible border
+  - **Eraser**: Added eraser toggle button using library's `eraser` boolean prop; color picker hidden when eraser active
+  - Also fixed: `stroke-width` → `line-width` prop name (correct library API name)
+  - Added `eraser` translation key in both `en.json` and `de.json`
+  - All automated checks pass: build ✓, lint ✓, typecheck ✓, 48 tests ✓
 
 ## Commit
 ### Tasks
