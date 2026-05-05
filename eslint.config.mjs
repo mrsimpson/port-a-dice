@@ -20,7 +20,9 @@ export default [
         clearTimeout: 'readonly',
         clearInterval: 'readonly',
         HTMLElement: 'readonly',
+        HTMLDivElement: 'readonly',
         HTMLInputElement: 'readonly',
+        ResizeObserver: 'readonly',
         // Node globals
         process: 'readonly',
         global: 'readonly',
