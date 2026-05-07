@@ -136,11 +136,23 @@
     </div>
 
     <!-- Canvas Container with Fixed Sheet Scaling -->
-    <div ref="canvasContainerRef" class="canvas-container">
+    <div
+      ref="canvasContainerRef"
+      class="canvas-container"
+      @touchstart.passive="onTouchStart"
+      @touchmove="onTouchMove"
+      @touchend="onTouchEnd"
+      @touchcancel="onTouchEnd"
+    >
+      <!-- Reset zoom pill (visible only when zoom/pan is active) -->
+      <button v-if="isZoomOrPanActive" class="reset-zoom-btn" @click="resetZoomAndPan">
+        ↩ Reset zoom
+      </button>
+
       <div
         class="fixed-sheet"
         :style="{
-          transform: `scale(${scaleFactor})`,
+          transform: `scale(${scaleFactor * userZoom}) translate(${panOffset.x}px, ${panOffset.y}px)`,
           transformOrigin: 'center center',
         }"
       >
@@ -151,7 +163,7 @@
           :color="selectedColor"
           :line-width="selectedStrokeWidth"
           :eraser="eraserActive"
-          :image="scoreSheetStore.canvasData ?? undefined"
+          :initial-image="scoreSheetStore.strokes"
           @update:image="onCanvasUpdate"
         />
       </div>
@@ -165,11 +177,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import DrawingCanvas from 'vue-drawing-canvas';
 import DrawerWrapper from './DrawerWrapper.vue';
 import { useUIStore } from '@/stores/ui';
-import { useScoreSheetStore } from '@/stores/scoresheet';
+import { useScoreSheetStore, type Stroke } from '@/stores/scoresheet';
 
 const uiStore = useUIStore();
 const scoreSheetStore = useScoreSheetStore();
@@ -189,6 +201,19 @@ const showClearConfirm = ref(false);
 // Fixed sheet scaling
 const scaleFactor = ref(1);
 
+// User-controlled zoom & pan
+const userZoom = ref(1);
+const panOffset = ref({ x: 0, y: 0 });
+
+const isZoomOrPanActive = computed(
+  () => userZoom.value !== 1 || panOffset.value.x !== 0 || panOffset.value.y !== 0
+);
+
+const resetZoomAndPan = () => {
+  userZoom.value = 1;
+  panOffset.value = { x: 0, y: 0 };
+};
+
 // Predefined colors for score sheet (black replaces white as first/default)
 const colors = [
   '#000000', // Black (default)
@@ -204,17 +229,28 @@ const colors = [
 // Stroke width options
 const strokeWidths = [1, 2, 3, 5, 8, 12];
 
-// Update undo/redo availability by inspecting canvas internal state
-const updateUndoRedoState = () => {
-  const canvas = drawingCanvasRef.value as unknown as {
-    images: unknown[];
-    trash: unknown[];
-  } | null;
-  if (canvas) {
-    canUndo.value = Array.isArray(canvas.images) && canvas.images.length > 0;
-    canRedo.value = Array.isArray(canvas.trash) && canvas.trash.length > 0;
+// Internal canvas shape exposed by vue-drawing-canvas
+interface LibCanvas {
+  images: Stroke[];
+  trash: Stroke[];
+  save: () => void;
+}
+
+const getLibCanvas = (): LibCanvas | null => drawingCanvasRef.value as unknown as LibCanvas | null;
+
+// Update undo/redo availability and persist the current stroke array + PNG
+const syncState = (canvasData?: string) => {
+  const lib = getLibCanvas();
+  if (!lib) return;
+  canUndo.value = lib.images.length > 0;
+  canRedo.value = lib.trash.length > 0;
+  if (canvasData !== undefined) {
+    scoreSheetStore.updateStrokes([...lib.images], canvasData);
   }
 };
+
+// Keep for compatibility where we only need UI state refresh (no PNG yet)
+const updateUndoRedoState = () => syncState();
 
 // Calculate scale factor to fit the fixed 800x1200 sheet in the container
 const calculateScale = () => {
@@ -228,32 +264,110 @@ const calculateScale = () => {
   const sheetWidth = 800;
   const sheetHeight = 1200;
 
-  // Calculate scale factor to fit within container while maintaining aspect ratio
   const scaleX = containerWidth / sheetWidth;
   const scaleY = containerHeight / sheetHeight;
-  scaleFactor.value = Math.min(scaleX, scaleY, 1); // Don't scale up beyond 1:1
+
+  // On mobile (portrait, < 768 px wide): scale to fill width and allow vertical scrolling.
+  // On desktop: fit both axes so the whole sheet is visible at once.
+  if (containerWidth < 768) {
+    scaleFactor.value = Math.min(scaleX, 1); // width-only, don't scale up beyond 1:1
+  } else {
+    scaleFactor.value = Math.min(scaleX, scaleY, 1); // fit both axes
+  }
 };
+
+// ─── Pinch-to-zoom / two-finger-pan ────────────────────────────────────────
+
+interface TouchState {
+  active: boolean;
+  startDist: number;
+  startZoom: number;
+  startMidX: number;
+  startMidY: number;
+  startPanX: number;
+  startPanY: number;
+}
+
+const touchState: TouchState = {
+  active: false,
+  startDist: 0,
+  startZoom: 1,
+  startMidX: 0,
+  startMidY: 0,
+  startPanX: 0,
+  startPanY: 0,
+};
+
+const getTouchDist = (a: Touch, b: Touch): number => {
+  const dx = a.clientX - b.clientX;
+  const dy = a.clientY - b.clientY;
+  return Math.hypot(dx, dy);
+};
+
+const onTouchStart = (e: TouchEvent) => {
+  if (e.touches.length !== 2) {
+    touchState.active = false;
+    return;
+  }
+  const [t0, t1] = [e.touches[0], e.touches[1]];
+  touchState.active = true;
+  touchState.startDist = getTouchDist(t0, t1);
+  touchState.startZoom = userZoom.value;
+  touchState.startMidX = (t0.clientX + t1.clientX) / 2;
+  touchState.startMidY = (t0.clientY + t1.clientY) / 2;
+  touchState.startPanX = panOffset.value.x;
+  touchState.startPanY = panOffset.value.y;
+};
+
+const onTouchMove = (e: TouchEvent) => {
+  if (!touchState.active || e.touches.length !== 2) return;
+
+  // Prevent page scroll and block single-touch drawing from firing
+  e.preventDefault();
+
+  const [t0, t1] = [e.touches[0], e.touches[1]];
+  const currentDist = getTouchDist(t0, t1);
+
+  // Zoom
+  const rawZoom = touchState.startZoom * (currentDist / touchState.startDist);
+  userZoom.value = Math.min(Math.max(rawZoom, 0.5), 4);
+
+  // Pan (midpoint delta, scaled back so it feels 1:1 relative to the sheet)
+  const midX = (t0.clientX + t1.clientX) / 2;
+  const midY = (t0.clientY + t1.clientY) / 2;
+  const effectiveScale = scaleFactor.value * userZoom.value;
+  panOffset.value = {
+    x: touchState.startPanX + (midX - touchState.startMidX) / effectiveScale,
+    y: touchState.startPanY + (midY - touchState.startMidY) / effectiveScale,
+  };
+};
+
+const onTouchEnd = (e: TouchEvent) => {
+  if (e.touches.length < 2) {
+    touchState.active = false;
+  }
+};
+
+// ───────────────────────────────────────────────────────────────────────────
 
 // ResizeObserver for responsive scaling
 let resizeObserver: ResizeObserver | null = null;
 
-// Handle canvas image updates - also refresh undo/redo state
+// Called by vue-drawing-canvas after every stroke/undo/redo/redraw with the
+// current flattened PNG. We use this to persist both the stroke array and the
+// PNG (kept for export).
 const onCanvasUpdate = (imageData: string) => {
-  scoreSheetStore.updateCanvas(imageData);
-  updateUndoRedoState();
+  syncState(imageData);
 };
 
-// Undo/Redo handlers
+// Undo/Redo handlers — the library emits @update:image after redraw,
+// so onCanvasUpdate will persist the updated stroke array automatically.
 const handleUndo = () => {
   drawingCanvasRef.value?.undo();
-  // State updates after undo via nextTick
-  setTimeout(updateUndoRedoState, 50);
 };
 
 const handleRedo = () => {
   drawingCanvasRef.value?.redo();
-  // State updates after redo via nextTick
-  setTimeout(updateUndoRedoState, 50);
 };
 
 // Clear handlers
@@ -274,12 +388,12 @@ const handleExport = () => {
   scoreSheetStore.exportImage();
 };
 
-// Watch for drawer open/close to recalculate scale
+// Watch for drawer open/close to recalculate scale.
+// Stroke restore is handled automatically via :initial-image on mount.
 watch(
   () => uiStore.showScoreSheet,
   (isOpen) => {
     if (isOpen) {
-      // Wait for drawer to render then calculate scale
       setTimeout(() => {
         calculateScale();
         updateUndoRedoState();
@@ -507,10 +621,43 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   background: #111827;
   padding: 1rem;
+  /* Prevent browser from intercepting pinch-zoom gesture */
+  touch-action: none;
+  /* On mobile: allow vertical scrolling for the taller scaled sheet */
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* On desktop: clip content so the sheet doesn't overflow the panel */
+  position: relative;
   min-height: 0;
+}
+
+@media (min-width: 768px) {
+  .canvas-container {
+    overflow: hidden;
+  }
+}
+
+.reset-zoom-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 10;
+  padding: 0.375rem 0.75rem;
+  background: rgba(59, 130, 246, 0.85);
+  border: none;
+  border-radius: 9999px;
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background 0.15s;
+}
+
+.reset-zoom-btn:hover {
+  background: rgba(37, 99, 235, 0.95);
 }
 
 .fixed-sheet {
@@ -521,6 +668,7 @@ onUnmounted(() => {
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
   /* The transform scale is applied dynamically via :style binding */
+  flex-shrink: 0;
 }
 
 .fixed-sheet > * {
